@@ -16,6 +16,12 @@ urlpatterns = [
     path("category/", views.product_category, name="product_category"),
     path("product-details/", views.product_details, name="product_details"),
     path("cart/", views.cart, name="cart"),
+    path("api/cart/validate/", views.cart_validate, name="cart_validate"),
+    path(
+        "api/cart/checkout/",
+        views.checkout_validate,
+        name="checkout_validate",
+    ),
     path("checkout/", views.checkout, name="checkout"),
     path(
         "order-confirmation/",

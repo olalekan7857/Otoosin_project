@@ -4,6 +4,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token }}">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>{% block title %}{% endblock title %}</title>
     <meta name="author" content="O’TOOSIN Farms">
@@ -41,9 +42,9 @@
     <!-- Theme Custom CSS -->
     <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
     <!-- Storefront foundation overrides -->
-    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.3">
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.4">
     <!-- Light/dark token layer -->
-    <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.3">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.4">
     <link rel="stylesheet" href="{% static 'assets/css/otoosin-mobile-nav.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/otoosin-footer.css' %}?v=2.0">
     <!-- Apply the stored theme before first paint. Default is Light. -->
@@ -333,13 +334,15 @@
             category: "{% url 'Otoosin:product_category' %}",
             productDetails: "{% url 'Otoosin:product_details' %}",
             cart: "{% url 'Otoosin:cart' %}",
+            cartValidate: "{% url 'Otoosin:cart_validate' %}",
+            checkoutValidate: "{% url 'Otoosin:checkout_validate' %}",
             checkout: "{% url 'Otoosin:checkout' %}",
             orderConfirmation: "{% url 'Otoosin:order_confirmation' %}",
             contact: "{% url 'Otoosin:contact' %}"
         };
     </script>
     <!-- Storefront interactions and cart -->
-    <script src="{% static 'assets/js/fresh-direct.js' %}?v=8.0"></script>
+    <script src="{% static 'assets/js/fresh-direct.js' %}?v=8.1"></script>
     <script src="{% static 'assets/js/fd-theme.js' %}"></script>
 
     {% block extra_js %}{% endblock extra_js %}

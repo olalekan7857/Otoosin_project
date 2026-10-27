@@ -30,11 +30,11 @@
             {% for error in variant_form.price.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
         </div>
         <div class="fd-field">
-            <span class="fd-field-label">Default selling option</span>
+            <span class="fd-field-label">Main selling option</span>
             <label class="fd-edit-default" for="{{ variant_form.is_default.id_for_label }}">
                 {{ variant_form.is_default }}
                 <span>
-                    <strong>Use as default</strong>
+                    <strong>Use as the main option</strong>
                     <small>{{ variant_form.is_default.help_text }}</small>
                 </span>
             </label>
@@ -46,12 +46,13 @@
         <label class="fd-edit-default" for="{{ variant_form.is_active.id_for_label }}">
             {{ variant_form.is_active }}
             <span>
-                <strong>Available to buy</strong>
+                <strong>Active selling option</strong>
                 <small>{{ variant_form.is_active.help_text }}</small>
             </span>
         </label>
         {% for error in variant_form.is_active.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
-        <details class="fd-edit-advanced">
+        {% if variant_form.instance.pk and variant_form.instance.sku %}<p class="fd-dash-hint">Saved variant code: <strong>{{ variant_form.instance.sku }}</strong></p>{% endif %}
+        <details class="fd-edit-advanced"{% if variant_form.instance.pk %} open{% endif %}>
             <summary>Advanced: variant code</summary>
             <div class="fd-field">
                 <label for="{{ variant_form.sku.id_for_label }}">Variant code (SKU)</label>

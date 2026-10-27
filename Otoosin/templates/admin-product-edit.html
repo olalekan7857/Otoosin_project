@@ -11,9 +11,12 @@
     <p class="fd-edit-back"><a href="{% url 'Otoosin:staff_products' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to Products</a></p>
     <h2 class="fd-edit-title">{% if is_create %}Add product{% else %}{{ product.name }}{% endif %}</h2>
     <p class="fd-dash-lead">Fill in the product details, set the prices customers will pay, add photos and choose whether the product is visible or featured.</p>
+    {% if not is_create %}
+    <p class="fd-dash-hint fd-edit-loaded">Saved product details are already loaded below. Change only what you need — leaving a field as it is keeps the saved value.</p>
+    {% endif %}
 </div>
 
-<form id="fd-ed-form" method="post" enctype="multipart/form-data" novalidate>
+<form id="fd-ed-form" method="post" enctype="multipart/form-data" autocomplete="off" novalidate>
     {% csrf_token %}
 
     {% if form.errors or variant_formset.non_form_errors or image_formset.non_form_errors or variant_formset.errors or image_formset.errors %}
@@ -89,7 +92,7 @@
     <section class="fd-dash-section" aria-labelledby="fd-ed-variants-title">
         <h2 id="fd-ed-variants-title">Selling options</h2>
         <p class="fd-dash-lead">Add the sizes or packs customers can buy. Each option needs a name, a unit and its own price.</p>
-        <p class="fd-dash-hint">Choose one option as the default. Its price appears on shop and homepage cards before a customer opens the product.</p>
+        <p class="fd-dash-hint">The main option's price appears on shop and homepage cards. If you are unsure, leave the ticks as they are: we will keep one option active and choose a main option automatically.</p>
         {{ variant_formset.management_form }}
         <ul class="fd-edit-variants" data-variant-list data-variant-prefix="{{ variant_formset.prefix }}">
             {% for variant_form in variant_formset %}
@@ -116,8 +119,9 @@
                 {% for hidden in image_form.hidden_fields %}{{ hidden }}{% endfor %}
                 <div hidden>{{ image_form.DELETE }}</div>
                 <div class="fd-field">
-                    <label for="{{ image_form.image.id_for_label }}">Photo</label>
+                    <label for="{{ image_form.image.id_for_label }}">{% if image_form.instance.pk %}Replace photo (optional){% else %}Photo{% endif %}</label>
                     {{ image_form.image }}
+                    {% if image_form.instance.pk %}<p class="fd-dash-hint">The current photo is saved and shown above. Leave this blank to keep it, or choose a new image to replace it.</p>{% endif %}
                     {% if image_form.image.help_text %}<p class="fd-dash-hint">{{ image_form.image.help_text }}</p>{% endif %}
                     {% for error in image_form.image.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
                 </div>
@@ -154,9 +158,9 @@
     </section>
 
     <section class="fd-dash-section" aria-labelledby="fd-ed-more-title">
-        <details class="fd-edit-more"{% if form.sku.errors or form.price_basis.errors or form.cut.errors or form.badge.errors or form.meta_title.errors or form.meta_description.errors %} open{% endif %}>
-            <summary id="fd-ed-more-title">More options (optional)</summary>
-            <p class="fd-dash-hint">You can leave all of these blank. Product code, price basis, cut detail, card badge and search details are generated or optional.</p>
+        <details class="fd-edit-more"{% if form.sku.value or form.price_basis.value or form.cut.value or form.badge.value or form.meta_title.value or form.meta_description.value or form.sku.errors or form.price_basis.errors or form.cut.errors or form.badge.errors or form.meta_title.errors or form.meta_description.errors %} open{% endif %}>
+            <summary id="fd-ed-more-title">More options (optional){% if form.sku.value or form.price_basis.value or form.cut.value or form.badge.value or form.meta_title.value or form.meta_description.value %} <span class="fd-edit-more-saved">saved values loaded</span>{% endif %}</summary>
+            <p class="fd-dash-hint">Saved values are already filled in below. Leave a field blank only if you want to clear it; product code and price basis are generated when blank.</p>
             <div class="fd-edit-grid">
                 <div class="fd-field">
                     <label for="{{ form.sku.id_for_label }}">Product code (SKU)</label>

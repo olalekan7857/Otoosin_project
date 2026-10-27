@@ -277,10 +277,11 @@ class ProductVariantForm(forms.ModelForm):
         )
         self.fields["is_default"].help_text = (
             "The option whose price appears on shop and homepage cards. "
-            "Choose exactly one default option."
+            "If you leave this unticked, the first active option is used."
         )
         self.fields["is_active"].help_text = (
-            "Untick to keep this option out of the shop without deleting it."
+            "Keep this ticked to sell the option. At least one filled option "
+            "stays active automatically, even if every box is unticked."
         )
         self.fields["sku"].help_text = (
             "Optional. Leave blank and we will create a code from the product "
@@ -362,6 +363,7 @@ class BaseVariantFormSet(BaseInlineFormSet):
         if any(self.errors):
             return
 
+        complete = []
         active = []
         defaults = []
         seen_skus = set()
@@ -377,6 +379,7 @@ class BaseVariantFormSet(BaseInlineFormSet):
             ):
                 continue
 
+            complete.append(form)
             sku = (data.get("sku") or "").strip().lower()
             if sku:
                 if sku in seen_skus:
@@ -390,18 +393,29 @@ class BaseVariantFormSet(BaseInlineFormSet):
             if data.get("is_default"):
                 defaults.append(form)
 
+        if not complete:
+            raise forms.ValidationError(
+                "Add at least one selling option with a price."
+            )
+
         if not active:
-            raise forms.ValidationError(
-                "Add at least one active variant with a price."
-            )
-        if len(defaults) != 1:
-            raise forms.ValidationError(
-                "Choose exactly one default variant for this product."
-            )
-        if defaults and not defaults[0].cleaned_data.get("is_active"):
-            raise forms.ValidationError(
-                "The default variant must be active."
-            )
+            first = complete[0]
+            first.cleaned_data["is_active"] = True
+            first.instance.is_active = True
+            active.append(first)
+
+        default = next(
+            (form for form in defaults if form in active), None
+        )
+        if default is None:
+            default = active[0]
+            default.cleaned_data["is_default"] = True
+            default.instance.is_default = True
+
+        for form in defaults:
+            if form is not default:
+                form.cleaned_data["is_default"] = False
+                form.instance.is_default = False
 
 
 class ProductImageForm(forms.ModelForm):

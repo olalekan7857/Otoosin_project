@@ -336,6 +336,10 @@ html[data-theme="dark"] .fd-prod-btn {
 }
 /* Product editor image uploader: the Light dropzone uses a white hover
    surface, which must become a raised dark surface instead. */
+html[data-theme="dark"] .fd-admin .fd-edit-image-row {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
 html[data-theme="dark"] .fd-admin .fd-image-drop {
   background: var(--fd-surface-2);
   border-color: var(--fd-border);

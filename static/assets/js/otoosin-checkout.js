@@ -452,7 +452,7 @@
       var media = cart.media(item);
       lines.push({
         productId: item.id,
-        variantId: item.unit || item.variant || "",
+        variantId: item.variantId || item.unit || item.variant || "",
         name: item.name,
         variantLabel: item.variant || item.unit || "",
         unit: item.unit || item.variant || "",
@@ -845,6 +845,16 @@
     closeDropdown(false);
   }
 
+  function cartCheckMessage(result) {
+    if (result && result.errors && result.errors.length) {
+      var first = result.errors[0];
+      if (first && first.message) {
+        return first.message;
+      }
+    }
+    return "Some items in your cart are no longer available. Please review your cart and try again.";
+  }
+
   function proceedToPayment() {
     if (busy) {
       return;
@@ -857,12 +867,54 @@
       status("Your cart is empty. Add some products before checking out.", true);
       return;
     }
-    var order = validateForm();
-    if (!order) {
+
+    var complete = function () {
+      var order = validateForm();
+      if (!order) {
+        busy = false;
+        return;
+      }
+      lastOrder = order;
+      busy = false;
+      finishCheckout();
+    };
+
+    if (typeof cart.validate !== "function") {
+      complete();
       return;
     }
-    lastOrder = order;
-    finishCheckout();
+
+    busy = true;
+    status("Checking availability and prices\u2026");
+    cart
+      .validate(cart.load(), true)
+      .then(function (result) {
+        if (!result) {
+          busy = false;
+          status(
+            "We could not check stock and prices. Please check your connection and try again.",
+            true
+          );
+          return;
+        }
+        if (!result.ok || !result.items || !result.items.length) {
+          busy = false;
+          status(cartCheckMessage(result), true);
+          return;
+        }
+        if (typeof cart.apply === "function") {
+          cart.apply(result);
+        }
+        renderSummary();
+        complete();
+      })
+      .catch(function () {
+        busy = false;
+        status(
+          "We could not check stock and prices. Please check your connection and try again.",
+          true
+        );
+      });
   }
 
   /* ---------- Custom delivery location dropdown ---------- */

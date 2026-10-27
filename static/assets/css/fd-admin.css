@@ -4085,6 +4085,24 @@ html[data-theme="dark"] .fd-dash-card-icon {
   margin-bottom: 10px;
 }
 
+.fd-admin .fd-edit-more-saved {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--theme-color);
+  color: #fff;
+  font-family: var(--body-font);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+.fd-admin .fd-edit-loaded {
+  margin-top: 10px;
+}
+
 .fd-admin .fd-edit-more .fd-field:last-child {
   margin-bottom: 0;
 }

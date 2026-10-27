@@ -1,3 +1,4 @@
+import json
 import shutil
 import tempfile
 from decimal import Decimal
@@ -426,12 +427,12 @@ class ProductAdminTests(TestCase):
         self.assertEqual(product.variants.count(), 1)
         self.assertEqual(product.images.count(), 0)
 
-    def test_product_requires_a_default_variant(self):
+    def test_variant_defaults_are_chosen_when_ticks_are_missing(self):
         data = self.product_post_data()
         data.update(
             {
                 "sku": "ADMIN-003",
-                "name": "Admin Product Without Default",
+                "name": "Admin Product Without Ticks",
                 "variants-TOTAL_FORMS": "1",
                 "variants-INITIAL_FORMS": "0",
                 "variants-MIN_NUM_FORMS": "0",
@@ -440,7 +441,6 @@ class ProductAdminTests(TestCase):
                 "variants-0-label": "1kg",
                 "variants-0-unit_kind": ProductVariant.UnitKind.KG,
                 "variants-0-price": "4800.00",
-                "variants-0-is_active": "on",
                 "variants-0-sort_order": "1",
                 "images-TOTAL_FORMS": "1",
                 "images-INITIAL_FORMS": "0",
@@ -451,9 +451,11 @@ class ProductAdminTests(TestCase):
             }
         )
         response = self.client.post("/staff/products/new/", data)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "exactly one default variant")
-        self.assertFalse(Product.objects.filter(sku="ADMIN-003").exists())
+        self.assertEqual(response.status_code, 302)
+        product = Product.objects.get(sku="ADMIN-003")
+        variant = product.variants.get()
+        self.assertTrue(variant.is_active)
+        self.assertTrue(variant.is_default)
 
     def test_edit_preserves_existing_variant_and_image(self):
         product = make_product(sku="EDIT-001")
@@ -508,6 +510,61 @@ class ProductAdminTests(TestCase):
         self.assertEqual(product.variants.count(), 1)
         self.assertEqual(product.images.count(), 1)
         self.assertTrue(product.images.get().is_primary)
+
+    def test_edit_form_shows_all_saved_values(self):
+        product = make_product(
+            name="Shown Product",
+            sku="SHOW-001",
+            description="Saved description.",
+            cut="Bone-in",
+            badge="Farm fresh",
+            meta_title="Saved search title",
+            meta_description="Saved search description.",
+        )
+        variant = ProductVariant.objects.create(
+            product=product,
+            sku="SHOW-001-1KG",
+            label="1kg",
+            unit_kind=ProductVariant.UnitKind.KG,
+            price=Decimal("4800.00"),
+            is_default=True,
+        )
+        ProductImage.objects.create(
+            product=product,
+            image=make_image("shown.png"),
+            alt="Shown product photo",
+            is_primary=True,
+        )
+
+        response = self.client.get(f"/staff/products/{product.pk}/edit/")
+        self.assertEqual(response.status_code, 200)
+        for value in (
+            "Shown Product",
+            "SHOW-001",
+            "Saved description.",
+            "Bone-in",
+            "Farm fresh",
+            "Saved search title",
+            "Saved search description.",
+            variant.label,
+            variant.sku,
+            "Shown product photo",
+        ):
+            self.assertContains(response, value)
+        self.assertContains(response, "Saved product details are already loaded")
+        self.assertContains(response, 'class="fd-edit-more" open')
+        self.assertContains(response, "Saved variant code")
+        self.assertContains(response, "Replace photo (optional)")
+        self.assertContains(response, 'name="images-TOTAL_FORMS" value="1"')
+        self.assertContains(response, 'name="images-0-image"')
+        self.assertNotContains(response, 'name="images-1-image"')
+
+    def test_create_form_has_one_blank_photo_row(self):
+        response = self.client.get("/staff/products/new/")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="images-TOTAL_FORMS" value="1"')
+        self.assertContains(response, 'name="images-0-image"')
+        self.assertNotContains(response, 'name="images-1-image"')
 
     def test_category_create_and_toggle(self):
         response = self.client.post(
@@ -824,3 +881,161 @@ class StorefrontCatalogueTests(TestCase):
         self.assertNotContains(response, 'class="fd-cartpage-item"')
         self.assertNotContains(response, "₦7,200")
         self.assertContains(response, "Your cart is empty")
+
+
+class CartValidationTests(TestCase):
+    def setUp(self):
+        self.product = make_product(
+            name="Cart Pork",
+            sku="CART-PORK",
+            category_slug="pork",
+            description="Cart validation test product.",
+        )
+        self.variant = ProductVariant.objects.create(
+            product=self.product,
+            sku="CART-PORK-1KG",
+            label="1kg",
+            unit_kind=ProductVariant.UnitKind.KG,
+            price=Decimal("4800.00"),
+            is_default=True,
+        )
+        self.inventory = Inventory.objects.create(
+            variant=self.variant,
+            track_stock=True,
+            quantity_available=Decimal("3.500"),
+        )
+        self.piece_product = make_product(
+            name="Cart Eggs",
+            sku="CART-EGGS",
+            category_slug="eggs",
+            description="Cart piece validation test product.",
+        )
+        self.piece_variant = ProductVariant.objects.create(
+            product=self.piece_product,
+            sku="CART-EGGS-CRATE",
+            label="Crate",
+            unit_kind=ProductVariant.UnitKind.CRATE,
+            price=Decimal("2500.00"),
+            is_default=True,
+        )
+
+    def post_cart(self, items, path="/api/cart/validate/"):
+        return self.client.post(
+            path,
+            data=json.dumps({"items": items}),
+            content_type="application/json",
+        )
+
+    def line(self, quantity, product=None, variant=None, price=None):
+        product = self.product if product is None else product
+        variant_ref = str(self.variant.pk) if variant is None else (
+            str(variant.pk) if hasattr(variant, "pk") else str(variant)
+        )
+        payload = {
+            "product": product.slug,
+            "variant": variant_ref,
+            "quantity": quantity,
+        }
+        if price is not None:
+            payload["price"] = price
+        return payload
+
+    def test_valid_line_uses_database_price_and_accepts_default_variant(self):
+        response = self.post_cart([self.line("1.5", variant="", price="1")])
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data["ok"])
+        self.assertEqual(len(data["items"]), 1)
+        item = data["items"][0]
+        self.assertEqual(item["variantId"], str(self.variant.pk))
+        self.assertEqual(item["price"], 4800.0)
+        self.assertEqual(item["qty"], 1.5)
+        self.assertEqual(data["subtotal"], 7200.0)
+
+    def test_quantity_update_and_removal_revalidate_remaining_lines(self):
+        response = self.post_cart([self.line("2")])
+        self.assertEqual(response.json()["subtotal"], 9600.0)
+
+        response = self.post_cart([])
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["items"], [])
+        self.assertEqual(data["line_count"], 0)
+        self.assertTrue(data["ok"])
+
+    def test_unknown_product_and_inactive_variant_are_rejected(self):
+        response = self.post_cart(
+            [
+                {"product": "does-not-exist", "quantity": 1},
+                self.line("1", variant="999999"),
+            ]
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["items"], [])
+        self.assertEqual(len(data["errors"]), 2)
+
+        self.variant.is_active = False
+        self.variant.save(update_fields=["is_active"])
+        response = self.post_cart([self.line("1")])
+        self.assertEqual(response.json()["items"], [])
+
+    def test_invalid_quantities_are_rejected(self):
+        for quantity in (0, -1, "0.25"):
+            response = self.post_cart([self.line(quantity)])
+            self.assertFalse(response.json()["ok"], quantity)
+            self.assertEqual(response.json()["items"], [], quantity)
+
+        response = self.post_cart(
+            [
+                self.line(
+                    "1.5",
+                    product=self.piece_product,
+                    variant=self.piece_variant,
+                )
+            ]
+        )
+        data = response.json()
+        self.assertFalse(data["ok"])
+        self.assertEqual(data["items"], [])
+        self.assertIn("whole units", data["errors"][0]["message"])
+
+    def test_stock_is_clamped_for_cart_and_rejected_at_checkout(self):
+        response = self.post_cart([self.line("5")])
+        data = response.json()
+        self.assertTrue(data["ok"])
+        self.assertEqual(data["items"][0]["qty"], 3.5)
+        self.assertEqual(data["subtotal"], 16800.0)
+        self.assertTrue(data["notices"])
+
+        response = self.post_cart(
+            [self.line("5")], path="/api/cart/checkout/"
+        )
+        self.assertEqual(response.status_code, 400)
+        data = response.json()
+        self.assertFalse(data["ok"])
+        self.assertIn("Only 3.50 kg", data["errors"][0]["message"])
+
+    def test_price_change_is_reported_and_database_price_wins(self):
+        response = self.post_cart([self.line("1", price="100")])
+        data = response.json()
+        self.assertEqual(data["items"][0]["price"], 4800.0)
+        self.assertEqual(data["subtotal"], 4800.0)
+        self.assertTrue(
+            any("price" in notice["message"].lower() for notice in data["notices"])
+        )
+
+    def test_checkout_accepts_valid_cart_and_reports_out_of_stock(self):
+        response = self.post_cart(
+            [self.line("2")], path="/api/cart/checkout/"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["ok"])
+
+        self.product.availability_status = Product.Availability.OUT_OF_STOCK
+        self.product.save(update_fields=["availability_status"])
+        response = self.post_cart(
+            [self.line("2")], path="/api/cart/checkout/"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("out of stock", response.json()["errors"][0]["message"])

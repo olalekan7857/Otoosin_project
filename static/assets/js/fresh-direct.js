@@ -366,6 +366,7 @@
     return {
       key: id + "__" + variantId,
       id: id,
+      variantId: variantId,
       name: card.getAttribute("data-product-name") || "Fresh produce",
       variant: variant,
       price: parseInt(card.getAttribute("data-price"), 10) || 0,
@@ -503,57 +504,173 @@
     return li;
   }
 
+  /* ---------- Server-authoritative cart checks ---------- */
+  function cartCsrfToken() {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute("content") || "" : "";
+  }
+
+  function cartVariantRef(item) {
+    if (item && item.variantId) {
+      return String(item.variantId);
+    }
+    var key = String((item && item.key) || "");
+    var split = key.lastIndexOf("__");
+    return split >= 0 ? key.slice(split + 2) : "";
+  }
+
+  function cartRequestLines(items) {
+    var lines = [];
+    for (var i = 0; i < items.length; i++) {
+      lines.push({
+        product: items[i].id,
+        variant: cartVariantRef(items[i]),
+        quantity: items[i].qty,
+        price: items[i].price,
+      });
+    }
+    return lines;
+  }
+
+  function cartValidateServer(items, strict) {
+    var url = strict ? FD_ROUTES.checkoutValidate : FD_ROUTES.cartValidate;
+    if (!url || !window.fetch) {
+      return Promise.resolve(null);
+    }
+    return window
+      .fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": cartCsrfToken(),
+        },
+        body: JSON.stringify({ items: cartRequestLines(items) }),
+      })
+      .then(function (response) {
+        return response.json().then(function (data) {
+          if (!data || typeof data !== "object") {
+            return null;
+          }
+          data._httpStatus = response.status;
+          return data;
+        });
+      })
+      .catch(function () {
+        return null;
+      });
+  }
+
+  function cartApplyServer(result) {
+    var items = result && Array.isArray(result.items) ? result.items : [];
+    cartSave(items);
+    refreshBadges();
+    renderCartPanel();
+    renderCartPage();
+  }
+
+  function cartServerMessages(result) {
+    if (!result) {
+      return [];
+    }
+    var out = [];
+    var seen = {};
+    var groups = [result.errors || [], result.notices || []];
+    for (var g = 0; g < groups.length; g++) {
+      for (var i = 0; i < groups[g].length; i++) {
+        var text = groups[g][i] && groups[g][i].message;
+        if (text && !seen[text]) {
+          seen[text] = true;
+          out.push(text);
+        }
+      }
+    }
+    return out;
+  }
+
+  function cartShowServerMessages(result) {
+    var messages = cartServerMessages(result);
+    for (var i = 0; i < messages.length && i < 3; i++) {
+      showToast(messages[i]);
+    }
+    if (messages.length > 3) {
+      showToast(
+        (messages.length - 3) + " more cart update" +
+        (messages.length - 3 === 1 ? "" : "s") + " applied."
+      );
+    }
+  }
+
+  function cartCommit(candidate, successMessage) {
+    return cartValidateServer(candidate, false).then(function (result) {
+      if (!result) {
+        showToast("We could not check your cart. Please try again.");
+        return false;
+      }
+      if (result._httpStatus >= 400) {
+        cartShowServerMessages(result);
+        return false;
+      }
+      cartApplyServer(result);
+      if (successMessage && result.ok) {
+        showToast(successMessage);
+      }
+      cartShowServerMessages(result);
+      return result.ok;
+    });
+  }
+
+  function cartReconcile() {
+    var items = cartLoad();
+    if (!items.length) {
+      return Promise.resolve();
+    }
+    return cartValidateServer(items, false).then(function (result) {
+      if (!result) {
+        return;
+      }
+      if (result._httpStatus < 400) {
+        cartApplyServer(result);
+      }
+      cartShowServerMessages(result);
+    });
+  }
+
   // Merge a full line item by variant key. Used by Product Details;
   // card-level adds go through cartAdd below (same merge, qty 1).
   function cartAddLine(line) {
     if (!line || !line.key || !line.id || !(line.price >= 0)) {
-      return false;
+      return Promise.resolve(false);
     }
     var lineIsKg = fdIsKgItem(line);
     var lineQty = fdClampQty(Number(line.qty), lineIsKg);
     if (lineIsKg) {
       if (!(lineQty >= FD_KG_MIN)) {
-        return false;
+        return Promise.resolve(false);
       }
     } else if (!(lineQty >= 1)) {
-      return false;
+      return Promise.resolve(false);
     }
     var items = cartLoad();
-    var found = null;
-    for (var i = 0; i < items.length; i++) {
-      if (items[i].key === line.key) {
-        found = items[i];
-      }
-    }
-    if (found) {
-      found.qty = fdClampQty(
-        fdRound2(Number(found.qty) + lineQty),
-        fdIsKgItem(found)
-      );
-    } else {
-      items.push({
-        key: line.key,
-        id: line.id,
-        name: line.name,
-        variant: line.variant || "",
-        price: line.price,
-        qty: lineQty,
-        unit: line.unit || "",
-        category: line.category || "",
-        image: line.image || "",
-        alt: line.alt || "",
-      });
-    }
-    cartSave(items);
-    refreshBadges();
-    renderCartPanel();
-    renderCartPage();
+    items.push({
+      key: line.key,
+      id: line.id,
+      variantId: cartVariantRef(line),
+      name: line.name,
+      variant: line.variant || "",
+      price: line.price,
+      qty: lineQty,
+      unit: line.unit || "",
+      category: line.category || "",
+      image: line.image || "",
+      alt: line.alt || "",
+    });
     var label = line.name + (line.variant && !lineIsKg ? " — " + line.variant : "");
-    showToast(
+    return cartCommit(
+      items,
       "Added to cart: " + label + (lineIsKg ? " · " : " × ") +
-      fdQtyLabel(lineQty, lineIsKg)
+        fdQtyLabel(lineQty, lineIsKg)
     );
-    return true;
   }
 
   function cartAdd(id, card) {
@@ -569,6 +686,7 @@
   // every other unit keeps the legacy ±1 integer steps.
   function cartBump(key, delta) {
     var items = cartLoad();
+    var changed = false;
     for (var i = 0; i < items.length; i++) {
       if (items[i].key === key) {
         var isKg = fdIsKgItem(items[i]);
@@ -578,12 +696,13 @@
           fdRound2(Number(items[i].qty) + dir * step),
           isKg
         );
+        changed = true;
       }
     }
-    cartSave(items);
-    refreshBadges();
-    renderCartPanel();
-    renderCartPage();
+    if (!changed) {
+      return Promise.resolve(false);
+    }
+    return cartCommit(items);
   }
 
   /* ---------- Editable KG quantities in cart surfaces ----------
@@ -641,13 +760,9 @@
       }
     }
     if (!changed) {
-      return false;
+      return Promise.resolve(false);
     }
-    cartSave(items);
-    refreshBadges();
-    renderCartPanel();
-    renderCartPage();
-    return true;
+    return cartCommit(items);
   }
 
   // Live path while typing: patch the visible line price + every subtotal
@@ -771,13 +886,20 @@
         kept.push(items[i]);
       }
     }
-    cartSave(kept);
-    refreshBadges();
-    renderCartPanel();
-    renderCartPage();
-    if (removed) {
-      showToast("Removed from cart: " + removed);
+    if (!kept.length) {
+      cartSave([]);
+      refreshBadges();
+      renderCartPanel();
+      renderCartPage();
+      if (removed) {
+        showToast("Removed from cart: " + removed);
+      }
+      return Promise.resolve(true);
     }
+    return cartCommit(
+      kept,
+      removed ? "Removed from cart: " + removed : ""
+    );
   }
 
   function cartClear() {
@@ -1033,6 +1155,7 @@
     refreshBadges();
     renderCartPanel();
     wireCartQtyInputs();
+    cartReconcile();
     document.addEventListener("click", function (ev) {
       var add = ev.target.closest("[data-add-to-cart]");
       if (add && !add.disabled) {
@@ -1550,6 +1673,7 @@
       return cartAddLine({
         key: product.id + "__" + state.variant.id,
         id: product.id,
+        variantId: state.variant.id,
         name: product.name,
         variant: state.variant.label,
         price: state.variant.price,
@@ -1567,14 +1691,16 @@
         addBtn.textContent = "Out of Stock";
       } else {
         addBtn.addEventListener("click", function () {
-          if (addSelection()) {
-            // Reset for the next selection so a later variant/quantity
-            // choice is always deliberate (never a stale qty surprise).
-            state.qty = 1;
-            pdpSync(root, state);
-          } else {
-            showToast("Something went wrong. Please try again.");
-          }
+          addSelection().then(function (added) {
+            if (added) {
+              // Reset for the next selection so a later variant/quantity
+              // choice is always deliberate (never a stale qty surprise).
+              state.qty = 1;
+              pdpSync(root, state);
+            } else {
+              showToast("Something went wrong. Please try again.");
+            }
+          });
         });
       }
     }
@@ -1585,11 +1711,13 @@
         buyBtn.textContent = "Out of Stock";
       } else {
         buyBtn.addEventListener("click", function () {
-          if (addSelection()) {
-            window.location.href = FD_ROUTES.checkout;
-          } else {
-            showToast("Something went wrong. Please try again.");
-          }
+          addSelection().then(function (added) {
+            if (added) {
+              window.location.href = FD_ROUTES.checkout;
+            } else {
+              showToast("Something went wrong. Please try again.");
+            }
+          });
         });
       }
     }
@@ -2321,7 +2449,7 @@
       var it = valid[j];
         lines.push({
         productId: it.id,
-        variantId: it.unit || it.variant || "",
+        variantId: cartVariantRef(it),
         name: it.name,
         variantLabel: it.variant || it.unit || "",
         quantity: it.qty,
@@ -3336,6 +3464,10 @@
     qtyLabel: fdQtyLabel,
     isKg: fdIsKgItem,
     fmtNaira: fmtNaira,
+    validate: cartValidateServer,
+    apply: cartApplyServer,
+    messages: cartServerMessages,
+    reconcile: cartReconcile,
     refresh: function () {
       refreshBadges();
       renderCartPanel();

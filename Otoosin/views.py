@@ -7,8 +7,11 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, OuterRef, Prefetch, Q, Subquery
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
+from .cart import CartPayloadError, validate_cart_request
 from .catalogue import public_products
 from .forms import (
     CategoryForm,
@@ -206,6 +209,10 @@ def _product_form_view(request, product=None):
             instance=instance, prefix="variants"
         )
         image_formset = ImageFormSet(instance=instance, prefix="images")
+        # Existing photos already have their own row. Do not add a blank
+        # second row on edit; only show one when the product has no photo yet.
+        if image_formset.initial_form_count():
+            image_formset.extra = 0
 
     return render(
         request,
@@ -755,6 +762,41 @@ def cart(request):
 
 def checkout(request):
     return render(request, "checkout.html")
+
+
+def _invalid_cart_response(error, status=400):
+    return JsonResponse(
+        {
+            "ok": False,
+            "items": [],
+            "errors": [{"key": "", "message": str(error)}],
+            "notices": [],
+            "subtotal": 0,
+            "line_count": 0,
+        },
+        status=status,
+    )
+
+
+@require_POST
+def cart_validate(request):
+    try:
+        result = validate_cart_request(request, normalize=True)
+    except CartPayloadError as exc:
+        return _invalid_cart_response(exc)
+    return JsonResponse(result)
+
+
+@require_POST
+def checkout_validate(request):
+    try:
+        result = validate_cart_request(request, normalize=False)
+    except CartPayloadError as exc:
+        return _invalid_cart_response(exc)
+    if not result["ok"] or not result["items"]:
+        result["ok"] = False
+        return JsonResponse(result, status=400)
+    return JsonResponse(result)
 
 
 def order_confirmation(request):
