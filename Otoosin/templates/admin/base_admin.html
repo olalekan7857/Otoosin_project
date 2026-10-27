@@ -1,0 +1,94 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}Admin | O’TOOSIN Farms{% endblock %}</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="description" content="Private O’TOOSIN Farms administration.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
+    <link rel="icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.3">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=7.6">
+    {% block extra_css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.3">
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+</head>
+
+<body class="fd-admin">
+    <a class="fd-skip-link" href="#fd-admin-main">{% block skip_label %}Skip to admin content{% endblock %}</a>
+
+    <div class="fd-admin-shell" id="fd-admin-shell">
+        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
+            <div class="fd-admin-brand">
+                <a href="{% url 'Otoosin:index' %}" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
+            </div>
+            <p class="fd-admin-role">Farm Admin</p>
+            <nav class="fd-admin-nav" aria-label="Management sections">
+                <ul>
+                    <li><a href="{% url 'Otoosin:staff_dashboard' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_dashboard' %} aria-current="page"{% endif %}><i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard</a></li>
+                    <li><a href="{% url 'Otoosin:staff_products' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_products' or request.resolver_match.url_name == 'staff_product_create' or request.resolver_match.url_name == 'staff_product_edit' %} aria-current="page"{% endif %}><i class="fas fa-box" aria-hidden="true"></i>Products</a></li>
+                    <li><a href="{% url 'Otoosin:staff_inventory' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_inventory' %} aria-current="page"{% endif %}><i class="fas fa-warehouse" aria-hidden="true"></i>Inventory</a></li>
+                    <li><a href="{% url 'Otoosin:staff_categories' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_categories' %} aria-current="page"{% endif %}><i class="fas fa-layer-group" aria-hidden="true"></i>Categories</a></li>
+                </ul>
+            </nav>
+            <div class="fd-admin-side-foot">
+                <form method="post" action="{% url 'Otoosin:staff_logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="fd-admin-logout">
+                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>Sign out
+                    </button>
+                </form>
+                <p class="fd-admin-logout-hint">Signed in as {{ user.get_username }}.</p>
+            </div>
+        </aside>
+
+        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
+
+        <div class="fd-admin-main">
+            <header class="fd-admin-topbar">
+                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <h1 class="fd-admin-title">{% block topbar_title %}Admin{% endblock %}</h1>
+                <span class="fd-admin-context">{% block topbar_context %}Farm admin{% endblock %}</span>
+                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                </button>
+            </header>
+
+            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
+                {% if messages %}
+                    <div class="fd-admin-flash" aria-live="polite">
+                        {% for message in messages %}
+                            <div class="fd-admin-notice {% if message.tags == 'error' %}is-error{% elif message.tags == 'success' %}is-success{% endif %}" role="status">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% block admin_content %}{% endblock %}
+                <p class="fd-dash-foot-note">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="{% url 'Otoosin:index' %}">O’TOOSIN Farms</a>. Farm admin.</p>
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/js/fd-admin.js' %}?v=6.8"></script>
+    <script src="{% static 'assets/js/fd-theme.js' %}"></script>
+    <script src="{% static 'assets/js/otoosin-admin-images.js' %}?v=1.2"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

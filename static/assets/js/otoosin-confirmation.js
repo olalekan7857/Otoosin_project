@@ -8,6 +8,11 @@
 (function () {
   "use strict";
 
+  var routes = window.FD_ROUTES || {
+    shop: "product.html",
+    contact: "contact.html",
+    cart: "cart.html",
+  };
   var LAST_ORDER_KEY = "freshdirect_last_order";
 
   function byId(id) {
@@ -453,11 +458,11 @@
   function buildActions() {
     var actions = el("div", "oto-confirm-actions");
     var shop = el("a", "vs-btn", "Continue Shopping");
-    shop.setAttribute("href", "product.html");
+    shop.setAttribute("href", routes.shop);
     var contact = el("a", "fd-ghost-btn", "Contact Us");
-    contact.setAttribute("href", "contact.html");
+    contact.setAttribute("href", routes.contact);
     var cart = el("a", "fd-ghost-btn", "View Cart");
-    cart.setAttribute("href", "cart.html");
+    cart.setAttribute("href", routes.cart);
     actions.appendChild(shop);
     actions.appendChild(contact);
     actions.appendChild(cart);
@@ -549,9 +554,9 @@
     );
     var actions = el("div", "oto-confirm-fallback-actions");
     var shop = el("a", "vs-btn", "Continue Shopping");
-    shop.setAttribute("href", "product.html");
+    shop.setAttribute("href", routes.shop);
     var cart = el("a", "fd-ghost-btn", "Return to Cart");
-    cart.setAttribute("href", "cart.html");
+    cart.setAttribute("href", routes.cart);
     actions.appendChild(shop);
     actions.appendChild(cart);
     box.appendChild(actions);

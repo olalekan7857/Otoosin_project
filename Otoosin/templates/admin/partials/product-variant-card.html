@@ -1,0 +1,64 @@
+<li class="fd-edit-variant" data-variant-card data-variant-existing="{% if variant_form.instance.pk %}1{% else %}0{% endif %}">
+    {% for hidden in variant_form.hidden_fields %}{{ hidden }}{% endfor %}
+    {{ variant_form.sort_order.as_hidden }}
+    <div hidden>{{ variant_form.DELETE }}</div>
+
+    <div class="fd-edit-variant-top">
+        <span class="fd-edit-variant-num" data-variant-number>Selling option</span>
+        <button type="button" class="fd-edit-variant-remove" data-variant-remove>
+            <i class="far fa-trash-alt" aria-hidden="true"></i>Remove option
+        </button>
+    </div>
+
+    <div class="fd-edit-variant-fields">
+        <div class="fd-field">
+            <label for="{{ variant_form.label.id_for_label }}">Option name</label>
+            {{ variant_form.label }}
+            {% if variant_form.label.help_text %}<p class="fd-dash-hint">{{ variant_form.label.help_text }}</p>{% endif %}
+            {% for error in variant_form.label.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="fd-field">
+            <label for="{{ variant_form.unit_kind.id_for_label }}">Sold by</label>
+            {{ variant_form.unit_kind }}
+            {% if variant_form.unit_kind.help_text %}<p class="fd-dash-hint">{{ variant_form.unit_kind.help_text }}</p>{% endif %}
+            {% for error in variant_form.unit_kind.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="fd-field">
+            <label for="{{ variant_form.price.id_for_label }}">Price (&#8358;)</label>
+            {{ variant_form.price }}
+            {% if variant_form.price.help_text %}<p class="fd-dash-hint">{{ variant_form.price.help_text }}</p>{% endif %}
+            {% for error in variant_form.price.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+        <div class="fd-field">
+            <span class="fd-field-label">Default selling option</span>
+            <label class="fd-edit-default" for="{{ variant_form.is_default.id_for_label }}">
+                {{ variant_form.is_default }}
+                <span>
+                    <strong>Use as default</strong>
+                    <small>{{ variant_form.is_default.help_text }}</small>
+                </span>
+            </label>
+            {% for error in variant_form.is_default.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+
+    <div class="fd-edit-variant-bottom">
+        <label class="fd-edit-default" for="{{ variant_form.is_active.id_for_label }}">
+            {{ variant_form.is_active }}
+            <span>
+                <strong>Available to buy</strong>
+                <small>{{ variant_form.is_active.help_text }}</small>
+            </span>
+        </label>
+        {% for error in variant_form.is_active.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        <details class="fd-edit-advanced">
+            <summary>Advanced: variant code</summary>
+            <div class="fd-field">
+                <label for="{{ variant_form.sku.id_for_label }}">Variant code (SKU)</label>
+                {{ variant_form.sku }}
+                {% if variant_form.sku.help_text %}<p class="fd-dash-hint">{{ variant_form.sku.help_text }}</p>{% endif %}
+                {% for error in variant_form.sku.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+        </details>
+    </div>
+</li>

@@ -10,6 +10,9 @@
     var cards = Array.prototype.slice.call(
       grid.querySelectorAll("article.product-style1")
     );
+    var paginated = grid.getAttribute("data-paginated") === "1";
+    var totalProducts =
+      parseInt(grid.getAttribute("data-total"), 10) || cards.length;
     var toolbar = document.getElementById("oto-shop-toolbar");
     var viewButtons = toolbar
       ? toolbar.querySelectorAll("[data-shop-view]")
@@ -125,6 +128,12 @@
       var scope = state.type !== "all" ? " in " + state.type : "";
       if (!visible) {
         return "No products match your filters";
+      }
+      if (paginated) {
+        return (
+          "Showing " + visible + " on this page · " +
+          totalProducts + " products in total" + scope
+        );
       }
       if (visible === cards.length && state.type === "all") {
         return "Showing all " + cards.length + " products";

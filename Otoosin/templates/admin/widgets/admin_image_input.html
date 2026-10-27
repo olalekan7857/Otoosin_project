@@ -1,0 +1,24 @@
+<div class="fd-image-upload" data-image-upload>
+    <div class="fd-image-drop" data-image-drop>
+        <input type="{{ widget.type }}" name="{{ widget.name }}" data-image-input{% include "django/forms/widgets/attrs.html" %}>
+        {% if widget.is_initial %}
+            <img class="fd-image-preview" data-image-preview src="{{ widget.value.url }}" alt="">
+        {% else %}
+            <img class="fd-image-preview" data-image-preview alt="" hidden>
+        {% endif %}
+        <span class="fd-image-placeholder" data-image-placeholder{% if widget.is_initial %} hidden{% endif %}>
+            <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+            <strong>Drag an image here</strong>
+            <span>or choose a file from your device</span>
+            <small>PNG, JPEG, WebP or GIF up to 5 MB</small>
+        </span>
+        <span class="fd-image-file-name" data-image-name aria-live="polite">{% if widget.is_initial %}{{ widget.value.name }}{% endif %}</span>
+    </div>
+    <div class="fd-image-actions">
+        <button type="button" class="fd-prod-btn" data-image-choose><i class="far fa-folder-open" aria-hidden="true"></i>Choose image</button>
+        <button type="button" class="fd-prod-btn fd-image-remove" data-image-remove{% if not widget.is_initial %} hidden{% endif %}><i class="far fa-trash-alt" aria-hidden="true"></i>Remove image</button>
+    </div>
+    {% if widget.is_initial and not widget.required %}
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" data-image-clear-checkbox{% if widget.attrs.disabled %} disabled{% endif %}{% if widget.attrs.checked %} checked{% endif %} hidden>
+    {% endif %}
+</div>

@@ -2173,6 +2173,155 @@ html[data-theme="dark"] .fd-dash-card-icon {
   overflow-wrap: break-word;
 }
 
+/* ---------- Reusable admin image uploader ------------------------------ */
+.fd-admin .fd-image-upload {
+  display: grid;
+  gap: 10px;
+  max-width: 520px;
+}
+
+.fd-admin .fd-image-drop {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 8px;
+  min-height: 190px;
+  padding: 20px;
+  overflow: hidden;
+  text-align: center;
+  border: 1px dashed var(--border-color);
+  border-radius: 16px;
+  background: var(--smoke-color);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.fd-admin .fd-image-drop:hover,
+.fd-admin .fd-image-drop.is-dragging {
+  border-color: var(--secondary-color);
+  background: var(--white-color);
+}
+
+.fd-admin .fd-image-drop:focus-within {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+.fd-admin .fd-image-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.fd-admin .fd-image-preview {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.fd-admin .fd-image-preview[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-image-placeholder {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  color: var(--body-color);
+}
+
+.fd-admin .fd-image-placeholder[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-image-placeholder i {
+  font-size: 30px;
+  color: var(--secondary-color);
+}
+
+.fd-admin .fd-image-placeholder strong {
+  font-family: var(--title-font);
+  font-size: 15px;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-image-placeholder span,
+.fd-admin .fd-image-placeholder small {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.fd-admin .fd-image-file-name {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  font-size: 12.5px;
+  color: var(--body-color);
+  overflow-wrap: anywhere;
+}
+
+.fd-admin .fd-image-file-name:empty {
+  display: none;
+}
+
+.fd-admin .fd-image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fd-admin .fd-image-actions [hidden] {
+  display: none;
+}
+
+.fd-admin .fd-image-remove {
+  color: var(--error-color);
+}
+
+.fd-admin .fd-edit-toggle-group {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--smoke-color);
+}
+
+.fd-admin .fd-field-label {
+  display: block;
+  margin-bottom: 6px;
+  font-family: var(--title-font);
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-edit-toggle-group .fd-admin-check-row {
+  margin: 0;
+  align-items: flex-start;
+}
+
+.fd-admin .fd-edit-toggle-group .fd-admin-check-row > span {
+  display: grid;
+  gap: 2px;
+}
+
+.fd-admin .fd-edit-toggle-group .fd-admin-check-row strong {
+  font-size: 14px;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-edit-toggle-group .fd-admin-check-row small {
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--body-color);
+}
+
 /* ---------- Variant cards: one product-specific variant each ------------ */
 .fd-admin .fd-edit-variants {
   list-style: none;
@@ -3786,4 +3935,156 @@ html[data-theme="dark"] .fd-dash-card-icon {
   .fd-admin-base-nav {
     display: none !important;
   }
+}
+
+.fd-admin-flash {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.fd-prod-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 90px;
+  height: 100%;
+  border-radius: 14px;
+  color: var(--secondary-color, #06411d);
+  background: var(--light-color, #f4f6f2);
+  font-size: 30px;
+}
+
+.fd-edit-image-list {
+  display: grid;
+  gap: 16px;
+}
+
+.fd-edit-image-row {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  background: var(--white-color, #fff);
+}
+
+.fd-dash-table .form-control,
+.fd-dash-table .form-select {
+  min-width: 110px;
+}
+
+.fd-dash-table .form-control[type="number"] {
+  min-width: 88px;
+}
+
+
+.fd-cat-actions form {
+  display: inline-flex;
+  margin: 0;
+}
+
+.fd-cat-actions .fd-prod-btn {
+  white-space: nowrap;
+}
+
+/* ---------- Variant card additions: active state + advanced code --------- */
+.fd-admin .fd-edit-variant[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-edit-variant-fields .fd-dash-hint {
+  margin-top: 6px;
+}
+
+.fd-admin .fd-edit-default span {
+  display: grid;
+  gap: 2px;
+}
+
+.fd-admin .fd-edit-default small {
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--body-color);
+}
+
+.fd-admin .fd-edit-variant-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px 24px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-color);
+}
+
+.fd-admin .fd-edit-variant-bottom .fd-edit-default {
+  margin: 0;
+}
+
+.fd-admin .fd-edit-advanced {
+  flex: 1 1 240px;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: var(--smoke-color);
+}
+
+.fd-admin .fd-edit-advanced summary {
+  cursor: pointer;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-edit-advanced[open] summary {
+  margin-bottom: 10px;
+}
+
+.fd-admin .fd-edit-advanced .fd-field {
+  margin: 0;
+}
+
+.fd-admin .fd-edit-variant-add {
+  margin-top: 16px;
+}
+
+/* ---------- Product editor: error summary and optional details ---------- */
+.fd-admin .fd-edit-error-list {
+  margin: 10px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+
+.fd-admin .fd-edit-error-list a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+.fd-admin .fd-edit-more {
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 14px 18px;
+  background: var(--smoke-color);
+}
+
+.fd-admin .fd-edit-more summary {
+  cursor: pointer;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-edit-more[open] summary {
+  margin-bottom: 10px;
+}
+
+.fd-admin .fd-edit-more .fd-field:last-child {
+  margin-bottom: 0;
 }

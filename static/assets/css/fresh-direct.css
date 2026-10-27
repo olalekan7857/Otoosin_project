@@ -3848,7 +3848,8 @@ html[data-theme="dark"] .fd-pdp-qty:has(.fd-pdp-qty-input:focus) {
   transition: all ease 0.3s;
 }
 
-a.fd-page-link:hover {
+a.fd-page-link:hover,
+a.fd-page-link:focus-visible {
   border-color: var(--secondary-color);
   color: var(--secondary-color);
 }
@@ -3870,6 +3871,10 @@ a.fd-page-link.is-current:hover {
 .fd-page-link.is-disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+.fd-admin .fd-pagination {
+  justify-content: flex-start;
 }
 
 /* Dark mode follows the shop pagination tokens so page numbers stay

@@ -1,7 +1,8 @@
+{% with current=request.resolver_match.url_name %}
 <nav class="otoosin-mobile-nav" aria-label="Mobile primary navigation" data-otoosin-mobile-nav>
     <ul class="otoosin-mobile-nav__list">
         <li class="otoosin-mobile-nav__item-wrap">
-            <a class="otoosin-mobile-nav__item" href="index.html" data-nav-match="home">
+            <a class="otoosin-mobile-nav__item" href="{% url 'Otoosin:index' %}" data-nav-match="home"{% if current == 'index' %} aria-current="page"{% endif %}>
                 <span class="otoosin-mobile-nav__icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
                         <path d="M3.5 10.6 12 3.5l8.5 7.1v8.9a1.5 1.5 0 0 1-1.5 1.5h-4.8v-6H9.8v6H5a1.5 1.5 0 0 1-1.5-1.5z"/>
@@ -11,7 +12,7 @@
             </a>
         </li>
         <li class="otoosin-mobile-nav__item-wrap">
-            <a class="otoosin-mobile-nav__item" href="product.html" data-nav-match="shop">
+            <a class="otoosin-mobile-nav__item" href="{% url 'Otoosin:product' %}" data-nav-match="shop"{% if current == 'product' or current == 'product_category' or current == 'product_details' %} aria-current="page"{% endif %}>
                 <span class="otoosin-mobile-nav__icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
                         <path d="M5.2 8.2h13.6L17.6 20H6.4z"/>
@@ -22,7 +23,7 @@
             </a>
         </li>
         <li class="otoosin-mobile-nav__item-wrap">
-            <a class="otoosin-mobile-nav__item" href="product.html#fd-shop-search" data-nav-match="search" data-otoosin-search>
+            <a class="otoosin-mobile-nav__item" href="{% url 'Otoosin:product' %}#fd-shop-search" data-nav-match="search" data-otoosin-search>
                 <span class="otoosin-mobile-nav__icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
                         <circle cx="10.8" cy="10.8" r="6.3"/>
@@ -33,7 +34,7 @@
             </a>
         </li>
         <li class="otoosin-mobile-nav__item-wrap">
-            <a class="otoosin-mobile-nav__item" href="cart.html" data-nav-match="cart" data-otoosin-cart-link aria-label="Cart">
+            <a class="otoosin-mobile-nav__item" href="{% url 'Otoosin:cart' %}" data-nav-match="cart" data-otoosin-cart-link aria-label="Cart"{% if current == 'cart' or current == 'checkout' or current == 'order_confirmation' %} aria-current="page"{% endif %}>
                 <span class="otoosin-mobile-nav__icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
                         <path d="M3.5 4.5h2l2 10.2h9.8l2-7.3H6.2"/>
@@ -46,7 +47,7 @@
             </a>
         </li>
         <li class="otoosin-mobile-nav__item-wrap">
-            <a class="otoosin-mobile-nav__item" href="contact.html" data-nav-match="help">
+            <a class="otoosin-mobile-nav__item" href="{% url 'Otoosin:contact' %}" data-nav-match="help"{% if current == 'contact' %} aria-current="page"{% endif %}>
                 <span class="otoosin-mobile-nav__icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false">
                         <circle cx="12" cy="12" r="8.6"/>
@@ -59,3 +60,4 @@
         </li>
     </ul>
 </nav>
+{% endwith %}

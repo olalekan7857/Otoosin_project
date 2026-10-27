@@ -1,361 +1,212 @@
-<!doctype html>
-<html class="no-js" lang="en">
+{% extends "admin/base_admin.html" %}
+{% load static %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Add or Edit Product | O’TOOSIN Farms Admin</title>
-    <meta name="author" content="O’TOOSIN Farms">
-    <!-- Admin is private: never index admin pages or expose product data. -->
-    <meta name="robots" content="NOINDEX,NOFOLLOW">
-    <meta name="description" content="Private O’TOOSIN Farms whole-farm product editor.">
+{% block title %}{% if is_create %}Add product{% else %}Edit {{ product.name }}{% endif %} | O’TOOSIN Farms Admin{% endblock %}
+{% block skip_label %}Skip to product editor{% endblock %}
+{% block topbar_title %}{% if is_create %}Add product{% else %}Edit Product{% endif %}{% endblock %}
+{% block topbar_context %}Farm admin &middot; product management{% endblock %}
 
-    <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% block admin_content %}
+<div class="fd-dash-head">
+    <p class="fd-edit-back"><a href="{% url 'Otoosin:staff_products' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to Products</a></p>
+    <h2 class="fd-edit-title">{% if is_create %}Add product{% else %}{{ product.name }}{% endif %}</h2>
+    <p class="fd-dash-lead">Fill in the product details, set the prices customers will pay, add photos and choose whether the product is visible or featured.</p>
+</div>
 
-    <!-- Favicons - Place favicon.ico in the root directory -->
-    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
-    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+<form id="fd-ed-form" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
 
-    <!--==============================
-	  Google Fonts (same as storefront)
-	============================== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
-
-    <!--==============================
-	    All CSS File (same stack + scoped admin foundation)
-	============================== -->
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Fontawesome Icon -->
-    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-    <!-- Theme Custom CSS -->
-    <link rel="stylesheet" href="assets/css/harvest-castle.css">
-    <!-- Storefront foundation overrides -->
-    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
-    <!-- Admin foundation (shared shell + editor styles). -->
-    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
-    <!-- Theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
-    <link rel="stylesheet" href="assets/css/fd-theme.css">
-    <!-- Apply the stored theme before first paint. Default is Light. -->
-    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
-
-</head>
-
-<body class="fd-admin">
-
-    <a class="fd-skip-link" href="#fd-admin-main">Skip to product editor</a>
-
-    <!--==============================
-    Admin shell (shared admin layout).
-    The editor lives under Products, so Products keeps
-    aria-current="page".
-    ============================== -->
-    <div class="fd-admin-shell" id="fd-admin-shell">
-
-        <!-- Sidebar navigation -->
-        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
-            <div class="fd-admin-brand">
-                <a href="index.html" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
-            </div>
-            <p class="fd-admin-role">Farm Admin</p>
-            <nav class="fd-admin-nav" aria-label="Management sections">
-                <ul>
-                    <li>
-                        <a href="admin-dashboard.html" class="fd-admin-nav-link">
-                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-products.html" class="fd-admin-nav-link" aria-current="page">
-                            <i class="fas fa-box" aria-hidden="true"></i>Products
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-inventory.html" class="fd-admin-nav-link">
-                            <i class="fas fa-warehouse" aria-hidden="true"></i>Inventory
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-categories.html" class="fd-admin-nav-link">
-                            <i class="fas fa-layer-group" aria-hidden="true"></i>Categories
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-orders.html" class="fd-admin-nav-link">
-                            <i class="fas fa-receipt" aria-hidden="true"></i>Orders
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-settings.html" class="fd-admin-nav-link">
-                            <i class="fas fa-cog" aria-hidden="true"></i>Settings
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="fd-admin-side-foot">
-                <a class="fd-admin-logout" href="admin-login.html">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Staff sign-in
-                </a>
-                <p class="fd-admin-logout-hint">Open the staff access page.</p>
-            </div>
-        </aside>
-
-        <!-- Drawer scrim (mobile only, shown via CSS when .nav-open) -->
-        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
-
-        <!-- Main column -->
-        <div class="fd-admin-main">
-            <header class="fd-admin-topbar">
-                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
-                    <i class="fas fa-bars" aria-hidden="true"></i>
-                </button>
-                <h1 class="fd-admin-title" id="fd-ed-topbar-title">Product Editor</h1>
-                <span class="fd-admin-context">Farm admin &middot; product management</span>
-                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
-                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
-                </button>
-            </header>
-
-            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
-                <div class="fd-dash-head">
-                    <p class="fd-edit-back"><a href="admin-products.html"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to Products</a></p>
-                    <h2 class="fd-edit-title" id="fd-ed-heading">Product Editor</h2>
-                    <p class="fd-dash-lead" id="fd-ed-lead">Add a product with its category, selling unit, condition, price and photo.</p>
-                </div>
-
-                <noscript>
-                    <div class="fd-admin-notice is-error" role="alert">
-                        <strong>JavaScript is required.</strong>
-                        The product editor needs JavaScript enabled to work.
-                    </div>
-                </noscript>
-
-                <!-- Loading state: shown until the editor settles. -->
-                <div class="fd-admin-notice" id="fd-ed-loading" role="status" aria-live="polite">
-                    <strong>Loading editor…</strong>
-                    Loading product details.
-                </div>
-
-                <!-- Error state: honest, with retry. Never shows stale data. -->
-                <div class="fd-admin-notice is-error" id="fd-ed-error" role="alert" hidden>
-                    <strong>Product details could not be loaded.</strong>
-                    The editor cannot start without current product details, so the form stays hidden.
-                    <div class="fd-dash-error-actions">
-                        <button type="button" class="vs-btn fd-dash-btn" id="fd-ed-retry">
-                            <i class="far fa-redo" aria-hidden="true"></i>Try again
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Product-not-found state: never silently creates a product. -->
-                <div class="fd-dash-empty" id="fd-ed-missing" hidden>
-                    <i class="far fa-search" aria-hidden="true"></i>
-                    <h3>Product not found</h3>
-                    <p id="fd-ed-missing-text">We could not find that product. It may have been removed or the link is incorrect.</p>
-                    <div class="fd-dash-empty-actions">
-                        <a href="admin-products.html" class="vs-btn fd-dash-btn">Back to Products</a>
-                        <a href="admin-product-edit.html" class="fd-ghost-btn fd-dash-btn">Add a new product</a>
-                    </div>
-                </div>
-
-                <div id="fd-ed-content" hidden>
-                    <form id="fd-ed-form" novalidate aria-describedby="fd-ed-lead">
-
-                        <!-- Validation summary: populated on submit, links to fields. -->
-                        <div class="fd-admin-notice is-error" id="fd-ed-summary" role="alert" tabindex="-1" hidden>
-                            <strong id="fd-ed-summary-title">Check the highlighted fields.</strong>
-                            <ul id="fd-ed-summary-list"></ul>
-                        </div>
-
-                        <!-- Product identity (edit mode only): IDs never change. -->
-                        <section class="fd-dash-section" id="fd-ed-identity-section" aria-labelledby="fd-ed-identity-title" hidden>
-                            <h2 id="fd-ed-identity-title">Product identity</h2>
-                            <p class="fd-edit-id-line">Product ID: <code id="fd-ed-product-id"></code></p>
-                            <p class="fd-dash-hint">The product ID stays the same when the product is renamed.</p>
-                        </section>
-
-                        <!-- Basic information -->
-                        <section class="fd-dash-section" aria-labelledby="fd-ed-basic-title">
-                            <h2 id="fd-ed-basic-title">Basic information</h2>
-                            <div class="fd-edit-grid">
-                                <div class="fd-field">
-                                    <label for="fd-ed-name">Product name</label>
-                                    <input class="form-control" type="text" id="fd-ed-name" name="name" autocomplete="off" maxlength="120" required aria-describedby="fd-ed-name-error fd-ed-name-hint">
-                                    <p class="fd-dash-hint" id="fd-ed-name-hint">The name customers see on product cards and the details page.</p>
-                                    <span class="fd-field-error" id="fd-ed-name-error" hidden></span>
-                                </div>
-                                <div class="fd-field">
-                                    <label for="fd-ed-category">Category</label>
-                                    <select class="form-select" id="fd-ed-category" name="category" required aria-describedby="fd-ed-category-error fd-ed-category-hint">
-                                        <option value="">Choose a category…</option>
-                                        <optgroup label="Meats">
-                                            <option value="Pork">Pork</option>
-                                            <option value="Chicken">Chicken</option>
-                                            <option value="Turkey">Turkey</option>
-                                            <option value="Beef">Beef</option>
-                                            <option value="Goat Meat">Goat Meat</option>
-                                        </optgroup>
-                                        <option value="Fish">Fish</option>
-                                        <option value="Live Animals">Live Animals</option>
-                                        <option value="Eggs">Eggs</option>
-                                        <option value="Veggies">Veggies</option>
-                                        <option value="Fruits">Fruits</option>
-                                    </select>
-                                    <p class="fd-dash-hint" id="fd-ed-category-hint">Meats use the relevant cut type; the other categories match the storefront filter.</p>
-                                    <span class="fd-field-error" id="fd-ed-category-error" hidden></span>
-                                </div>
-                            </div>
-                            <div class="fd-edit-grid">
-                                <div class="fd-field">
-                                    <label for="fd-ed-unit">Selling unit</label>
-                                    <select class="form-select" id="fd-ed-unit" name="unit" required aria-describedby="fd-ed-unit-error fd-ed-unit-hint">
-                                        <option value="">Choose a unit…</option>
-                                        <option value="kg">Per kilogram (kg)</option>
-                                        <option value="crate">Per crate</option>
-                                        <option value="basket">Per basket</option>
-                                        <option value="chicken">Per live chicken</option>
-                                    </select>
-                                    <p class="fd-dash-hint" id="fd-ed-unit-hint">Matches how the storefront prices and sells this product.</p>
-                                    <span class="fd-field-error" id="fd-ed-unit-error" hidden></span>
-                                </div>
-                                <div class="fd-field">
-                                    <label for="fd-ed-condition">Product condition</label>
-                                    <select class="form-select" id="fd-ed-condition" name="condition" required aria-describedby="fd-ed-condition-error fd-ed-condition-hint">
-                                        <option value="">Choose a category first</option>
-                                    </select>
-                                    <p class="fd-dash-hint" id="fd-ed-condition-hint">Available conditions depend on the selected category.</p>
-                                    <span class="fd-field-error" id="fd-ed-condition-error" hidden></span>
-                                </div>
-                            </div>
-                            <div class="fd-field">
-                                <label for="fd-ed-cut" id="fd-ed-cut-label">Cut or pack detail <span class="fd-dash-count">(optional)</span></label>
-                                <input class="form-control" type="text" id="fd-ed-cut" name="cut" autocomplete="off" maxlength="160" aria-describedby="fd-ed-cut-error fd-ed-cut-hint">
-                                <p class="fd-dash-hint" id="fd-ed-cut-hint">The cut, pack or animal detail shown on the product page, for example “Bone-in chops” or “1 crate”.</p>
-                                <span class="fd-field-error" id="fd-ed-cut-error" hidden></span>
-                            </div>
-                            <div class="fd-field">
-                                <label for="fd-ed-availability">Availability Status</label>
-                                <select class="form-select" id="fd-ed-availability" name="availability" required aria-describedby="fd-ed-availability-error fd-ed-availability-hint">
-                                    <option value="in">Available</option>
-                                    <option value="limited">Limited</option>
-                                    <option value="out">Out of Stock</option>
-                                </select>
-                                <p class="fd-dash-hint" id="fd-ed-availability-hint">Available means customers can order it now. Limited means it is available in limited quantities. Out of Stock means it cannot be ordered until it is available again.</p>
-                                <span class="fd-field-error" id="fd-ed-availability-error" hidden></span>
-                            </div>
-                            <div class="fd-field">
-                                <label for="fd-ed-desc">Description</label>
-                                <textarea class="form-control" id="fd-ed-desc" name="description" rows="4" maxlength="2000" required aria-describedby="fd-ed-desc-error fd-ed-desc-hint"></textarea>
-                                <p class="fd-dash-hint" id="fd-ed-desc-hint">Shown on the Product Details page. Plain text — line breaks are kept.</p>
-                                <span class="fd-field-error" id="fd-ed-desc-error" hidden></span>
-                            </div>
-                        </section>
-
-                        <!-- Product image -->
-                        <section class="fd-dash-section" aria-labelledby="fd-ed-image-title">
-                            <h2 id="fd-ed-image-title">Product image</h2>
-                            <p class="fd-dash-hint" style="margin-top:0">Choose a clear photo of the product. The preview updates as you choose.</p>
-                            <div class="fd-edit-image-layout">
-                                <div class="fd-edit-image-fields">
-                                    <div class="fd-field">
-                                        <label for="fd-ed-image-pick">Farm image library</label>
-                                        <select class="form-select fd-edit-image-pick" id="fd-ed-image-pick" aria-describedby="fd-ed-image-pick-hint">
-                                            <option value="">Choose an image…</option>
-                                        </select>
-                                        <p class="fd-dash-hint" id="fd-ed-image-pick-hint">Pick a photo already used in the catalogue.</p>
-                                    </div>
-                                    <div class="fd-field fd-edit-upload">
-                                        <label for="fd-ed-image-file">Or upload image</label>
-                                        <input class="form-control fd-edit-file-input" type="file" id="fd-ed-image-file" name="imageFile" accept="image/png,image/jpeg,image/webp,image/gif" aria-describedby="fd-ed-image-file-hint fd-ed-image-file-error fd-ed-image-status">
-                                        <p class="fd-dash-hint" id="fd-ed-image-file-hint">PNG, JPEG, WebP or GIF, up to 5&nbsp;MB. Choose the file once — the image is prepared and previewed below.</p>
-                                        <span class="fd-field-error" id="fd-ed-image-file-error" hidden></span>
-                                        <p class="fd-edit-file-meta" id="fd-ed-image-status" role="status" aria-live="polite">No image selected yet.</p>
-                                        <p class="fd-edit-file-name" id="fd-ed-image-fileinfo" hidden></p>
-                                        <div class="fd-edit-file-actions">
-                                            <button type="button" class="fd-ghost-btn fd-dash-btn fd-edit-file-remove" id="fd-ed-image-remove" hidden>
-                                                <i class="far fa-trash-alt" aria-hidden="true"></i>Remove image
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="fd-ed-image-src" name="imageSrc">
-                                    <span class="fd-field-error" id="fd-ed-image-src-error" hidden></span>
-                                    <datalist id="fd-ed-image-options"></datalist>
-                                    <div class="fd-field">
-                                        <label for="fd-ed-image-alt">Image description (alt text)</label>
-                                        <input class="form-control" type="text" id="fd-ed-image-alt" name="imageAlt" autocomplete="off" maxlength="125" required aria-describedby="fd-ed-image-alt-error fd-ed-image-alt-hint">
-                                        <p class="fd-dash-hint" id="fd-ed-image-alt-hint">Describe the photo for screen readers, e.g. “Fresh pork chops”.</p>
-                                        <span class="fd-field-error" id="fd-ed-image-alt-error" hidden></span>
-                                    </div>
-                                </div>
-                                <figure class="fd-edit-preview" aria-live="polite">
-                                    <span class="fd-edit-preview-frame">
-                                        <img id="fd-ed-preview-img" alt="" hidden>
-                                    </span>
-                                    <figcaption id="fd-ed-preview-cap">Image preview appears here.</figcaption>
-                                </figure>
-                            </div>
-                        </section>
-
-                        <!-- Price -->
-                        <section class="fd-dash-section" aria-labelledby="fd-ed-price-title">
-                            <h2 id="fd-ed-price-title">Price</h2>
-                            <p class="fd-dash-hint" style="margin-top:0">Enter the price for the selected selling unit. Customers choose that unit on the product page.</p>
-                            <div class="fd-field fd-edit-price-field">
-                                <label for="fd-ed-price" id="fd-ed-price-label">Price (&#8358;)</label>
-                                <div class="fd-edit-price-input">
-                                    <span class="fd-edit-price-prefix" aria-hidden="true">&#8358;</span>
-                                    <input class="form-control" type="text" id="fd-ed-price" name="price" inputmode="decimal" autocomplete="off" maxlength="14" required aria-describedby="fd-ed-price-error fd-ed-price-hint">
-                                    <span class="fd-edit-price-suffix" id="fd-ed-price-suffix">/ kg</span>
-                                </div>
-                                <p class="fd-dash-hint" id="fd-ed-price-hint">Numbers only, for example 4800.</p>
-                                <span class="fd-field-error" id="fd-ed-price-error" hidden></span>
-                            </div>
-                        </section>
-
-                        <!-- Actions -->
-                        <section class="fd-dash-section fd-edit-actions" aria-label="Editor actions">
-                            <button type="submit" class="vs-btn fd-dash-btn" id="fd-ed-submit">
-                                <i class="fas fa-check" aria-hidden="true"></i><span id="fd-ed-submit-label">Save Changes</span>
-                            </button>
-                            <a href="admin-products.html" class="fd-ghost-btn fd-dash-btn" id="fd-ed-cancel">Cancel</a>
-                        </section>
-
-                    </form>
-
-                    <!-- Submission result: product summary. -->
-                    <section class="fd-dash-section" id="fd-ed-result" aria-labelledby="fd-ed-result-title" hidden>
-                        <h2 id="fd-ed-result-title" tabindex="-1">Product saved</h2>
-                        <div class="fd-admin-notice is-success" role="status" id="fd-ed-result-note"></div>
-                        <div class="fd-edit-result-summary" id="fd-ed-result-summary"></div>
-                        <div class="fd-edit-result-actions">
-                            <a href="admin-products.html" class="vs-btn fd-dash-btn">Back to Products</a>
-                            <a href="admin-product-edit.html" class="fd-ghost-btn fd-dash-btn" id="fd-ed-result-new" hidden>Add another product</a>
-                        </div>
-                    </section>
-                </div>
-
-                <p class="fd-dash-foot-note">
-                    Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. Farm admin.
-                </p>
-            </main>
-        </div>
+    {% if form.errors or variant_formset.non_form_errors or image_formset.non_form_errors or variant_formset.errors or image_formset.errors %}
+    <div class="fd-admin-notice is-error" role="alert">
+        <strong>The product was not saved.</strong>
+        <p class="fd-dash-hint">Fix the items below, then try again. Required fields are marked with an asterisk (*).</p>
+        <ul class="fd-edit-error-list">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+            {% for error in variant_formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}
+            {% for variant_form in variant_formset %}
+                {% for field in variant_form %}
+                    {% for error in field.errors %}
+                        <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+            {% for error in image_formset.non_form_errors %}<li>{{ error }}</li>{% endfor %}
+            {% for image_form in image_formset %}
+                {% for field in image_form %}
+                    {% for error in field.errors %}
+                        <li><a href="#{{ field.id_for_label }}">{{ field.label }}: {{ error }}</a></li>
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+        </ul>
     </div>
+    {% endif %}
 
-    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
-         customer cart store can never leak into the admin. -->
-    <script src="assets/js/fd-admin.js?v=6.8"></script>
-    <script src="assets/js/fd-theme.js"></script>
-    <!-- Local seller-data store (kept in this browser). -->
-    <script src="assets/js/fd-admin-store.js"></script>
-    <!-- Product source used by the editor for the built-in records and edits. -->
-    <script src="assets/js/fd-admin-products-data.js"></script>
-    <!-- Product editor controller. -->
-    <script src="assets/js/fd-admin-product-editor.js"></script>
+    <section class="fd-dash-section" aria-labelledby="fd-ed-basic-title">
+        <h2 id="fd-ed-basic-title">Basic information</h2>
+        <p class="fd-dash-lead">Start with the name, category and description. Prices and photos are added below.</p>
+        <div class="fd-edit-grid">
+            <div class="fd-field">
+                <label for="{{ form.name.id_for_label }}">Product name *</label>
+                {{ form.name }}
+                {% if form.name.help_text %}<p class="fd-dash-hint">{{ form.name.help_text }}</p>{% endif %}
+                {% for error in form.name.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ form.category.id_for_label }}">Category *</label>
+                {{ form.category }}
+                {% if form.category.help_text %}<p class="fd-dash-hint">{{ form.category.help_text }}</p>{% endif %}
+                {% for error in form.category.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="fd-edit-grid">
+            <div class="fd-field">
+                <label for="{{ form.condition.id_for_label }}">Product condition *</label>
+                {{ form.condition }}
+                {% if form.condition.help_text %}<p class="fd-dash-hint">{{ form.condition.help_text }}</p>{% endif %}
+                {% for error in form.condition.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ form.availability_status.id_for_label }}">Availability *</label>
+                {{ form.availability_status }}
+                {% if form.availability_status.help_text %}<p class="fd-dash-hint">{{ form.availability_status.help_text }}</p>{% endif %}
+                {% for error in form.availability_status.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="fd-field">
+            <label for="{{ form.description.id_for_label }}">Description *</label>
+            {{ form.description }}
+            {% if form.description.help_text %}<p class="fd-dash-hint">{{ form.description.help_text }}</p>{% endif %}
+            {% for error in form.description.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+    </section>
 
-</body>
+    <section class="fd-dash-section" aria-labelledby="fd-ed-variants-title">
+        <h2 id="fd-ed-variants-title">Selling options</h2>
+        <p class="fd-dash-lead">Add the sizes or packs customers can buy. Each option needs a name, a unit and its own price.</p>
+        <p class="fd-dash-hint">Choose one option as the default. Its price appears on shop and homepage cards before a customer opens the product.</p>
+        {{ variant_formset.management_form }}
+        <ul class="fd-edit-variants" data-variant-list data-variant-prefix="{{ variant_formset.prefix }}">
+            {% for variant_form in variant_formset %}
+                {% include "admin/partials/product-variant-card.html" with variant_form=variant_form %}
+            {% endfor %}
+        </ul>
+        <template id="fd-variant-template">
+            {% include "admin/partials/product-variant-card.html" with variant_form=variant_formset.empty_form %}
+        </template>
+        <div class="fd-edit-variant-add">
+            <button type="button" class="fd-ghost-btn fd-dash-btn" data-variant-add><i class="fas fa-plus" aria-hidden="true"></i>Add another selling option</button>
+        </div>
+        {{ variant_formset.non_form_errors }}
+    </section>
 
-</html>
+    <section class="fd-dash-section" aria-labelledby="fd-ed-images-title">
+        <h2 id="fd-ed-images-title">Product photo</h2>
+        <p class="fd-dash-lead">Add one clear photo now. You can save the product first, then add more photos later if needed.</p>
+        <p class="fd-dash-hint">Upload PNG, JPEG, WebP or GIF up to 5 MB. If you upload a photo, add a short description for customers using screen readers. The first photo automatically becomes the main photo.</p>
+        {{ image_formset.management_form }}
+        <div class="fd-edit-image-list">
+            {% for image_form in image_formset %}
+            <div class="fd-edit-image-row">
+                {% for hidden in image_form.hidden_fields %}{{ hidden }}{% endfor %}
+                <div hidden>{{ image_form.DELETE }}</div>
+                <div class="fd-field">
+                    <label for="{{ image_form.image.id_for_label }}">Photo</label>
+                    {{ image_form.image }}
+                    {% if image_form.image.help_text %}<p class="fd-dash-hint">{{ image_form.image.help_text }}</p>{% endif %}
+                    {% for error in image_form.image.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ image_form.alt.id_for_label }}">Photo description *</label>
+                    {{ image_form.alt }}
+                    {% if image_form.alt.help_text %}<p class="fd-dash-hint">{{ image_form.alt.help_text }}</p>{% endif %}
+                    {% for error in image_form.alt.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label class="fd-admin-check-row" for="{{ image_form.is_primary.id_for_label }}">{{ image_form.is_primary }} <span><strong>Use as the main photo</strong><small>{{ image_form.is_primary.help_text }}</small></span></label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="fd-dash-section" aria-labelledby="fd-ed-publish-title">
+        <h2 id="fd-ed-publish-title">Publishing</h2>
+        <div class="fd-edit-grid">
+            <div class="fd-field">
+                <label for="{{ form.is_active.id_for_label }}">Store visibility</label>
+                {{ form.is_active }}
+                {% if form.is_active.help_text %}<p class="fd-dash-hint">{{ form.is_active.help_text }}</p>{% endif %}
+                {% for error in form.is_active.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ form.is_featured.id_for_label }}">Homepage feature</label>
+                {{ form.is_featured }}
+                {% if form.is_featured.help_text %}<p class="fd-dash-hint">{{ form.is_featured.help_text }}</p>{% endif %}
+                {% for error in form.is_featured.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="fd-dash-section" aria-labelledby="fd-ed-more-title">
+        <details class="fd-edit-more"{% if form.sku.errors or form.price_basis.errors or form.cut.errors or form.badge.errors or form.meta_title.errors or form.meta_description.errors %} open{% endif %}>
+            <summary id="fd-ed-more-title">More options (optional)</summary>
+            <p class="fd-dash-hint">You can leave all of these blank. Product code, price basis, cut detail, card badge and search details are generated or optional.</p>
+            <div class="fd-edit-grid">
+                <div class="fd-field">
+                    <label for="{{ form.sku.id_for_label }}">Product code (SKU)</label>
+                    {{ form.sku }}
+                    {% if form.sku.help_text %}<p class="fd-dash-hint">{{ form.sku.help_text }}</p>{% endif %}
+                    {% for error in form.sku.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ form.price_basis.id_for_label }}">Price basis</label>
+                    {{ form.price_basis }}
+                    {% if form.price_basis.help_text %}<p class="fd-dash-hint">{{ form.price_basis.help_text }}</p>{% endif %}
+                    {% for error in form.price_basis.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+            <div class="fd-edit-grid">
+                <div class="fd-field">
+                    <label for="{{ form.cut.id_for_label }}">Cut or pack detail</label>
+                    {{ form.cut }}
+                    {% if form.cut.help_text %}<p class="fd-dash-hint">{{ form.cut.help_text }}</p>{% endif %}
+                    {% for error in form.cut.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ form.badge.id_for_label }}">Card badge</label>
+                    {{ form.badge }}
+                    {% if form.badge.help_text %}<p class="fd-dash-hint">{{ form.badge.help_text }}</p>{% endif %}
+                    {% for error in form.badge.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+            <div class="fd-field">
+                <label for="{{ form.meta_title.id_for_label }}">Search title</label>
+                {{ form.meta_title }}
+                {% if form.meta_title.help_text %}<p class="fd-dash-hint">{{ form.meta_title.help_text }}</p>{% endif %}
+                {% for error in form.meta_title.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ form.meta_description.id_for_label }}">Search description</label>
+                {{ form.meta_description }}
+                {% if form.meta_description.help_text %}<p class="fd-dash-hint">{{ form.meta_description.help_text }}</p>{% endif %}
+                {% for error in form.meta_description.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+        </details>
+    </section>
+
+    <section class="fd-dash-section fd-edit-actions" aria-label="Editor actions">
+        <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>{% if is_create %}Create product{% else %}Save changes{% endif %}</button>
+        <a href="{% url 'Otoosin:staff_products' %}" class="fd-ghost-btn fd-dash-btn">Cancel</a>
+    </section>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'assets/js/otoosin-admin-variants.js' %}?v=1.0"></script>
+{% endblock %}

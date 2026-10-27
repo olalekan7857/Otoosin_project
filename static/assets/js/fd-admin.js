@@ -211,7 +211,7 @@
 
   function wireLoginForm() {
     var form = document.getElementById("fd-admin-login-form");
-    if (!form) {
+    if (!form || form.hasAttribute("data-django-auth")) {
       return;
     }
     var email = document.getElementById("fd-admin-email");
@@ -390,55 +390,41 @@
       return;
     }
 
-    var file = window.location.pathname
-      .replace(/\\/g, "/")
-      .split("/")
-      .pop()
-      .toLowerCase();
-    if (!file) {
-      file = "admin-dashboard.html";
+    var path = window.location.pathname.replace(/\\/g, "/").toLowerCase();
+    var active = "";
+    if (path.indexOf("/staff/products") === 0) {
+      active = "products";
+    } else if (path.indexOf("/staff/inventory") === 0) {
+      active = "inventory";
+    } else if (path.indexOf("/staff/categories") === 0) {
+      active = "categories";
+    } else if (path.indexOf("/staff") === 0) {
+      active = "dashboard";
     }
-
-    var activeMap = {
-      "admin-dashboard.html": "dashboard",
-      "admin-orders.html": "orders",
-      "admin-order.html": "orders",
-      "admin-products.html": "products",
-      "admin-product-edit.html": "products",
-      "admin-inventory.html": "inventory",
-      "admin-categories.html": "categories"
-    };
-    var active = activeMap[file] || "";
 
     var items = [
       {
         key: "dashboard",
         label: "Dashboard",
-        href: "admin-dashboard.html",
+        href: "/staff/",
         icon: "fas fa-tachometer-alt"
-      },
-      {
-        key: "orders",
-        label: "Orders",
-        href: "admin-orders.html",
-        icon: "fas fa-receipt"
       },
       {
         key: "products",
         label: "Products",
-        href: "admin-products.html",
+        href: "/staff/products/",
         icon: "fas fa-box"
       },
       {
         key: "inventory",
         label: "Inventory",
-        href: "admin-inventory.html",
+        href: "/staff/inventory/",
         icon: "fas fa-warehouse"
       },
       {
         key: "categories",
         label: "Categories",
-        href: "admin-categories.html",
+        href: "/staff/categories/",
         icon: "fas fa-layer-group"
       }
     ];

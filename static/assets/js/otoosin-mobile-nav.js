@@ -5,25 +5,8 @@
     return;
   }
 
-  var thisScript = document.currentScript;
-  if (!thisScript) {
-    thisScript = document.querySelector('script[src$="otoosin-mobile-nav.js"]');
-  }
-
-  var fragmentUrl;
-  try {
-    fragmentUrl = new URL(
-      "../../partials/otoosin-mobile-nav.html",
-      thisScript && thisScript.src ? thisScript.src : document.baseURI
-    ).href;
-  } catch (error) {
-    fragmentUrl = "partials/otoosin-mobile-nav.html";
-  }
-
   var state = {
     initialized: false,
-    fragmentUrl: fragmentUrl,
-    mountSelector: "[data-otoosin-mobile-nav-mount]",
     navSelector: "[data-otoosin-mobile-nav]"
   };
 
@@ -37,20 +20,34 @@
     callback();
   }
 
-  function warn(message) {
-    if (window.console && typeof window.console.warn === "function") {
-      window.console.warn("[O'Toosin mobile nav] " + message);
-    }
-  }
-
-  function currentFile() {
-    var path = window.location.pathname.replace(/\\/g, "/");
-    var file = path.substring(path.lastIndexOf("/") + 1);
-    return file ? file.toLowerCase() : "index.html";
-  }
-
   function activeMatch() {
-    var file = currentFile();
+    var path = window.location.pathname.replace(/\\/g, "/").toLowerCase();
+
+    if (path === "/" || path === "") {
+      return "home";
+    }
+    if (
+      path.indexOf("/shop") === 0 ||
+      path.indexOf("/category") === 0 ||
+      path.indexOf("/product") === 0
+    ) {
+      return "shop";
+    }
+    if (
+      path.indexOf("/cart") === 0 ||
+      path.indexOf("/checkout") === 0 ||
+      path.indexOf("/order-confirmation") === 0
+    ) {
+      return "cart";
+    }
+    if (path.indexOf("/contact") === 0) {
+      return "help";
+    }
+
+    var file = path.substring(path.lastIndexOf("/") + 1);
+    if (!file) {
+      file = "index.html";
+    }
     var map = {
       "index.html": "home",
       "product.html": "shop",
@@ -208,48 +205,13 @@
     wireSearch(nav);
   }
 
-  function mountFragment() {
+  function init() {
     var nav = document.querySelector(state.navSelector);
     if (nav) {
       setup(nav);
-      return;
     }
-
-    var mounts = document.querySelectorAll(state.mountSelector);
-    if (!mounts.length) {
-      return;
-    }
-
-    if (!window.fetch) {
-      warn("The browser does not support the fragment loader.");
-      return;
-    }
-
-    window
-      .fetch(state.fragmentUrl, { credentials: "same-origin" })
-      .then(function (response) {
-        if (!response.ok) {
-          throw new Error("HTTP " + response.status);
-        }
-        return response.text();
-      })
-      .then(function (html) {
-        for (var i = 0; i < mounts.length; i++) {
-          if (!mounts[i].querySelector(state.navSelector)) {
-            mounts[i].innerHTML = html;
-            break;
-          }
-        }
-        nav = document.querySelector(state.navSelector);
-        if (nav) {
-          setup(nav);
-        }
-      })
-      .catch(function (error) {
-        warn("Could not load the navigation fragment: " + error.message);
-      });
   }
 
   state.initialized = true;
-  onReady(mountFragment);
+  onReady(init);
 })();

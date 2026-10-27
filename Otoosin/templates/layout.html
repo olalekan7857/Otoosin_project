@@ -1,0 +1,350 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}{% endblock title %}</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <meta name="description" content="O’TOOSIN Farms delivers safe, healthy and nutritious foods to your doorstep. Shop pork, chicken, turkey, beef, goat meat, fish, live animals, eggs, veggies and fruits.">
+    <meta name="keywords" content="O’TOOSIN Farms, farm products, pork, chicken, turkey, beef, goat meat, fish, catfish, tilapia, live animals, eggs, veggies, fruits, Abeokuta delivery">
+    <meta name="robots" content="INDEX,FOLLOW">
+    <meta property="og:title" content="O’TOOSIN Farms | Safe, Healthy and Nutritious Foods">
+    <meta property="og:description" content="Delivering safe, healthy, and nutritious foods at your doorstep. Shop O’TOOSIN Meats, Fish, Live Animals, Eggs, Veggies and Fruits.">
+    <meta property="og:type" content="website">
+
+    <link rel="shortcut icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
+    <link rel="icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--==============================
+	  Google Fonts
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
+    <!-- Slick Slider -->
+    <link rel="stylesheet" href="{% static 'assets/css/slick.min.css' %}">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
+    <!-- Storefront foundation overrides -->
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.3">
+    <!-- Light/dark token layer -->
+    <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.3">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-mobile-nav.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-footer.css' %}?v=2.0">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "O’TOOSIN Farms",
+      "slogan": "Delivering safe, healthy, and nutritious foods at your doorstep . . .",
+      "logo": "{% static 'assets/img/harvest_castle/of_favicon.png' %}",
+      "description": "A farm-products business offering meats, fish, live animals, eggs, veggies and fruits. Shop the full range online."
+    }
+    </script>
+
+    <script src="{% static 'assets/js/otoosin-mobile-nav.js' %}" defer></script>
+    <script src="{% static 'assets/js/otoosin-header.js' %}" defer></script>
+
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+
+<body class="{% block body_class %}otoosin-home{% endblock body_class %}">
+
+    <a class="fd-skip-link" href="#fd-main">Skip to main content</a>
+
+    <!--[if lte IE 9]>
+    	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+    <!--==============================
+    Mobile Menu
+    ============================== -->
+    {% with current=request.resolver_match.url_name %}
+    <div class="vs-menu-wrapper" id="fd-mobile-menu">
+        <div class="vs-menu-area text-center">
+            <button class="vs-menu-toggle" aria-label="Close menu" aria-expanded="false" aria-controls="fd-mobile-menu"><i class="fal fa-times" aria-hidden="true"></i></button>
+            <div class="mobile-logo">
+                <a href="{% url 'Otoosin:index' %}" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
+            </div>
+            <nav class="vs-mobile-menu" aria-label="Mobile navigation">
+                <ul>
+                    <li><a href="{% url 'Otoosin:index' %}"{% if current == 'index' %} aria-current="page"{% endif %}>Home</a></li>
+                    <li><a href="{% url 'Otoosin:product' %}"{% if current == 'product' or current == 'product_category' or current == 'product_details' %} aria-current="page"{% endif %}>Shop All</a></li>
+                    <li>
+                        <a href="{% url 'Otoosin:index' %}#categories">Product Categories</a>
+                        <ul>
+                            <li><a href="{% url 'Otoosin:product' %}">Meats</a></li>
+                            <li><a href="{% url 'Otoosin:product_category' %}?category=Fish">Fish</a></li>
+                            <li><a href="{% url 'Otoosin:product' %}">Live Animals</a></li>
+                            <li><a href="{% url 'Otoosin:product' %}">Eggs</a></li>
+                            <li><a href="{% url 'Otoosin:product' %}">Veggies</a></li>
+                            <li><a href="{% url 'Otoosin:product' %}">Fruits</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="{% url 'Otoosin:index' %}#states">Freshness</a>
+                        <ul>
+                            <li><a href="{% url 'Otoosin:product' %}?state=fresh">Fresh</a></li>
+                            <li><a href="{% url 'Otoosin:product' %}?state=fried">Fried</a></li>
+                            <li><a href="{% url 'Otoosin:product' %}?state=frozen">Frozen</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'Otoosin:about' %}"{% if current == 'about' %} aria-current="page"{% endif %}>About Us</a></li>
+                    <li><a href="{% url 'Otoosin:contact' %}"{% if current == 'contact' %} aria-current="page"{% endif %}>Contact</a></li>
+                    <li><a href="{% url 'Otoosin:cart' %}"{% if current == 'cart' or current == 'checkout' or current == 'order_confirmation' %} aria-current="page"{% endif %}>Cart</a></li>
+                </ul>
+            </nav>
+            <form class="oto-mobile-search" action="{% url 'Otoosin:product' %}" method="get" role="search">
+                <label class="visually-hidden" for="oto-mobile-search-input">Search products</label>
+                <input id="oto-mobile-search-input" name="q" type="search" placeholder="Search products">
+                <button type="submit" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!--==============================
+    Cart Side bar
+    ============================== -->
+    <div class="sideCart-wrapper offcanvas-wrapper" role="dialog" aria-modal="true" aria-label="Shopping cart preview">
+        <div class="sidemenu-content">
+            <button class="closeButton border-theme bg-theme-hover sideMenuCls2" aria-label="Close cart preview"><i class="far fa-times" aria-hidden="true"></i></button>
+            <div class="widget widget_shopping_cart">
+                <h3 class="widget_title">Shopping cart</h3>
+                <div class="widget_shopping_cart_content">
+                    <div class="fd-cart-empty">
+                        <i class="far fa-shopping-basket" aria-hidden="true"></i>
+                        <p><strong>Your cart is empty.</strong></p>
+                        <p>Browse the farm shop and add the first item you need.</p>
+                    </div>
+                    <div class="buttons">
+                        <a href="{% url 'Otoosin:product' %}" class="vs-btn">Shop All Products</a>
+                        <a href="{% url 'Otoosin:cart' %}" class="fd-view-cart-btn">View cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--==============================
+    Header Area
+    ==============================-->
+    <header class="vs-header header-layout1">
+        <div class="header-top oto-announcement">
+            <div class="container">
+                <div class="oto-announcement-inner">
+                    <p class="mb-0"><i class="fas fa-truck" aria-hidden="true"></i> Delivery &middot; Pickup</p>
+                    <a href="{% url 'Otoosin:index' %}#delivery-pickup">Delivery and pickup details <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sticky-wrapper">
+            <div class="sticky-active">
+                <div class="menu-area">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <div class="header-logo">
+                                    <a href="{% url 'Otoosin:index' %}" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <nav class="main-menu menu-style1 d-none d-lg-block" aria-label="Primary navigation">
+                                    <ul>
+                                        <li><a href="{% url 'Otoosin:index' %}"{% if current == 'index' %} aria-current="page"{% endif %}>Home</a></li>
+                                        <li><a href="{% url 'Otoosin:product' %}"{% if current == 'product' or current == 'product_category' or current == 'product_details' %} aria-current="page"{% endif %}>Shop All</a></li>
+                                        <li class="oto-has-dropdown">
+                                            <a href="{% url 'Otoosin:index' %}#categories">Product Categories</a>
+                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-categories" aria-haspopup="true" aria-label="Show Product Categories menu">
+                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <ul class="sub-menu" id="oto-submenu-categories">
+                                                <li><a href="{% url 'Otoosin:product' %}">Meats</a></li>
+                                                <li><a href="{% url 'Otoosin:product_category' %}?category=Fish">Fish</a></li>
+                                                <li><a href="{% url 'Otoosin:product' %}">Live Animals</a></li>
+                                                <li><a href="{% url 'Otoosin:product' %}">Eggs</a></li>
+                                                <li><a href="{% url 'Otoosin:product' %}">Veggies</a></li>
+                                                <li><a href="{% url 'Otoosin:product' %}">Fruits</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="oto-has-dropdown">
+                                            <a href="{% url 'Otoosin:index' %}#states">Freshness</a>
+                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-states" aria-haspopup="true" aria-label="Show Freshness menu">
+                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <ul class="sub-menu" id="oto-submenu-states">
+                                                <li><a href="{% url 'Otoosin:product' %}?state=fresh">Fresh</a></li>
+                                                <li><a href="{% url 'Otoosin:product' %}?state=fried">Fried</a></li>
+                                                <li><a href="{% url 'Otoosin:product' %}?state=frozen">Frozen</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="{% url 'Otoosin:about' %}"{% if current == 'about' %} aria-current="page"{% endif %}>About Us</a></li>
+                                        <li><a href="{% url 'Otoosin:contact' %}"{% if current == 'contact' %} aria-current="page"{% endif %}>Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="col-auto d-lg-none">
+                                <div class="fd-header-actions">
+                                    <button type="button" class="icon-btn fd-mobile-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                                    </button>
+                                    <a href="{% url 'Otoosin:cart' %}" class="icon-btn fd-mobile-btn fd-cart-btn" aria-label="View cart">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <span class="badge" id="fd-cart-count-mobile">0</span>
+                                    </a>
+                                    <button class="vs-menu-toggle d-inline-block" aria-label="Open menu" aria-expanded="false" aria-controls="fd-mobile-menu">
+                                        <i class="fal fa-bars" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-auto d-none d-lg-block">
+                                <div class="header-icons fd-header-actions">
+                                    <a href="{% url 'Otoosin:index' %}#find-products" class="icon-btn" aria-label="Search products">
+                                        <i class="fas fa-search" aria-hidden="true"></i>
+                                    </a>
+                                    <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                                    </button>
+                                    <button type="button" class="icon-btn sideCartToggler fd-cart-btn" aria-label="Open cart preview">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <span class="badge" id="fd-cart-count">0</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    {% endwith %}
+
+    {% block content %}{% endblock content %}
+
+    
+    {% block footer %}
+    <footer class="footer-wrapper footer-layout1 oto-footer" id="footer">
+        <div class="container">
+            <div class="widget-area">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="widget footer-widget">
+                            <a href="{% url 'Otoosin:index' %}" class="fd-logo oto-logo oto-footer-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async" loading="lazy"></a>
+                            <p class="footer-text oto-footer-text">Delivering safe, healthy, and nutritious foods at your doorstep . . . Shop meats, fish, live animals, eggs, veggies and fruits.</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Shop</h3>
+                            <ul class="widget_categories">
+                                <li><a href="{% url 'Otoosin:product' %}">Shop All</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}">Meats</a></li>
+                                <li><a href="{% url 'Otoosin:product_category' %}?category=Fish">Fish</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}">Live Animals</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}">Eggs</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}">Veggies</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}">Fruits</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Ordering</h3>
+                            <ul class="widget_categories">
+                                <li><a href="{% url 'Otoosin:index' %}#how-it-works">How It Works</a></li>
+                                <li><a href="{% url 'Otoosin:index' %}#delivery-pickup">Delivery &amp; Pickup</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}?state=fresh">Fresh</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}?state=fried">Fried</a></li>
+                                <li><a href="{% url 'Otoosin:product' %}?state=frozen">Frozen</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Company</h3>
+                            <ul class="widget_categories">
+                                <li><a href="{% url 'Otoosin:index' %}">Home</a></li>
+                                <li><a href="{% url 'Otoosin:about' %}">About Us</a></li>
+                                <li><a href="{% url 'Otoosin:contact' %}">Contact</a></li>
+                                <li><a href="{% url 'Otoosin:index' %}#faq">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright-wrap oto-copyright">
+                <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="{% url 'Otoosin:index' %}">O’TOOSIN Farms</a>. All Rights Reserved.</p>
+                <ul class="oto-legal-links">
+                    <li><a href="{% url 'Otoosin:privacy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'Otoosin:terms' %}">Terms &amp; Conditions</a></li>
+                    <li><a href="{% url 'Otoosin:contact' %}">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>   
+    {% endblock footer %}
+        
+
+
+    <!--==============================
+        All Js File
+    ============================== -->
+    <!-- Jquery -->
+    <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <!-- Slick Slider -->
+    <script src="{% static 'assets/js/slick.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <!-- Magnific Popup -->
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Isotope Filter -->
+    <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
+    <!-- Main Js File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <!-- Database-backed storefront catalogue and page routes -->
+    {{ fd_catalog|json_script:"fd-storefront-catalog" }}
+    <script>
+        window.FD_CATALOG = JSON.parse(document.getElementById("fd-storefront-catalog").textContent);
+        window.FD_ROUTES = {
+            home: "{% url 'Otoosin:index' %}",
+            shop: "{% url 'Otoosin:product' %}",
+            category: "{% url 'Otoosin:product_category' %}",
+            productDetails: "{% url 'Otoosin:product_details' %}",
+            cart: "{% url 'Otoosin:cart' %}",
+            checkout: "{% url 'Otoosin:checkout' %}",
+            orderConfirmation: "{% url 'Otoosin:order_confirmation' %}",
+            contact: "{% url 'Otoosin:contact' %}"
+        };
+    </script>
+    <!-- Storefront interactions and cart -->
+    <script src="{% static 'assets/js/fresh-direct.js' %}?v=8.0"></script>
+    <script src="{% static 'assets/js/fd-theme.js' %}"></script>
+
+    {% block extra_js %}{% endblock extra_js %}
+
+    {% include "partials/otoosin-mobile-nav.html" %}
+</body>
+
+</html>

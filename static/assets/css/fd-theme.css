@@ -334,6 +334,44 @@ html[data-theme="dark"] .fd-prod-btn {
   background: var(--fd-surface-2);
   border-color: var(--fd-hairline);
 }
+/* Product editor image uploader: the Light dropzone uses a white hover
+   surface, which must become a raised dark surface instead. */
+html[data-theme="dark"] .fd-admin .fd-image-drop {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-border);
+}
+html[data-theme="dark"] .fd-admin .fd-image-drop:hover,
+html[data-theme="dark"] .fd-admin .fd-image-drop.is-dragging {
+  background: var(--fd-surface-3);
+  border-color: var(--fd-brand-green-text);
+}
+html[data-theme="dark"] .fd-admin .fd-image-placeholder i {
+  color: var(--fd-brand-green-text);
+}
+html[data-theme="dark"] .fd-admin .fd-image-actions .fd-prod-btn {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-border);
+  color: var(--fd-text);
+}
+html[data-theme="dark"] .fd-admin .fd-image-remove {
+  color: var(--fd-error-text);
+}
+/* Shared pagination (storefront + admin) follows the dark surface tokens. */
+html[data-theme="dark"] .fd-pagination .fd-page-link {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-border);
+  color: var(--fd-text);
+}
+html[data-theme="dark"] .fd-pagination a.fd-page-link:hover {
+  border-color: var(--fd-brand-green-text);
+  color: var(--fd-brand-green-text);
+}
+html[data-theme="dark"] .fd-pagination .fd-page-link.is-current,
+html[data-theme="dark"] .fd-pagination a.fd-page-link.is-current:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
 /* All admin hairline dividers/rows. */
 html[data-theme="dark"] .fd-admin-card,
 html[data-theme="dark"] .fd-dash-section,

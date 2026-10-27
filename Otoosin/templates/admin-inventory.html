@@ -1,266 +1,148 @@
-<!doctype html>
-<html class="no-js" lang="en">
+{% extends "admin/base_admin.html" %}
+{% load static %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Inventory | O’TOOSIN Farms Admin</title>
-    <meta name="author" content="O’TOOSIN Farms">
-    <!-- Admin is private: never index admin pages or expose product data. -->
-    <meta name="robots" content="NOINDEX,NOFOLLOW">
-    <meta name="description" content="Private O’TOOSIN Farms whole-farm inventory area.">
+{% block title %}Inventory | O’TOOSIN Farms Admin{% endblock %}
+{% block skip_label %}Skip to inventory{% endblock %}
+{% block topbar_title %}Inventory{% endblock %}
+{% block topbar_context %}Farm admin &middot; availability{% endblock %}
 
-    <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/css/fd-admin-categories.css' %}?v=1.2">
+<link rel="stylesheet" href="{% static 'assets/css/fd-admin-inventory.css' %}?v=2.0">
+{% endblock %}
 
-    <!-- Favicons - Place favicon.ico in the root directory -->
-    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
-    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+{% block admin_content %}
+<div class="fd-dash-head">
+    <p class="fd-dash-lead">Review availability across every product and update the supported stock fields.</p>
+</div>
 
-    <!--==============================
-	  Google Fonts (same as storefront)
-	============================== -->
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+<section class="fd-dash-section" aria-labelledby="fd-inv-overview-title">
+    <div class="fd-prod-head">
+        <div class="fd-prod-head-text">
+            <h2 id="fd-inv-overview-title">Inventory overview</h2>
+            <p class="fd-dash-lead">Availability is read from each product record. Stock tracking is optional.</p>
+        </div>
+        <a href="{% url 'Otoosin:staff_products' %}" class="vs-btn fd-dash-btn"><i class="fas fa-box" aria-hidden="true"></i>Products</a>
+    </div>
+    <ul class="fd-dash-grid" aria-label="Inventory totals">
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Products</span><span class="fd-dash-card-value">{{ summary.total }}</span><span class="fd-dash-card-context">All catalogue products.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Available</span><span class="fd-dash-card-value">{{ summary.available }}</span><span class="fd-dash-card-context">Ready to order.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Limited</span><span class="fd-dash-card-value">{{ summary.limited }}</span><span class="fd-dash-card-context">Limited quantities.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Out of Stock</span><span class="fd-dash-card-value">{{ summary.out }}</span><span class="fd-dash-card-context">Cannot be ordered.</span></li>
+    </ul>
+</section>
 
-    <!--==============================
-	    All CSS File (same stack + scoped admin foundation)
-	============================== -->
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <!-- Fontawesome Icon -->
-    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-    <!-- Theme Custom CSS -->
-    <link rel="stylesheet" href="assets/css/harvest-castle.css">
-    <!-- Storefront foundation overrides -->
-    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
-    <!-- Admin foundation (shared shell + table styles). -->
-    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
-    <!-- Shared category-card design (reused by the inventory grid). -->
-    <link rel="stylesheet" href="assets/css/fd-admin-categories.css?v=1.1">
-    <!-- Inventory page only -->
-    <link rel="stylesheet" href="assets/css/fd-admin-inventory.css?v=2.0">
-    <!-- Theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
-    <link rel="stylesheet" href="assets/css/fd-theme.css">
-    <!-- Apply the stored theme before first paint. Default is Light. -->
-    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
-
-</head>
-
-<body class="fd-admin">
-
-    <a class="fd-skip-link" href="#fd-admin-main">Skip to inventory</a>
-
-    <!--==============================
-    Admin shell (shared admin layout).
-    Inventory sets aria-current="page" on its own nav item.
-    ============================== -->
-    <div class="fd-admin-shell" id="fd-admin-shell">
-
-        <!-- Sidebar navigation -->
-        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
-            <div class="fd-admin-brand">
-                <a href="index.html" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
-            </div>
-            <p class="fd-admin-role">Farm Admin</p>
-            <nav class="fd-admin-nav" aria-label="Management sections">
-                <ul>
-                    <li>
-                        <a href="admin-dashboard.html" class="fd-admin-nav-link">
-                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-products.html" class="fd-admin-nav-link">
-                            <i class="fas fa-box" aria-hidden="true"></i>Products
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-inventory.html" class="fd-admin-nav-link" aria-current="page">
-                            <i class="fas fa-warehouse" aria-hidden="true"></i>Inventory
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-categories.html" class="fd-admin-nav-link">
-                            <i class="fas fa-layer-group" aria-hidden="true"></i>Categories
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-orders.html" class="fd-admin-nav-link">
-                            <i class="fas fa-receipt" aria-hidden="true"></i>Orders
-                        </a>
-                    </li>
-                    <li>
-                        <a href="admin-settings.html" class="fd-admin-nav-link">
-                            <i class="fas fa-cog" aria-hidden="true"></i>Settings
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-            <div class="fd-admin-side-foot">
-                <a class="fd-admin-logout" href="admin-login.html">
-                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Staff sign-in
-                </a>
-                <p class="fd-admin-logout-hint">Open the staff access page.</p>
-            </div>
-        </aside>
-
-        <!-- Drawer scrim (mobile only, shown via CSS when .nav-open) -->
-        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
-
-        <!-- Main column -->
-        <div class="fd-admin-main">
-            <header class="fd-admin-topbar">
-                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
-                    <i class="fas fa-bars" aria-hidden="true"></i>
-                </button>
-                <h1 class="fd-admin-title">Inventory</h1>
-                <span class="fd-admin-context">Farm admin &middot; availability</span>
-                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
-                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
-                </button>
-            </header>
-
-            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
-                <div class="fd-dash-head">
-                    <p class="fd-dash-lead">Review availability across every product in the O’TOOSIN Farms catalogue and spot what is unavailable.</p>
-                </div>
-
-                <noscript>
-                    <div class="fd-admin-notice is-error" role="alert">
-                        <strong>JavaScript is required.</strong>
-                        The inventory list needs JavaScript enabled.
-                    </div>
-                </noscript>
-
-                <!-- Error state: honest, with retry. Never shows stale data. -->
-                <div class="fd-admin-notice is-error" id="fd-inv-error" role="alert" hidden>
-                    <strong>We couldn&rsquo;t load inventory.</strong>
-                    Nothing below is current, so it is hidden until the data loads.
-                    <div class="fd-dash-error-actions">
-                        <button type="button" class="vs-btn fd-dash-btn" id="fd-inv-retry">
-                            <i class="far fa-redo" aria-hidden="true"></i>Try again
-                        </button>
-                    </div>
-                </div>
-
-                <div id="fd-inv-content">
-                    <!-- Overview: every value derived from the product catalogue. -->
-                    <section class="fd-dash-section" aria-labelledby="fd-inv-overview-title">
-                        <div class="fd-prod-head">
-                            <div class="fd-prod-head-text">
-                                <h2 id="fd-inv-overview-title">Inventory overview</h2>
-                                <p class="fd-dash-lead">Availability is read from each product record across all six farm categories.</p>
-                            </div>
-                            <a href="admin-products.html" class="vs-btn fd-dash-btn">
-                                <i class="fas fa-box" aria-hidden="true"></i>Products
-                            </a>
-                        </div>
-                        <ul class="fd-dash-grid" id="fd-inv-cards" aria-label="Inventory totals"></ul>
-                    </section>
-
-                    <!-- Inventory list -->
-                    <section class="fd-dash-section" aria-labelledby="fd-inv-list-title">
-                        <div class="fd-prod-head">
-                            <div class="fd-prod-head-text">
-                                <h2 id="fd-inv-list-title">Availability list</h2>
-                                <p class="fd-dash-count" id="fd-inv-count" role="status" aria-live="polite"></p>
-                            </div>
-                        </div>
-
-                        <div class="fd-prod-toolbar fd-inv-toolbar">
-                            <div class="fd-shop-search fd-prod-search">
-                                <i class="far fa-search" aria-hidden="true"></i>
-                                <label class="visually-hidden" for="fd-inv-search">Search inventory by product name or identifier</label>
-                                <input id="fd-inv-search" class="form-control" type="search" placeholder="Search products…" autocomplete="off">
-                            </div>
-                            <label class="fd-shop-select" for="fd-inv-category">Category
-                                <select id="fd-inv-category" class="form-select">
-                                    <option value="all">All categories</option>
-                                    <option value="Meats">Meats</option>
-                                    <option value="Fish">Fish</option>
-                                    <option value="Live Animals">Live Animals</option>
-                                    <option value="Eggs">Eggs</option>
-                                    <option value="Veggies">Veggies</option>
-                                    <option value="Fruits">Fruits</option>
-                                </select>
-                            </label>
-                            <label class="fd-shop-select" for="fd-inv-state">Condition
-                                <select id="fd-inv-state" class="form-select">
-                                    <option value="all">All conditions</option>
-                                    <option value="Fresh">Fresh</option>
-                                    <option value="Frozen">Frozen</option>
-                                    <option value="Fried">Fried</option>
-                                    <option value="Live">Live</option>
-                                </select>
-                            </label>
-                            <label class="fd-shop-select" for="fd-inv-availability">Availability
-                                <select id="fd-inv-availability" class="form-select">
-                                    <option value="all">All availability</option>
-                                    <option value="available">Available</option>
-                                    <option value="limited">Limited</option>
-                                    <option value="out">Out of Stock</option>
-                                </select>
-                            </label>
-                            <label class="fd-shop-select" for="fd-inv-sort">Sort by
-                                <select id="fd-inv-sort" class="form-select">
-                                    <option value="availability">Unavailable first</option>
-                                    <option value="name-asc">Name: A–Z</option>
-                                    <option value="name-desc">Name: Z–A</option>
-                                    <option value="category">Category order</option>
-                                </select>
-                            </label>
-                            <button type="button" class="fd-ghost-btn fd-dash-btn" id="fd-inv-clear" disabled>
-                                <i class="far fa-times" aria-hidden="true"></i>Clear filters
-                            </button>
-                        </div>
-
-                        <div class="fd-prod-list-wrap" id="fd-inv-list-wrap">
-                            <ul class="fd-cat-grid fd-inv-grid" id="fd-inv-list" aria-label="Inventory products"></ul>
-                        </div>
-
-                        <div class="fd-dash-empty" id="fd-inv-empty-all" hidden>
-                            <i class="fas fa-warehouse" aria-hidden="true"></i>
-                            <h3>No products in the catalogue</h3>
-                            <p>Products added to the catalogue will appear here with their availability.</p>
-                            <div class="fd-dash-empty-actions">
-                                <a class="vs-btn fd-dash-btn" href="admin-product-edit.html">Add a product</a>
-                            </div>
-                        </div>
-
-                        <div class="fd-dash-empty" id="fd-inv-empty-filtered" hidden>
-                            <i class="far fa-search" aria-hidden="true"></i>
-                            <h3>No products found</h3>
-                            <p>No products match the current search and filters. Try different keywords or reset the filters below.</p>
-                            <div class="fd-dash-empty-actions">
-                                <button type="button" class="vs-btn fd-dash-btn" id="fd-inv-reset-empty">Clear search &amp; filters</button>
-                            </div>
-                        </div>
-
-                        <p class="fd-dash-hint">Availability comes from each product record. Units follow each product’s selling type. Open a product to change whether it can be ordered.</p>
-                    </section>
-                </div>
-
-                <p class="fd-dash-foot-note">
-                    Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. Farm admin.
-                </p>
-            </main>
+<section class="fd-dash-section" aria-labelledby="fd-inv-list-title">
+    <div class="fd-prod-head">
+        <div class="fd-prod-head-text">
+            <h2 id="fd-inv-list-title">Availability list</h2>
+            <p class="fd-dash-count">Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }} product{{ paginator.count|pluralize }}.</p>
         </div>
     </div>
 
-    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
-         customer cart store can never leak into the admin. -->
-    <script src="assets/js/fd-admin.js?v=6.8"></script>
-    <script src="assets/js/fd-theme.js"></script>
-    <script src="assets/js/fd-admin-store.js"></script>
-    <!-- Shared product source boundary (built-in records + products kept in
-         this browser). No second inventory dataset is created. -->
-    <script src="assets/js/fd-admin-products-data.js"></script>
-    <!-- Inventory list (reads the product source above). -->
-    <script src="assets/js/fd-admin-inventory.js?v=2.0"></script>
+    <form method="get" action="{% url 'Otoosin:staff_inventory' %}" class="fd-prod-toolbar fd-inv-toolbar">
+        <div class="fd-shop-search fd-prod-search">
+            <i class="far fa-search" aria-hidden="true"></i>
+            <label class="visually-hidden" for="fd-inv-search">Search inventory by product name or SKU</label>
+            <input id="fd-inv-search" name="q" value="{{ filters.q }}" class="form-control" type="search" placeholder="Search products…" autocomplete="off">
+        </div>
+        <label class="fd-shop-select" for="fd-inv-category">Category
+            <select id="fd-inv-category" name="category" class="form-select">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.slug }}"{% if filters.category == category.slug %} selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label class="fd-shop-select" for="fd-inv-state">Condition
+            <select id="fd-inv-state" name="state" class="form-select">
+                <option value="">All conditions</option>
+                <option value="fresh"{% if filters.state == 'fresh' %} selected{% endif %}>Fresh</option>
+                <option value="frozen"{% if filters.state == 'frozen' %} selected{% endif %}>Frozen</option>
+                <option value="fried"{% if filters.state == 'fried' %} selected{% endif %}>Fried</option>
+                <option value="live"{% if filters.state == 'live' %} selected{% endif %}>Live</option>
+            </select>
+        </label>
+        <label class="fd-shop-select" for="fd-inv-availability">Availability
+            <select id="fd-inv-availability" name="availability" class="form-select">
+                <option value="">All availability</option>
+                <option value="in"{% if filters.availability == 'in' %} selected{% endif %}>Available</option>
+                <option value="limited"{% if filters.availability == 'limited' %} selected{% endif %}>Limited</option>
+                <option value="out"{% if filters.availability == 'out' %} selected{% endif %}>Out of Stock</option>
+            </select>
+        </label>
+        <button type="submit" class="vs-btn fd-dash-btn"><i class="far fa-search" aria-hidden="true"></i>Filter</button>
+        <a href="{% url 'Otoosin:staff_inventory' %}" class="fd-ghost-btn fd-dash-btn"><i class="far fa-times" aria-hidden="true"></i>Clear filters</a>
+    </form>
 
-</body>
+    {% if rows %}
+    <div class="fd-prod-list-wrap">
+        <ul class="fd-cat-grid fd-inv-grid" aria-label="Inventory products">
+            {% for product, form in rows %}
+            <li class="fd-cat-card">
+                {% with variant=product.default_variant %}
+                <div class="fd-cat-card-top">
+                    <span class="fd-cat-thumb">
+                        {% with image=product.primary_image %}
+                        {% if image %}<img src="{{ image.image.url }}" alt="{{ image.alt }}" width="144" height="144" loading="lazy" decoding="async">{% else %}<span class="fd-prod-thumb-fallback" aria-hidden="true"><i class="fas fa-box"></i></span>{% endif %}
+                        {% endwith %}
+                    </span>
+                    <div class="fd-cat-id">
+                        <h3 class="fd-cat-name">{{ product.name }}</h3>
+                        <p class="fd-cat-group">{{ product.category.name }} &middot; {{ product.get_condition_display }}{% if not product.is_active %} &middot; Inactive{% endif %}</p>
+                    </div>
+                </div>
+                <p class="fd-cat-desc">Current status: <strong>{{ product.get_availability_status_display }}</strong>{% if variant %} &middot; {{ variant.label }} &middot; &#8358;{{ variant.price|floatformat:"-2" }}{% endif %}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="product_id" value="{{ product.pk }}">
+                    <input type="hidden" name="page" value="{{ page_obj.number }}">
+                    <div class="fd-edit-grid">
+                        <div class="fd-field">
+                            <label for="{{ form.availability_status.id_for_label }}">Availability</label>
+                            {{ form.availability_status }}
+                            {% if form.availability_status.help_text %}<p class="fd-dash-hint">{{ form.availability_status.help_text }}</p>{% endif %}
+                        </div>
+                        <div class="fd-field">
+                            <label class="fd-admin-check-row" for="{{ form.track_stock.id_for_label }}">{{ form.track_stock }} <span><strong>Track stock{% if variant %} for {{ variant.label }}{% endif %}</strong><small>{{ form.track_stock.help_text }}</small></span></label>
+                        </div>
+                    </div>
+                    <div class="fd-edit-grid">
+                        <div class="fd-field">
+                            <label for="{{ form.quantity_available.id_for_label }}">Quantity available</label>
+                            {{ form.quantity_available }}
+                            {% if form.quantity_available.help_text %}<p class="fd-dash-hint">{{ form.quantity_available.help_text }}</p>{% endif %}
+                        </div>
+                        <div class="fd-field">
+                            <label for="{{ form.low_stock_threshold.id_for_label }}">Low-stock warning level</label>
+                            {{ form.low_stock_threshold }}
+                            {% if form.low_stock_threshold.help_text %}<p class="fd-dash-hint">{{ form.low_stock_threshold.help_text }}</p>{% endif %}
+                        </div>
+                    </div>
+                    {% if form.errors %}<div class="fd-admin-notice is-error" role="alert">Check the quantity fields for {{ product.name }}.</div>{% endif %}
+                    <div class="fd-cat-actions">
+                        <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save availability</button>
+                        <a class="fd-prod-btn" href="{% url 'Otoosin:staff_product_edit' product.pk %}"><i class="far fa-pen" aria-hidden="true"></i>Edit product</a>
+                    </div>
+                </form>
+                {% endwith %}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% include "partials/pagination.html" %}
+    {% else %}
+    <div class="fd-dash-empty">
+        <i class="fas fa-warehouse" aria-hidden="true"></i>
+        <h3>No products found</h3>
+        <p>No products match the current filters, or the catalogue is empty.</p>
+        <div class="fd-dash-empty-actions">
+            <a href="{% url 'Otoosin:staff_inventory' %}" class="fd-ghost-btn fd-dash-btn">Clear filters</a>
+            <a href="{% url 'Otoosin:staff_product_create' %}" class="vs-btn fd-dash-btn">Add product</a>
+        </div>
+    </div>
+    {% endif %}
 
-</html>
+    <p class="fd-dash-hint">When stock tracking is off, availability follows the product status. Quantity fields are optional and are not shown to customers.</p>
+</section>
+{% endblock %}

@@ -18,6 +18,10 @@
   }
 
   var locationsApi = window.FreshDirectDeliveryLocations || null;
+  var routes = window.FD_ROUTES || {
+    productDetails: "product-details.html",
+    orderConfirmation: "order-confirmation.html",
+  };
   var LAST_ORDER_KEY = "freshdirect_last_order";
   var lastSubtotal = 0;
   var lastOrder = null;
@@ -273,6 +277,13 @@
     }
   }
 
+  function productHref(item) {
+    var product = cart.product ? cart.product(item.id) : null;
+    return product && product.url
+      ? product.url
+      : routes.productDetails + "?id=" + encodeURIComponent(item.id);
+  }
+
   function summaryItem(item) {
     var li = document.createElement("li");
     li.className = "oto-checkout-item";
@@ -282,10 +293,7 @@
     if (media.src) {
       thumb = document.createElement("a");
       thumb.className = "oto-checkout-thumb";
-      thumb.setAttribute(
-        "href",
-        "product-details.html?id=" + encodeURIComponent(item.id)
-      );
+      thumb.setAttribute("href", productHref(item));
       thumb.setAttribute("aria-label", "View " + item.name);
       var img = document.createElement("img");
       img.setAttribute("src", media.src);
@@ -306,10 +314,7 @@
     copy.className = "oto-checkout-item-copy";
     var name = document.createElement("strong");
     var nameLink = document.createElement("a");
-    nameLink.setAttribute(
-      "href",
-      "product-details.html?id=" + encodeURIComponent(item.id)
-    );
+    nameLink.setAttribute("href", productHref(item));
     nameLink.textContent = item.name;
     name.appendChild(nameLink);
     var meta = document.createElement("span");
@@ -820,7 +825,7 @@
       return;
     }
     window.location.href =
-      "order-confirmation.html?order=" + encodeURIComponent(snapshot.id);
+      routes.orderConfirmation + "?order=" + encodeURIComponent(snapshot.id);
   }
 
   function reviewOrder() {

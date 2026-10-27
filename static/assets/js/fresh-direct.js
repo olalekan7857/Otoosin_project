@@ -25,6 +25,15 @@
 
   window.FRESH_DIRECT = FRESH_DIRECT;
 
+  var FD_ROUTES = window.FD_ROUTES || {
+    home: "index.html",
+    shop: "product.html",
+    category: "product-category.html",
+    productDetails: "product-details.html",
+    checkout: "checkout.html",
+  };
+  FRESH_DIRECT.shopUrl = FD_ROUTES.shop;
+
   function buildLink(message) {
     return (
       "https://wa.me/" +
@@ -350,11 +359,12 @@
   function productFromCard(card) {
     var img = card.querySelector(".product-img img");
     var id = card.getAttribute("data-product-id");
-    // Card-level lines carry the card unit as their variant, so Home/Shop
-    // behavior is unchanged (same product + same unit still merges).
-    var variant = card.getAttribute("data-unit") || "";
+    // Card-level lines carry the variant PK, matching the PDP, while the
+    // visible label is kept separately for the cart.
+    var variantId = card.getAttribute("data-variant-id") || card.getAttribute("data-unit") || "";
+    var variant = card.getAttribute("data-variant-label") || card.getAttribute("data-unit") || "";
     return {
-      key: id + "__" + variant,
+      key: id + "__" + variantId,
       id: id,
       name: card.getAttribute("data-product-name") || "Fresh produce",
       variant: variant,
@@ -832,7 +842,10 @@
     li.setAttribute("data-key", item.key);
 
     var media = cartPageMedia(item);
-    var detailUrl = "product-details.html?id=" + encodeURIComponent(item.id);
+    var entry = FD_CATALOG[item.id];
+    var detailUrl = entry && entry.url
+      ? entry.url
+      : FD_ROUTES.productDetails + "?id=" + encodeURIComponent(item.id);
 
     if (!cartPageValid(item)) {
       li.classList.add("is-invalid");
@@ -1008,56 +1021,10 @@
     }
   }
 
-  // Static prototype only: first visit with no saved cart key gets two
-  // illustrative lines. An existing cart (including a deliberately emptied
-  // "[]" cart) is never overwritten or repopulated.
-  function cartSeedDemoOnce() {
-    var raw = null;
-    try {
-      raw = window.localStorage.getItem(CART_KEY);
-    } catch (e) {
-      return;
-    }
-    if (raw !== null) {
-      return;
-    }
-    var picks = [
-      { id: "demo-pork-chops", qty: 1.5 },
-      { id: "demo-whole-chicken", qty: 1 },
-    ];
-    var items = [];
-    for (var i = 0; i < picks.length; i++) {
-      var product = FD_CATALOG[picks[i].id];
-      if (!product) {
-        continue;
-      }
-      var variant = fdDefaultVariant(product);
-      items.push({
-        key: product.id + "__" + variant.id,
-        id: product.id,
-        name: product.name,
-        variant: variant.label,
-        price: variant.price,
-        qty: picks[i].qty,
-        unit: variant.label,
-        category: product.category,
-        image: product.images[0].src,
-        alt: product.images[0].alt,
-      });
-    }
-    if (!items.length) {
-      return;
-    }
-    cartSave(items);
-    refreshBadges();
-    renderCartPanel();
-  }
-
   function wireCartPage() {
     if (!document.getElementById("fd-cart-wrap")) {
       return;
     }
-    cartSeedDemoOnce();
     renderCartPage();
   }
 
@@ -1211,7 +1178,7 @@
       var all = document.createElement("a");
       all.className = "fd-cat-pill";
       all.textContent = "All";
-      all.setAttribute("href", "product.html");
+      all.setAttribute("href", FD_ROUTES.shop);
       all.setAttribute("data-cat", "all");
       all.setAttribute("aria-pressed", "true");
       pills.appendChild(all);
@@ -1222,7 +1189,7 @@
           b.textContent = cat;
           b.setAttribute(
             "href",
-            "product-category.html?category=" + encodeURIComponent(cat)
+            FD_ROUTES.category + "?category=" + encodeURIComponent(cat)
           );
           b.setAttribute("data-cat", cat.toLowerCase());
           b.setAttribute("aria-pressed", "false");
@@ -1337,304 +1304,27 @@
   }
 
   /* ==========================================================================
-     STAGE 3 — product catalog (MOCK) + Product Details renderer.
+     STAGE 3 — product catalogue from the Django-rendered JSON feed.
      --------------------------------------------------------------------------
-     FD_CATALOG is the single product/variant data source for the details
-     page. Every value here is a clearly-marked placeholder until Django
-     provides real products: Django should render this same shape as JSON
-     (or replace the lookup) without touching the variant, cart, WhatsApp,
-     gallery, or related-products logic below.
+     FD_CATALOG is populated by the storefront context processor and injected
+     before this script. Every product, variant, image and price comes from
+     the database; this file never carries product data of its own.
      status: "in" | "limited" | "out" (never invent counts).
      ========================================================================== */
-  /* O'Toosin Farms meat catalogue.
-     Prices are illustrative Naira-per-kilogram demo values for this static
-     prototype. Django will replace this object with real stock and pricing.
-     Each meat is sold by weight, so every line uses one 1kg unit and the
-     PDP quantity control collects kilograms. */
-  var FD_CATALOG = {
-    "demo-pork-chops": {
-      id: "demo-pork-chops",
-      name: "Pork Chops",
-      category: "Pork",
-      group: "Red meat",
-      condition: "Fresh",
-      cut: "Bone-in chops",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1kg",
-      desc: "Tender pork chops with a rich flavour, great for grilling or pan-searing.",
-      images: [{ src: "assets/img/meat/pork-chops.svg", alt: "Fresh pork chops", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 4800 }],
-    },
-    "demo-pork-belly": {
-      id: "demo-pork-belly",
-      name: "Pork Belly",
-      category: "Pork",
-      group: "Red meat",
-      condition: "Frozen",
-      cut: "Belly cut",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Frozen",
-      defaultVariant: "1kg",
-      desc: "Layered pork belly that crisps beautifully when roasted or fried.",
-      images: [{ src: "assets/img/meat/pork-belly.svg", alt: "Frozen pork belly strips", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 4200 }],
-    },
-    "demo-whole-chicken": {
-      id: "demo-whole-chicken",
-      name: "Whole Chicken",
-      category: "Chicken",
-      group: "Poultry",
-      condition: "Fresh",
-      cut: "Whole chicken",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1kg",
-      desc: "A whole chicken for roasting, grilling or cutting into pieces for stews.",
-      images: [{ src: "assets/img/meat/whole-chicken.svg", alt: "Whole fresh chicken", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 3500 }],
-    },
-    "demo-chicken-wings": {
-      id: "demo-chicken-wings",
-      name: "Chicken Wings",
-      category: "Chicken",
-      group: "Poultry",
-      condition: "Frozen",
-      cut: "Wings",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Frozen",
-      defaultVariant: "1kg",
-      desc: "Meaty chicken wings for grilling, frying or oven baking.",
-      images: [{ src: "assets/img/meat/chicken-wings.svg", alt: "Frozen chicken wings", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 4000 }],
-    },
-    "demo-chicken-drumsticks": {
-      id: "demo-chicken-drumsticks",
-      name: "Chicken Drumsticks",
-      category: "Chicken",
-      group: "Poultry",
-      condition: "Frozen",
-      cut: "Drumsticks",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Frozen",
-      defaultVariant: "1kg",
-      desc: "Juicy drumsticks for the oven, grill or a family stew.",
-      images: [{ src: "assets/img/meat/chicken-drumsticks.svg", alt: "Frozen chicken drumsticks", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 3800 }],
-    },
-    "demo-turkey-breast": {
-      id: "demo-turkey-breast",
-      name: "Turkey Breast",
-      category: "Turkey",
-      group: "Poultry",
-      condition: "Fresh",
-      cut: "Boneless breast",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1kg",
-      desc: "Lean turkey breast, easy to roast whole or slice for sandwiches.",
-      images: [{ src: "assets/img/meat/turkey-breast.svg", alt: "Fresh turkey breast with carved slices", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 5200 }],
-    },
-    "demo-beef-steak": {
-      id: "demo-beef-steak",
-      name: "Beef Steak",
-      category: "Beef",
-      group: "Red meat",
-      condition: "Fresh",
-      cut: "Steak cuts",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1kg",
-      desc: "Marbled beef steak with a bold flavour and a tender bite.",
-      images: [{ src: "assets/img/meat/beef-steak.svg", alt: "Fresh marbled beef steak", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 7500 }],
-    },
-    "demo-beef-brisket": {
-      id: "demo-beef-brisket",
-      name: "Beef Brisket",
-      category: "Beef",
-      group: "Red meat",
-      condition: "Frozen",
-      cut: "Brisket joint",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Frozen",
-      defaultVariant: "1kg",
-      desc: "A slow-cooking beef brisket that becomes tender and rich.",
-      images: [{ src: "assets/img/meat/beef-brisket.svg", alt: "Frozen beef brisket joint", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 6800 }],
-    },
-    "demo-goat-meat": {
-      id: "demo-goat-meat",
-      name: "Goat Meat",
-      category: "Goat Meat",
-      group: "Red meat",
-      condition: "Fresh",
-      cut: "Mixed bone-in pieces",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1kg",
-      desc: "Clean goat meat pieces for stews, soups and traditional dishes.",
-      images: [{ src: "assets/img/meat/goat-meat.svg", alt: "Fresh cubed goat meat", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 6200 }],
-    },
-    "demo-fried-goat-meat": {
-      id: "demo-fried-goat-meat",
-      name: "Fried Goat Meat",
-      category: "Goat Meat",
-      group: "Red meat",
-      condition: "Fried",
-      cut: "Fried pieces",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fried",
-      defaultVariant: "1kg",
-      desc: "Fried goat meat with a deep savoury flavour and a long pantry life.",
-      images: [{ src: "assets/img/meat/goat-meat.svg", alt: "Fried goat meat pieces", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 8000 }],
-    },
-    "demo-fresh-catfish": {
-      id: "demo-fresh-catfish",
-      name: "Fresh Catfish",
-      category: "Fish",
-      group: "Seafood",
-      condition: "Fresh",
-      cut: "Whole, cleaned",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1kg",
-      desc: "Whole fresh catfish, cleaned and ready for pepper soup or grilling.",
-      images: [{ src: "assets/img/meat/catfish.svg", alt: "Fresh whole catfish", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 3200 }],
-    },
-    "demo-tilapia": {
-      id: "demo-tilapia",
-      name: "Tilapia",
-      category: "Fish",
-      group: "Seafood",
-      condition: "Frozen",
-      cut: "Whole",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Frozen",
-      defaultVariant: "1kg",
-      desc: "Whole tilapia with firm white flesh, ideal for frying or baking.",
-      images: [{ src: "assets/img/meat/tilapia.svg", alt: "Frozen whole tilapia", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 2900 }],
-    },
-    "demo-fried-catfish": {
-      id: "demo-fried-catfish",
-      name: "Fried Catfish",
-      category: "Fish",
-      group: "Seafood",
-      condition: "Fried",
-      cut: "Fried whole",
-      priceBasis: "Per kilogram",
-      priceUnit: "per kg",
-      status: "in",
-      badge: "Fried",
-      defaultVariant: "1kg",
-      desc: "Fried catfish that adds a rich smoked flavour to soups and stews.",
-      images: [{ src: "assets/img/meat/catfish.svg", alt: "Fried catfish", w: 480, h: 360 }],
-      variants: [{ id: "1kg", label: "1kg", price: 6500 }],
-    },
-    /* DEMO farm-produce entries: illustrative prices and static assets. */
-    "demo-live-chicken": {
-      id: "demo-live-chicken",
-      name: "Live Chicken",
-      category: "Live Animals",
-      group: "Farm animals",
-      condition: "Live",
-      cut: "Live whole chicken",
-      priceBasis: "Per chicken",
-      priceUnit: "per chicken",
-      status: "in",
-      badge: "Live",
-      defaultVariant: "1 live chicken",
-      desc: "A live chicken selected from the farm, available as part of the Live Animals category.",
-      images: [{ src: "assets/img/families/live-animals-card.svg", alt: "Live farm chickens", w: 480, h: 360 }],
-      variants: [{ id: "1 live chicken", label: "1 live chicken", price: 9500 }],
-    },
-    "demo-farm-eggs": {
-      id: "demo-farm-eggs",
-      name: "Farm Eggs",
-      category: "Eggs",
-      group: "Farm produce",
-      condition: "Fresh",
-      cut: "Crate",
-      priceBasis: "Per crate",
-      priceUnit: "per crate",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1 crate",
-      desc: "Fresh eggs from the farm, packed as a crate for household cooking and baking.",
-      images: [{ src: "assets/img/families/eggs-card.svg", alt: "A tray of fresh farm eggs", w: 480, h: 360 }],
-      variants: [{ id: "1 crate", label: "1 crate", price: 3800 }],
-    },
-    "demo-fresh-tomatoes": {
-      id: "demo-fresh-tomatoes",
-      name: "Fresh Tomatoes",
-      category: "Veggies",
-      group: "Farm produce",
-      condition: "Fresh",
-      cut: "Basket",
-      priceBasis: "Per basket",
-      priceUnit: "per basket",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1 basket",
-      desc: "Fresh farm tomatoes for stews, sauces and everyday cooking.",
-      images: [{ src: "assets/img/families/vegetables-card.svg", alt: "A basket of fresh vegetables", w: 480, h: 360 }],
-      variants: [{ id: "1 basket", label: "1 basket", price: 2500 }],
-    },
-    "demo-sweet-oranges": {
-      id: "demo-sweet-oranges",
-      name: "Sweet Oranges",
-      category: "Fruits",
-      group: "Farm produce",
-      condition: "Fresh",
-      cut: "Basket",
-      priceBasis: "Per basket",
-      priceUnit: "per basket",
-      status: "in",
-      badge: "Fresh",
-      defaultVariant: "1 basket",
-      desc: "Sweet farm oranges, packed in a basket for snacking and fresh juice.",
-      images: [{ src: "assets/img/families/fruits-card.svg", alt: "A basket of fresh fruits", w: 480, h: 360 }],
-      variants: [{ id: "1 basket", label: "1 basket", price: 3000 }],
-    },
-  };
+  var FD_CATALOG = window.FD_CATALOG || {};
 
   window.FreshDirectCatalog = FD_CATALOG;
 
   function pdpReadId() {
+    var root = document.getElementById("fd-pdp");
+    if (root && root.getAttribute("data-product-id")) {
+      return root.getAttribute("data-product-id");
+    }
     try {
       var params = new URLSearchParams(window.location.search);
-      return params.get("id") || "demo-whole-chicken";
+      return params.get("id") || "";
     } catch (e) {
-      return "demo-whole-chicken";
+      return "";
     }
   }
 
@@ -1752,7 +1442,8 @@
       crumbCat.textContent = product.category;
       crumbCat.setAttribute(
         "href",
-        "product-category.html?category=" + encodeURIComponent(pdpCategorySlug(product.category))
+        product.categoryUrl ||
+          FD_ROUTES.category + "?category=" + encodeURIComponent(product.categorySlug || pdpCategorySlug(product.category))
       );
     }
 
@@ -1895,7 +1586,7 @@
       } else {
         buyBtn.addEventListener("click", function () {
           if (addSelection()) {
-            window.location.href = "checkout.html";
+            window.location.href = FD_ROUTES.checkout;
           } else {
             showToast("Something went wrong. Please try again.");
           }
@@ -2220,13 +1911,13 @@
     if (/^per\s/i.test(label)) {
       return label;
     }
-    if (/^\d+(?:\.\d+)?\s+[a-z]/i.test(variant.id)) {
-      return label;
+    if (/^\d+(?:\.\d+)?\s*[a-z]/i.test(label)) {
+      return label + (/kg$/i.test(label) ? " pack" : "");
     }
-    if (/^(bunch|tuber|piece)$/i.test(variant.id)) {
-      return "Per " + variant.id;
+    if (/^(bunch|tuber|piece)$/i.test(label)) {
+      return "Per " + label;
     }
-    return label + " pack";
+    return label;
   }
 
   // Canonical badge HTML for a card. Mirrors Shop master: an explicit
@@ -2257,30 +1948,33 @@
     article.setAttribute("data-product-id", p.id);
     article.setAttribute("data-product-name", p.name);
     article.setAttribute("data-price", String(def.price));
-    article.setAttribute("data-unit", def.id);
+    article.setAttribute("data-unit", def.label);
+    article.setAttribute("data-variant-id", def.id);
+    article.setAttribute("data-variant-label", def.label);
     article.setAttribute("data-category", p.category);
     article.setAttribute("data-stock", p.status);
+    var detailUrl = p.url || FD_ROUTES.productDetails + "?id=" + encodeURIComponent(p.id);
 
     var about =
       '<div class="product-img"><img src="' + esc(p.images[0].src) + '" alt="' +
       esc(p.images[0].alt) + '" width="' + p.images[0].w + '" height="' +
       p.images[0].h + '" loading="lazy" decoding="async"></div>' +
       '<div class="product-about">' +
-      '<span class="fd-product-cat">' + esc(p.category) + "</span>" +
-      '<h3 class="product-title"><a href="product-details.html?id=' + esc(p.id) + '">' +
+      '<span class="fd-product-cat">' + esc(p.group ? p.category + " \\u00b7 " + p.group : p.category) + "</span>" +
+      '<h3 class="product-title"><a href="' + esc(detailUrl) + '">' +
       esc(p.name) + "</a></h3>" +
       '<p class="fd-product-unit">' + esc(fdUnitDisplay(p, def)) + "</p>" +
       '<div class="fd-buy-row"><span class="price">' + fmtNaira(def.price) + "</span>";
     if (out) {
       about +=
         '<button type="button" class="vs-btn fd-add-btn" disabled aria-disabled="true">Out of Stock</button></div>' +
-        '<div class="fd-secondary-row"><a href="product-details.html?id=' + esc(p.id) +
+        '<div class="fd-secondary-row"><a href="' + esc(detailUrl) +
         '" class="fd-view-link">View product</a></div>';
     } else {
       about +=
         '<button type="button" class="vs-btn fd-add-btn" data-add-to-cart="' + esc(p.id) +
         '">Add to Cart</button></div>' +
-        '<div class="fd-secondary-row"><a href="product-details.html?id=' + esc(p.id) +
+        '<div class="fd-secondary-row"><a href="' + esc(detailUrl) +
         '" class="fd-view-link">View product</a></div>';
     }
     about += "</div>";
@@ -2384,8 +2078,8 @@
       }
       var links = cards[i].querySelectorAll(".product-title a, .fd-view-link");
       for (var j = 0; j < links.length; j++) {
-        if (links[j].getAttribute("href") === "product-details.html") {
-          links[j].setAttribute("href", "product-details.html?id=" + encodeURIComponent(id));
+        if (links[j].getAttribute("href") === FD_ROUTES.productDetails) {
+          links[j].setAttribute("href", FD_ROUTES.productDetails + "?id=" + encodeURIComponent(id));
         }
       }
     }
@@ -3228,7 +2922,7 @@
       "<h2>Order not found</h2>" +
       "<p>We could not find that order. It may have expired or the link is incorrect.</p>";
     var a = document.createElement("a");
-    a.setAttribute("href", "product.html");
+    a.setAttribute("href", FD_ROUTES.shop);
     a.className = "vs-btn";
     a.textContent = "Return to Shop";
     box.appendChild(a);
@@ -3281,7 +2975,7 @@
               a.setAttribute("rel", "noopener");
               return a;
             })(),
-            confirmAction("product.html", "vs-btn", "far fa-shopping-basket", "Continue Shopping"),
+            confirmAction(FD_ROUTES.shop, "vs-btn", "far fa-shopping-basket", "Continue Shopping"),
           ],
         })
       );
@@ -3300,8 +2994,8 @@
           ref: order.id,
           order: order,
           actions: [
-            confirmAction("checkout.html", "vs-btn", "far fa-redo", "Back to Checkout"),
-            confirmAction("product.html", "fd-ghost-btn", "far fa-shopping-basket", "Continue Shopping"),
+            confirmAction(FD_ROUTES.checkout, "vs-btn", "far fa-redo", "Back to Checkout"),
+            confirmAction(FD_ROUTES.shop, "fd-ghost-btn", "far fa-shopping-basket", "Continue Shopping"),
           ],
         })
       );
@@ -3320,7 +3014,7 @@
           ref: order.id,
           order: order,
           actions: [
-            confirmAction("checkout.html", "vs-btn", "far fa-redo", "Try Again"),
+            confirmAction(FD_ROUTES.checkout, "vs-btn", "far fa-redo", "Try Again"),
             (function () {
               var a = confirmAction("#", "fd-whatsapp-btn", "fab fa-whatsapp", "Order via WhatsApp");
               a.setAttribute("href", waHref);
@@ -3346,8 +3040,8 @@
           order: order,
           note: "Delivery is arranged personally with you — we will confirm the details before anything is prepared.",
           actions: [
-            confirmAction("product.html", "vs-btn", "far fa-shopping-basket", "Continue Shopping"),
-            confirmAction("index.html", "fd-ghost-btn", "far fa-home", "Back Home"),
+            confirmAction(FD_ROUTES.shop, "vs-btn", "far fa-shopping-basket", "Continue Shopping"),
+            confirmAction(FD_ROUTES.home, "fd-ghost-btn", "far fa-home", "Back Home"),
           ],
         })
       );
@@ -3642,7 +3336,6 @@
     qtyLabel: fdQtyLabel,
     isKg: fdIsKgItem,
     fmtNaira: fmtNaira,
-    seedDemo: cartSeedDemoOnce,
     refresh: function () {
       refreshBadges();
       renderCartPanel();
@@ -3657,7 +3350,6 @@
       wireCart();
       wireCardLinks();
       wireCategoryToggle();
-      wireShop();
       wireShopView();
       wirePDP();
       wireCartPage();
@@ -3673,7 +3365,6 @@
     wireCart();
     wireCardLinks();
     wireCategoryToggle();
-    wireShop();
     wireShopView();
     wirePDP();
     wireCartPage();

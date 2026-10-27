@@ -35,6 +35,9 @@
     list.querySelectorAll(".fd-prod-card")
   );
   var originalOrder = cards.slice();
+  var paginated = list.getAttribute("data-paginated") === "1";
+  var totalProducts =
+    parseInt(list.getAttribute("data-total"), 10) || cards.length;
 
   var state = {
     q: "",
@@ -111,6 +114,9 @@
   }
 
   function updateSummary() {
+    if (paginated) {
+      return;
+    }
     var totals = { Fresh: 0, Frozen: 0, Fried: 0, Live: 0 };
     for (var i = 0; i < cards.length; i++) {
       var cardState = value(cards[i], "state");
@@ -153,8 +159,10 @@
     }
 
     if (count) {
-      count.textContent =
-        "Showing " + ordered.length + " of " + cards.length + " products.";
+      count.textContent = paginated
+        ? "Showing " + ordered.length + " on this page · " +
+          totalProducts + " products in total."
+        : "Showing " + ordered.length + " of " + cards.length + " products.";
     }
     if (listWrap) {
       listWrap.hidden = ordered.length === 0;

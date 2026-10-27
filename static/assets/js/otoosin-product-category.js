@@ -177,6 +177,9 @@
     var cards = Array.prototype.slice.call(
       grid.querySelectorAll("article.product-style1[data-product-id]")
     );
+    var paginated = grid.getAttribute("data-paginated") === "1";
+    var totalProducts =
+      parseInt(grid.getAttribute("data-total"), 10) || cards.length;
     var toolbar = document.getElementById("oto-category-toolbar");
     var search = document.getElementById("fd-shop-search");
     var stateSelect = document.getElementById("oto-category-state");
@@ -345,6 +348,9 @@
           link.removeAttribute("aria-current");
         }
       }
+      if (paginated) {
+        return;
+      }
       for (var j = 0; j < categoryCounts.length; j++) {
         var countCategory = categoryFromSlug(
           categoryCounts[j].getAttribute("data-category-count")
@@ -387,6 +393,12 @@
       var label = CATEGORIES[state.category].label;
       if (!visible) {
         return "No products match your filters";
+      }
+      if (paginated) {
+        return (
+          "Showing " + visible + " on this page · " +
+          totalProducts + " products in total"
+        );
       }
       if (state.category === "all" && visible === total) {
         return "Showing all " + total + " products";
@@ -503,8 +515,9 @@
         count.textContent = resultLabel(visible.length, scoped.length);
       }
       if (countLabel) {
+        var countTotal = paginated ? totalProducts : scoped.length;
         countLabel.textContent =
-          scoped.length + (scoped.length === 1 ? " product" : " products");
+          countTotal + (countTotal === 1 ? " product" : " products");
       }
       if (empty) {
         empty.hidden = visible.length > 0;

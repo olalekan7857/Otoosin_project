@@ -1,0 +1,54 @@
+{% load static humanize %}
+{% with variant=product.default_variant image=product.primary_image %}
+{% if variant %}
+<div class="col-6 col-md-4 col-lg-3">
+    <article class="product-style1{% if product.availability_status == 'out' %} is-out{% endif %}"
+        data-product-id="{{ product.slug }}"
+        data-product-name="{{ product.name }}"
+        data-price="{{ variant.price|floatformat:0 }}"
+        data-unit="{{ variant.label }}"
+        data-variant-id="{{ variant.pk }}"
+        data-variant-label="{{ variant.label }}"
+        data-category="{{ product.category.name }}"
+        data-stock="{{ product.availability_status }}"
+        data-type="{{ product.category.name }}"
+        data-condition="{{ product.get_condition_display }}"
+        data-group="{% if product.category.parent_id %}{{ product.category.parent.name }}{% else %}{{ product.category.name }}{% endif %}"
+        data-order="{{ order }}">
+        {% if product.availability_status == 'out' %}
+            <span class="fd-badge is-out">Out of Stock</span>
+        {% elif product.availability_status == 'limited' %}
+            <span class="fd-badge is-low">Limited</span>
+        {% elif product.badge %}
+            <span class="fd-badge">{{ product.badge }}</span>
+        {% else %}
+            <span class="fd-badge">{{ product.get_condition_display }}</span>
+        {% endif %}
+        <div class="product-img">
+            {% if image %}
+                <img src="{{ image.image.url }}" alt="{{ image.alt }}" width="{{ image.width|default:480 }}" height="{{ image.height|default:360 }}" loading="lazy" decoding="async">
+            {% else %}
+                <img src="{% static 'assets/img/categorie/otoosin-farms.png' %}" alt="{{ product.name }}" width="480" height="360" loading="lazy" decoding="async">
+            {% endif %}
+        </div>
+        <div class="product-about">
+            <span class="fd-product-cat">{{ product.category.name }}{% if product.category.parent_id %} &middot; {{ product.category.parent.name }}{% endif %}</span>
+            <h3 class="product-title"><a href="{% url 'Otoosin:product_details' %}?id={{ product.slug|urlencode }}">{{ product.name }}</a></h3>
+            <p class="fd-product-unit">{{ variant.label }}</p>
+            <p class="fd-product-desc">{{ product.description|truncatechars:112 }}</p>
+            <div class="fd-buy-row">
+                <span class="price">₦{{ variant.price|floatformat:0|intcomma }}</span>
+                {% if product.availability_status == 'out' %}
+                    <button type="button" class="vs-btn fd-add-btn" disabled aria-disabled="true">Out of Stock</button>
+                {% else %}
+                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="{{ product.slug }}">Add to Cart</button>
+                {% endif %}
+            </div>
+            <div class="fd-secondary-row">
+                <a href="{% url 'Otoosin:product_details' %}?id={{ product.slug|urlencode }}" class="fd-view-link">View product</a>
+            </div>
+        </div>
+    </article>
+</div>
+{% endif %}
+{% endwith %}

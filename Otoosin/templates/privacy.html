@@ -1,211 +1,23 @@
-<!doctype html>
-<html class="no-js" lang="en">
+{% extends "layout.html" %}
+{% load static %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Privacy Policy | O’TOOSIN Farms</title>
-    <meta name="author" content="O’TOOSIN Farms">
-    <meta name="description" content="How O’TOOSIN Farms handles the information you provide when browsing the website, preparing an order or sending an enquiry.">
-    <meta name="keywords" content="O’TOOSIN Farms, privacy policy, personal information, meats, fish, live animals, eggs, veggies, fruits">
-    <meta name="robots" content="INDEX,FOLLOW">
-    <meta property="og:title" content="Privacy Policy | O’TOOSIN Farms">
-    <meta property="og:description" content="How O’TOOSIN Farms handles the information you provide when using this website.">
-    <meta property="og:type" content="website">
+{% block title %}Privacy Policy | O’TOOSIN Farms{% endblock title %}
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% block body_class %}otoosin-shop otoosin-legal{% endblock body_class %}
 
-    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-shop.css' %}?v=8.0">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-legal.css' %}">
+{% endblock extra_head %}
 
-    <link rel="preconnect" href="https://fonts.googleapis.com/">
-    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
-    <link rel="stylesheet" href="assets/css/magnific-popup.min.css">
-    <link rel="stylesheet" href="assets/css/slick.min.css">
-    <link rel="stylesheet" href="assets/css/harvest-castle.css">
-    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
-    <link rel="stylesheet" href="assets/css/fd-theme.css">
-    <link rel="stylesheet" href="assets/css/otoosin-shop.css?v=8.0">
-    <link rel="stylesheet" href="assets/css/otoosin-legal.css">
-    <link rel="stylesheet" href="assets/css/otoosin-mobile-nav.css">
-    <link rel="stylesheet" href="assets/css/otoosin-footer.css?v=2.0">
-    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
-
-    <script src="assets/js/otoosin-mobile-nav.js" defer></script>
-    <script src="assets/js/otoosin-header.js" defer></script>
-</head>
-
-<body class="otoosin-shop otoosin-legal">
-
-    <a class="fd-skip-link" href="#fd-main">Skip to main content</a>
-
-    <!--[if lte IE 9]>
-    	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
-  <![endif]-->
-
-    <div class="vs-menu-wrapper" id="fd-mobile-menu">
-        <div class="vs-menu-area text-center">
-            <button class="vs-menu-toggle" aria-label="Close menu" aria-expanded="false" aria-controls="fd-mobile-menu"><i class="fal fa-times" aria-hidden="true"></i></button>
-            <div class="mobile-logo">
-                <a href="index.html" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
-            </div>
-            <nav class="vs-mobile-menu" aria-label="Mobile navigation">
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="product.html">Shop All</a></li>
-                    <li>
-                        <a href="product.html#oto-shop-categories">Product Categories</a>
-                        <ul>
-                            <li><a href="product.html?category=Meats">Meats</a></li>
-                            <li><a href="product.html?category=Fish">Fish</a></li>
-                            <li><a href="product.html?category=Live-Animals">Live Animals</a></li>
-                            <li><a href="product.html?category=Eggs">Eggs</a></li>
-                            <li><a href="product.html?category=Veggies">Veggies</a></li>
-                            <li><a href="product.html?category=Fruits">Fruits</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="index.html#states">Freshness</a>
-                        <ul>
-                            <li><a href="product.html?state=fresh">Fresh</a></li>
-                            <li><a href="product.html?state=fried">Fried</a></li>
-                            <li><a href="product.html?state=frozen">Frozen</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="about.html">About Us</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a href="cart.html">Cart</a></li>
-                </ul>
-            </nav>
-            <form class="oto-mobile-search" action="product.html" method="get" role="search">
-                <label class="visually-hidden" for="oto-mobile-search-input">Search products</label>
-                <input id="oto-mobile-search-input" name="q" type="search" placeholder="Search products">
-                <button type="submit" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
-            </form>
-        </div>
-    </div>
-
-    <div class="sideCart-wrapper offcanvas-wrapper" role="dialog" aria-modal="true" aria-label="Shopping cart preview">
-        <div class="sidemenu-content">
-            <button class="closeButton border-theme bg-theme-hover sideMenuCls2" aria-label="Close cart preview"><i class="far fa-times" aria-hidden="true"></i></button>
-            <div class="widget widget_shopping_cart">
-                <h3 class="widget_title">Shopping cart</h3>
-                <div class="widget_shopping_cart_content">
-                    <div class="fd-cart-empty">
-                        <i class="far fa-shopping-basket" aria-hidden="true"></i>
-                        <p><strong>Your cart is empty.</strong></p>
-                        <p>Browse the farm shop and add the first item you need.</p>
-                    </div>
-                    <div class="buttons">
-                        <a href="product.html" class="vs-btn">Shop All Products</a>
-                        <a href="cart.html" class="fd-view-cart-btn">View cart</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <header class="vs-header header-layout1">
-        <div class="header-top oto-announcement">
-            <div class="container">
-                <div class="oto-announcement-inner">
-                    <p class="mb-0"><i class="fas fa-truck" aria-hidden="true"></i> Doorstep delivery in Abeokuta &middot; Park delivery &middot; Pickup</p>
-                    <a href="index.html#delivery-pickup">Delivery and pickup details <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="sticky-wrapper">
-            <div class="sticky-active">
-                <div class="menu-area">
-                    <div class="container">
-                        <div class="row align-items-center justify-content-between">
-                            <div class="col-auto">
-                                <div class="header-logo">
-                                    <a href="index.html" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
-                                </div>
-                            </div>
-                            <div class="col">
-                                <nav class="main-menu menu-style1 d-none d-lg-block" aria-label="Primary navigation">
-                                    <ul>
-                                        <li><a href="index.html">Home</a></li>
-                                        <li><a href="product.html">Shop All</a></li>
-                                        <li class="oto-has-dropdown">
-                                            <a href="product.html#oto-shop-categories">Product Categories</a>
-                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-categories" aria-haspopup="true" aria-label="Show Product Categories menu">
-                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <ul class="sub-menu" id="oto-submenu-categories">
-                                                <li><a href="product.html?category=Meats">Meats</a></li>
-                                                <li><a href="product.html?category=Fish">Fish</a></li>
-                                                <li><a href="product.html?category=Live-Animals">Live Animals</a></li>
-                                                <li><a href="product.html?category=Eggs">Eggs</a></li>
-                                                <li><a href="product.html?category=Veggies">Veggies</a></li>
-                                                <li><a href="product.html?category=Fruits">Fruits</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="oto-has-dropdown">
-                                            <a href="index.html#states">Freshness</a>
-                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-states" aria-haspopup="true" aria-label="Show Freshness menu">
-                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            </button>
-                                            <ul class="sub-menu" id="oto-submenu-states">
-                                                <li><a href="product.html?state=fresh">Fresh</a></li>
-                                                <li><a href="product.html?state=fried">Fried</a></li>
-                                                <li><a href="product.html?state=frozen">Frozen</a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="about.html">About Us</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                    </ul>
-                                </nav>
-                            </div>
-                            <div class="col-auto d-lg-none">
-                                <div class="fd-header-actions">
-                                    <button type="button" class="icon-btn fd-mobile-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
-                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
-                                    </button>
-                                    <a href="cart.html" class="icon-btn fd-mobile-btn fd-cart-btn" aria-label="View cart">
-                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                                        <span class="badge" id="fd-cart-count-mobile">0</span>
-                                    </a>
-                                    <button class="vs-menu-toggle d-inline-block" aria-label="Open menu" aria-expanded="false" aria-controls="fd-mobile-menu">
-                                        <i class="fal fa-bars" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-auto d-none d-lg-block">
-                                <div class="header-icons fd-header-actions">
-                                    <a href="product.html#fd-shop-search" class="icon-btn" aria-label="Search products">
-                                        <i class="fas fa-search" aria-hidden="true"></i>
-                                    </a>
-                                    <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
-                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
-                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
-                                    </button>
-                                    <button type="button" class="icon-btn sideCartToggler fd-cart-btn" aria-label="Open cart preview">
-                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
-                                        <span class="badge" id="fd-cart-count">0</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main id="fd-main">
+{% block content %}
+<main id="fd-main">
 
         <section class="fd-shop-intro oto-shop-intro" aria-labelledby="oto-privacy-heading">
             <div class="container">
                 <nav aria-label="Breadcrumb">
                     <ol class="fd-breadcrumb">
-                        <li><a href="index.html">Home</a></li>
+                        <li><a href="{% url 'Otoosin:index' %}">Home</a></li>
                         <li aria-current="page">Privacy Policy</li>
                     </ol>
                 </nav>
@@ -320,7 +132,7 @@
                             <h2>Privacy questions and requests</h2>
                             <p>This website does not publish a separate email address or phone number for privacy requests, and the form on the Contact page does not itself transmit a message. Where a verified contact route is shown on that page, use it to ask about this policy or to request access, correction or deletion of personal information.</p>
                             <p>Please avoid sending sensitive personal information until a verified contact route is available.</p>
-                            <p><a href="contact.html" class="vs-btn">Contact O’TOOSIN Farms</a></p>
+                            <p><a href="{% url 'Otoosin:contact' %}" class="vs-btn">Contact O’TOOSIN Farms</a></p>
                         </div>
                     </div>
                 </div>
@@ -328,80 +140,5 @@
         </section>
 
     </main>
+{% endblock content %}
 
-    <footer class="footer-wrapper footer-layout1 oto-footer" id="footer">
-        <div class="container">
-            <div class="widget-area">
-                <div class="row g-4">
-                    <div class="col-lg-4">
-                        <div class="widget footer-widget">
-                            <a href="index.html" class="fd-logo oto-logo oto-footer-logo" aria-label="O’TOOSIN Farms home"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async" loading="lazy"></a>
-                            <p class="footer-text oto-footer-text">Delivering safe, healthy, and nutritious foods at your doorstep . . . Shop meats, fish, live animals, eggs, veggies and fruits.</p>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-2">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Shop</h3>
-                            <ul class="widget_categories">
-                                <li><a href="product.html">Shop All</a></li>
-                                <li><a href="product.html?category=Meats">Meats</a></li>
-                                <li><a href="product.html?category=Fish">Fish</a></li>
-                                <li><a href="product.html?category=Live-Animals">Live Animals</a></li>
-                                <li><a href="product.html?category=Eggs">Eggs</a></li>
-                                <li><a href="product.html?category=Veggies">Veggies</a></li>
-                                <li><a href="product.html?category=Fruits">Fruits</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-6 col-lg-3">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Ordering</h3>
-                            <ul class="widget_categories">
-                                <li><a href="index.html#how-it-works">How It Works</a></li>
-                                <li><a href="index.html#delivery-pickup">Delivery &amp; Pickup</a></li>
-                                <li><a href="product.html?state=fresh">Fresh</a></li>
-                                <li><a href="product.html?state=fried">Fried</a></li>
-                                <li><a href="product.html?state=frozen">Frozen</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="widget footer-widget">
-                            <h3 class="widget_title">Company</h3>
-                            <ul class="widget_categories">
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="about.html">About Us</a></li>
-                                <li><a href="contact.html">Contact</a></li>
-                                <li><a href="index.html#faq">FAQ</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="copyright-wrap oto-copyright">
-                <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. All Rights Reserved.</p>
-                <ul class="oto-legal-links">
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms &amp; Conditions</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                </ul>
-            </div>
-        </div>
-    </footer>
-
-    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/slick.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="assets/js/imagesloaded.pkgd.min.js"></script>
-    <script src="assets/js/isotope.pkgd.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/fresh-direct.js?v=7.1"></script>
-    <script src="assets/js/fd-theme.js"></script>
-
-    <div data-otoosin-mobile-nav-mount></div>
-</body>
-
-</html>

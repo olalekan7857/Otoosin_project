@@ -1,0 +1,25 @@
+{% if page_obj.paginator.num_pages > 1 %}
+<nav class="fd-pagination" aria-label="{{ pagination_label|default:'Product pages' }}">
+    {% if page_obj.has_previous %}
+        <a class="fd-page-link" href="{% querystring page=page_obj.previous_page_number %}" rel="prev">Prev</a>
+    {% else %}
+        <span class="fd-page-link is-disabled" aria-disabled="true">Prev</span>
+    {% endif %}
+
+    {% for number in page_range %}
+        {% if number == page_obj.paginator.ELLIPSIS %}
+            <span class="fd-page-link is-disabled" aria-hidden="true">{{ number }}</span>
+        {% elif number == page_obj.number %}
+            <span class="fd-page-link is-current" aria-current="page">{{ number }}</span>
+        {% else %}
+            <a class="fd-page-link" href="{% querystring page=number %}">{{ number }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+        <a class="fd-page-link" href="{% querystring page=page_obj.next_page_number %}" rel="next">Next</a>
+    {% else %}
+        <span class="fd-page-link is-disabled" aria-disabled="true">Next</span>
+    {% endif %}
+</nav>
+{% endif %}
