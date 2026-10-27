@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of a marbled beef steak with rosemary">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="meat" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#c25b60"/><stop offset="1" stop-color="#8e2f3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="292" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <rect x="58" y="246" width="364" height="40" rx="18" fill="#c99562" opacity=".9"/>
+  <ellipse cx="240" cy="248" rx="174" ry="38" fill="#fffdf8"/>
+  <g transform="translate(96 100) rotate(-6)">
+    <path d="M20 58C44 18 112 4 172 16c62 12 94 58 82 102-11 42-64 68-126 58C64 166 16 126 12 94c-2-16 1-28 8-36Z" fill="#f2d6bd" stroke="#dfb391" stroke-width="4"/>
+    <path d="M40 66C62 32 120 22 168 34c50 12 74 48 66 82-9 34-52 52-102 44C86 152 46 120 40 94c-2-12 0-20 0-28Z" fill="url(#meat)" stroke="#7d2632" stroke-width="4"/>
+    <g fill="none" stroke="#efc9c4" stroke-width="5" stroke-linecap="round" opacity=".75">
+      <path d="M72 58c26 2 42 14 50 30"/>
+      <path d="M120 44c24 8 38 24 42 44"/>
+      <path d="M168 54c18 10 28 28 28 46"/>
+      <path d="M76 108c20 12 42 16 66 12"/>
+      <path d="M138 120c18 6 34 2 46-8"/>
+    </g>
+  </g>
+  <path d="M286 202c28-18 56-18 80-2M292 220c24-12 46-10 66 2" fill="none" stroke="#4f7a4a" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="352" cy="294" r="8" fill="#8a3f3f"/><circle cx="372" cy="286" r="6" fill="#a24b46"/>
+</svg>

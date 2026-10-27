@@ -1,0 +1,280 @@
+/* O'Toosin Farms — Product Category page.
+   Page-specific styling only. Header, footer, toolbar, cards and list-view
+   behaviour continue to come from the shared storefront stylesheets. */
+
+.otoosin-category {
+  --fd-section-pad: 48px;
+  --fd-section-pad-mobile: 34px;
+}
+
+.oto-category-intro {
+  padding: 46px 0 30px;
+  background: var(--smoke-color);
+  border-bottom: 0;
+}
+
+.oto-category-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 390px);
+  gap: 42px;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.oto-category-copy {
+  min-width: 0;
+}
+
+.oto-category-copy .sec-title {
+  max-width: 700px;
+  margin-bottom: 13px;
+}
+
+.oto-category-copy > p {
+  max-width: 660px;
+  margin-bottom: 20px;
+  color: var(--body-color);
+}
+
+.oto-category-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--body-color);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.oto-category-meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.oto-category-meta li + li::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+}
+
+@media (max-width: 400px) {
+  .oto-category-meta li + li::before {
+    display: none;
+  }
+}
+
+.oto-category-meta i {
+  color: var(--secondary-color);
+}
+
+.oto-category-visual {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 300px;
+  margin: 0;
+  padding: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(6, 65, 29, 0.1);
+  border-radius: 26px;
+  background-color: #f5edda;
+  background-image:
+    linear-gradient(180deg, rgba(6, 65, 29, 0.06) 0%, rgba(6, 65, 29, 0.58) 100%),
+    var(--oto-category-image, linear-gradient(145deg, #fffaf0 0%, #f5edda 100%));
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.oto-category-visual figcaption {
+  position: relative;
+  z-index: 2;
+  max-width: 100%;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  background: rgba(6, 65, 29, 0.9);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.45;
+}
+
+.oto-category-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.oto-category-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 8px 15px;
+  border: 1px solid rgba(6, 65, 29, 0.14);
+  border-radius: 9999px;
+  background: var(--white-color);
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+.oto-category-nav a:hover,
+.oto-category-nav a:focus-visible {
+  border-color: var(--secondary-color);
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.oto-category-nav a:focus-visible {
+  outline: 3px solid var(--theme-color);
+  outline-offset: 3px;
+}
+
+.oto-category-nav a.is-active,
+.oto-category-nav a[aria-current="page"] {
+  border-color: var(--secondary-color);
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.oto-category-nav .oto-category-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: rgba(6, 65, 29, 0.08);
+  color: var(--secondary-color);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.oto-category-nav a:hover .oto-category-count,
+.oto-category-nav a:focus-visible .oto-category-count,
+.oto-category-nav a.is-active .oto-category-count,
+.oto-category-nav a[aria-current="page"] .oto-category-count {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--white-color);
+}
+
+.oto-category-toolbar {
+  margin-bottom: 24px;
+}
+
+.oto-category-toolbar .fd-shop-search {
+  width: 100%;
+}
+
+.oto-category-main {
+  padding-top: 28px;
+}
+
+.oto-category-main .fd-shop-state {
+  margin-top: 26px;
+}
+
+.oto-category-cta {
+  margin-top: 0;
+}
+
+html[data-theme="dark"] .oto-category-visual {
+  border-color: #2e3b33;
+  background-color: #142019;
+  background-image:
+    linear-gradient(180deg, rgba(10, 20, 14, 0.05) 0%, rgba(10, 20, 14, 0.72) 100%),
+    var(--oto-category-image, linear-gradient(145deg, #1b2a21 0%, #142019 100%));
+}
+
+html[data-theme="dark"] .oto-category-nav a {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+  color: var(--fd-text);
+}
+
+html[data-theme="dark"] .oto-category-nav .oto-category-count {
+  background: rgba(222, 173, 57, 0.15);
+  color: var(--theme-color);
+}
+
+@media (max-width: 991px) {
+  .oto-category-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 330px);
+    gap: 28px;
+  }
+
+  .oto-category-visual {
+    min-height: 230px;
+    padding: 22px 20px 50px;
+  }
+}
+
+@media (max-width: 767px) {
+  .oto-category-intro {
+    padding: 38px 0 26px;
+  }
+
+  .oto-category-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 20px;
+  }
+
+  .oto-category-copy .sec-title {
+    margin-bottom: 10px;
+  }
+
+  .oto-category-copy > p {
+    margin-bottom: 17px;
+  }
+
+  .oto-category-visual {
+    width: 100%;
+    max-width: 390px;
+    min-height: 220px;
+    margin-inline: auto;
+    padding: 20px;
+  }
+
+  .oto-category-nav {
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .oto-category-nav a {
+    min-height: 40px;
+    padding: 7px 13px;
+    font-size: 13px;
+  }
+
+  .oto-category-main {
+    padding-top: 22px;
+  }
+}
+
+@media (max-width: 400px) {
+  .oto-category-visual {
+    min-height: 200px;
+    padding: 18px 16px;
+  }
+
+  .oto-category-nav a {
+    padding: 7px 11px;
+  }
+}

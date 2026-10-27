@@ -1,0 +1,535 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Settings | O’TOOSIN Farms Admin</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <!-- Admin is private: never index admin pages or expose store data. -->
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="description" content="Private O’TOOSIN Farms business, delivery and pickup settings.">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+
+    <!--==============================
+	  Google Fonts (same as storefront)
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File (same stack + scoped admin foundation)
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="assets/css/harvest-castle.css">
+    <!-- Storefront foundation overrides -->
+    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
+    <!-- O’TOOSIN Farms admin foundation (shared shell + table styles).
+         ?v= pin: force browsers to fetch the latest admin styles
+         instead of serving a stale cached copy. Bump when this file
+         changes again. -->
+    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
+    <!-- Page-specific Settings layout (loaded only by this page). -->
+    <link rel="stylesheet" href="assets/css/fd-admin-settings.css?v=1.3">
+    <!-- Theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
+    <link rel="stylesheet" href="assets/css/fd-theme.css">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+</head>
+
+<body class="fd-admin">
+
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to settings</a>
+
+    <!--==============================
+    Admin shell (shared admin layout).
+    Settings sets aria-current="page" on its own nav item.
+    ============================== -->
+    <div class="fd-admin-shell" id="fd-admin-shell">
+
+        <!-- Sidebar navigation -->
+        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
+            <div class="fd-admin-brand">
+                <a href="index.html" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
+            </div>
+            <p class="fd-admin-role">Farm Admin</p>
+            <nav class="fd-admin-nav" aria-label="Management sections">
+                <ul>
+                    <li>
+                        <a href="admin-dashboard.html" class="fd-admin-nav-link">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-products.html" class="fd-admin-nav-link">
+                            <i class="fas fa-box" aria-hidden="true"></i>Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-inventory.html" class="fd-admin-nav-link">
+                            <i class="fas fa-warehouse" aria-hidden="true"></i>Inventory
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-categories.html" class="fd-admin-nav-link">
+                            <i class="fas fa-layer-group" aria-hidden="true"></i>Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-orders.html" class="fd-admin-nav-link">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-settings.html" class="fd-admin-nav-link" aria-current="page">
+                            <i class="fas fa-cog" aria-hidden="true"></i>Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="fd-admin-side-foot">
+                <a class="fd-admin-logout" href="admin-login.html">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Staff sign-in
+                </a>
+                <p class="fd-admin-logout-hint">Open the staff access page.</p>
+            </div>
+        </aside>
+
+        <!-- Drawer scrim (mobile only, shown via CSS when .nav-open) -->
+        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
+
+        <!-- Main column -->
+        <div class="fd-admin-main">
+            <header class="fd-admin-topbar">
+                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <h1 class="fd-admin-title">Settings</h1>
+                <span class="fd-admin-context">Farm admin &middot; business configuration</span>
+                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                </button>
+            </header>
+
+            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
+                <div class="fd-dash-head fd-settings-page-head">
+                    <div class="fd-settings-page-head-text">
+                        <p class="fd-settings-eyebrow"><i class="fas fa-cog" aria-hidden="true"></i>Farm settings</p>
+                        <p class="fd-dash-lead">Manage the farm’s business details and review the doorstep, park and pickup arrangements used at checkout.</p>
+                    </div>
+                </div>
+
+                <noscript>
+                    <div class="fd-admin-notice is-error" role="alert">
+                        <strong>JavaScript is required.</strong>
+                        The Settings page needs JavaScript enabled to load and save your details.
+                    </div>
+                </noscript>
+
+                <!-- Loading state: the editable content stays hidden until the record is ready. -->
+                <div class="fd-admin-notice" id="fd-settings-loading" role="status" aria-live="polite">
+                    <strong>Loading farm settings…</strong>
+                    Getting the business details and checkout arrangements.
+                </div>
+
+                <!-- Error state: never shows stale values or an editable form. -->
+                <div class="fd-admin-notice is-error" id="fd-settings-error" role="alert" hidden>
+                    <strong>We couldn&rsquo;t load the farm settings.</strong>
+                    Nothing below is current, so it is hidden until the details load.
+                    <div class="fd-dash-error-actions">
+                        <button type="button" class="vs-btn fd-dash-btn" id="fd-settings-retry">
+                            <i class="far fa-redo" aria-hidden="true"></i>Try again
+                        </button>
+                    </div>
+                </div>
+
+                <div id="fd-settings-content" aria-busy="true" hidden>
+                    <div class="fd-settings-layout">
+
+                        <!-- In-page navigation: vertical on desktop, a scrollable row on small screens. -->
+                        <nav class="fd-settings-nav" aria-label="Settings sections">
+                            <p class="fd-settings-nav-title">On this page</p>
+                            <ul class="fd-settings-nav-list" id="fd-settings-nav-list">
+                                <li>
+                                    <a href="#fd-settings-profile" class="fd-settings-nav-link is-active" data-settings-nav="fd-settings-profile" aria-current="location">
+                                        <span class="fd-settings-nav-icon" aria-hidden="true"><i class="fas fa-store"></i></span>
+                                        <span class="fd-settings-nav-text">
+                                            <strong>Business profile</strong>
+                                            <small>Brand and address</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#fd-settings-contact" class="fd-settings-nav-link" data-settings-nav="fd-settings-contact">
+                                        <span class="fd-settings-nav-icon" aria-hidden="true"><i class="fas fa-phone"></i></span>
+                                        <span class="fd-settings-nav-text">
+                                            <strong>Contact</strong>
+                                            <small>Phone and WhatsApp</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#fd-settings-delivery" class="fd-settings-nav-link" data-settings-nav="fd-settings-delivery">
+                                        <span class="fd-settings-nav-icon" aria-hidden="true"><i class="fas fa-truck"></i></span>
+                                        <span class="fd-settings-nav-text">
+                                            <strong>Delivery &amp; pickup</strong>
+                                            <small>Zones and collection</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#fd-settings-storefront" class="fd-settings-nav-link" data-settings-nav="fd-settings-storefront">
+                                        <span class="fd-settings-nav-icon" aria-hidden="true"><i class="fas fa-pen"></i></span>
+                                        <span class="fd-settings-nav-text">
+                                            <strong>Storefront</strong>
+                                            <small>Introduction and categories</small>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#fd-settings-appearance" class="fd-settings-nav-link" data-settings-nav="fd-settings-appearance">
+                                        <span class="fd-settings-nav-icon" aria-hidden="true"><i class="fas fa-adjust"></i></span>
+                                        <span class="fd-settings-nav-text">
+                                            <strong>Appearance</strong>
+                                            <small>Light or dark mode</small>
+                                        </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <p class="fd-settings-nav-note"><i class="far fa-circle" aria-hidden="true"></i>One save action covers every editable business detail.</p>
+                        </nav>
+
+                        <form class="fd-settings-form" id="fd-settings-form" novalidate>
+                            <!-- Validation / save errors: announced first, then linked fields are marked. -->
+                            <div class="fd-admin-notice is-error fd-settings-alert" id="fd-settings-alert" role="alert" tabindex="-1" hidden>
+                                <strong id="fd-settings-alert-title">Settings were not saved.</strong>
+                                <ul class="fd-settings-alert-list" id="fd-settings-alert-list"></ul>
+                            </div>
+
+                            <!-- 01. Business profile -->
+                            <section class="fd-dash-section fd-settings-section" id="fd-settings-profile" data-settings-section aria-labelledby="fd-settings-profile-title">
+                                <div class="fd-settings-section-head">
+                                    <span class="fd-settings-index" aria-hidden="true">01</span>
+                                    <div class="fd-settings-section-copy">
+                                        <h2 id="fd-settings-profile-title" tabindex="-1">Business profile</h2>
+                                        <p class="fd-settings-section-lead">The farm’s identity and business address, kept in one place.</p>
+                                    </div>
+                                </div>
+
+                                <div class="fd-settings-brand">
+                                    <span class="fd-settings-brand-mark">
+                                        <img id="fd-settings-logo-img" src="assets/img/harvest_castle/of_favicon.png" alt="O’TOOSIN Farms" width="70" height="50">
+                                    </span>
+                                    <div class="fd-settings-brand-copy">
+                                        <span class="fd-settings-brand-label">Storefront logo</span>
+                                        <strong class="fd-settings-brand-name">O’TOOSIN Farms</strong>
+                                        <code class="fd-settings-brand-path" id="fd-settings-logo-path">assets/img/harvest_castle/of_favicon.png</code>
+                                    </div>
+                                    <span class="fd-dash-pill is-muted">Site asset</span>
+                                </div>
+
+                                <p class="fd-settings-slogan">
+                                    <span>Brand slogan</span>
+                                    <strong id="fd-settings-slogan">O’TOOSIN Farms - delivering safe, healthy, and nutritious foods at your doorstep . . .</strong>
+                                </p>
+
+                                <div class="fd-settings-grid">
+                                    <div class="fd-field">
+                                        <label for="fd-settings-name">Business name <span class="fd-required" aria-hidden="true">*</span></label>
+                                        <input class="form-control" type="text" id="fd-settings-name" name="businessName" autocomplete="organization" maxlength="80" required aria-describedby="fd-settings-name-hint fd-settings-name-error">
+                                        <p class="fd-dash-hint" id="fd-settings-name-hint">The farm’s business name across the admin and storefront.</p>
+                                        <span class="fd-field-error" id="fd-settings-name-error" hidden></span>
+                                    </div>
+                                    <div class="fd-field">
+                                        <label for="fd-settings-address">Business address <span class="fd-required" aria-hidden="true">*</span></label>
+                                        <input class="form-control" type="text" id="fd-settings-address" name="address" autocomplete="street-address" maxlength="300" required aria-describedby="fd-settings-address-hint fd-settings-address-error">
+                                        <p class="fd-dash-hint" id="fd-settings-address-hint">The farm’s current business and pickup address.</p>
+                                        <span class="fd-field-error" id="fd-settings-address-error" hidden></span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- 02. Contact and customer support -->
+                            <section class="fd-dash-section fd-settings-section" id="fd-settings-contact" data-settings-section aria-labelledby="fd-settings-contact-title">
+                                <div class="fd-settings-section-head">
+                                    <span class="fd-settings-index" aria-hidden="true">02</span>
+                                    <div class="fd-settings-section-copy">
+                                        <h2 id="fd-settings-contact-title" tabindex="-1">Contact and customer support</h2>
+                                        <p class="fd-settings-section-lead">The numbers staff use when helping customers with an order.</p>
+                                    </div>
+                                </div>
+                                <div class="fd-settings-grid">
+                                    <div class="fd-field">
+                                        <label for="fd-settings-whatsapp">WhatsApp number <span class="fd-required" aria-hidden="true">*</span></label>
+                                        <input class="form-control" type="tel" id="fd-settings-whatsapp" name="whatsapp" autocomplete="tel" inputmode="tel" placeholder="e.g. 0901 105 8873" required aria-describedby="fd-settings-whatsapp-hint fd-settings-whatsapp-error">
+                                        <p class="fd-dash-hint" id="fd-settings-whatsapp-hint">Used for order follow-up links in the admin. Enter a Nigerian mobile number with or without the country code.</p>
+                                        <span class="fd-field-error" id="fd-settings-whatsapp-error" hidden></span>
+                                    </div>
+                                    <div class="fd-field">
+                                        <label for="fd-settings-phone">Contact phone number <span class="fd-optional">(optional)</span></label>
+                                        <input class="form-control" type="tel" id="fd-settings-phone" name="contactPhone" autocomplete="tel" inputmode="tel" placeholder="e.g. 0803 123 4567" aria-describedby="fd-settings-phone-hint fd-settings-phone-error">
+                                        <p class="fd-dash-hint" id="fd-settings-phone-hint">A separate number customers can call. Leave empty when there is no call line.</p>
+                                        <span class="fd-field-error" id="fd-settings-phone-error" hidden></span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- 03. Delivery and pickup (read-only checkout configuration) -->
+                            <section class="fd-dash-section fd-settings-section" id="fd-settings-delivery" data-settings-section aria-labelledby="fd-settings-delivery-title">
+                                <div class="fd-settings-section-head">
+                                    <span class="fd-settings-index" aria-hidden="true">03</span>
+                                    <div class="fd-settings-section-copy">
+                                        <h2 id="fd-settings-delivery-title" tabindex="-1">Delivery &amp; pickup</h2>
+                                        <p class="fd-settings-section-lead" id="fd-settings-delivery-coverage">The doorstep, park and pickup arrangements currently offered at checkout.</p>
+                                    </div>
+                                    <span class="fd-dash-pill is-muted">Applied at checkout</span>
+                                </div>
+
+                                <div class="fd-settings-delivery-grid">
+                                    <div class="fd-settings-policy-card">
+                                        <span class="fd-settings-policy-icon" aria-hidden="true"><i class="fas fa-motorcycle"></i></span>
+                                        <h3>Doorstep delivery</h3>
+                                        <p class="fd-settings-policy-text" id="fd-settings-doorstep-note">—</p>
+                                    </div>
+                                    <div class="fd-settings-policy-card">
+                                        <span class="fd-settings-policy-icon" aria-hidden="true"><i class="fas fa-bus"></i></span>
+                                        <h3>Park delivery</h3>
+                                        <p class="fd-settings-policy-text" id="fd-settings-park-note">—</p>
+                                    </div>
+                                    <div class="fd-settings-policy-card">
+                                        <span class="fd-settings-policy-icon" aria-hidden="true"><i class="fas fa-store"></i></span>
+                                        <h3>Pickup</h3>
+                                        <p class="fd-settings-policy-text" id="fd-settings-pickup-note">—</p>
+                                    </div>
+                                </div>
+
+                                <div class="fd-settings-delivery-details">
+                                    <div class="fd-settings-policy-card">
+                                        <h3>Doorstep zones</h3>
+                                        <ul class="fd-settings-zone-list" id="fd-settings-zone-list"></ul>
+                                    </div>
+                                    <div class="fd-settings-policy-card">
+                                        <h3>Pickup locations</h3>
+                                        <ul class="fd-settings-pickup-list" id="fd-settings-pickup-list"></ul>
+                                    </div>
+                                    <div class="fd-settings-policy-card">
+                                        <h3>Park destinations</h3>
+                                        <ul class="fd-settings-chip-list" id="fd-settings-park-list"></ul>
+                                        <p class="fd-settings-card-note">Park delivery fees are included in the checkout total.</p>
+                                    </div>
+                                </div>
+
+                                <div class="fd-loc-manager" id="fd-loc-manager">
+                                    <div class="fd-loc-manager-head">
+                                        <div>
+                                            <h3>Delivery location management</h3>
+                                            <p class="fd-loc-manager-lead">Add, edit, activate or deactivate the locations customers see in the checkout Delivery selector. Doorstep and park locations stay distinct here but appear together at checkout, sorted alphabetically. Pickup locations stay separate.</p>
+                                        </div>
+                                        <button type="button" class="vs-btn fd-dash-btn" id="fd-loc-add">
+                                            <i class="fas fa-plus" aria-hidden="true"></i>Add location
+                                        </button>
+                                    </div>
+
+                                    <div class="fd-loc-groups">
+                                        <div class="fd-loc-group-panel">
+                                            <div class="fd-loc-group-title">
+                                                <h4>Doorstep delivery — Abeokuta</h4>
+                                                <span class="fd-dash-pill is-muted" id="fd-loc-doorstep-count">0</span>
+                                            </div>
+                                            <ul class="fd-loc-admin-list" id="fd-loc-doorstep-list"></ul>
+                                        </div>
+                                        <div class="fd-loc-group-panel">
+                                            <div class="fd-loc-group-title">
+                                                <h4>Park delivery — approved destinations</h4>
+                                                <span class="fd-dash-pill is-muted" id="fd-loc-park-count">0</span>
+                                            </div>
+                                            <ul class="fd-loc-admin-list" id="fd-loc-park-list-managed"></ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="fd-loc-editor" id="fd-loc-editor" hidden>
+                                        <div class="fd-loc-editor-head">
+                                            <h4 id="fd-loc-form-title">Add a delivery location</h4>
+                                            <p id="fd-loc-form-hint">Doorstep and park locations need a fixed delivery fee.</p>
+                                        </div>
+                                        <div class="fd-field-error fd-loc-error" id="fd-loc-error" role="alert" hidden></div>
+                                        <div class="fd-loc-form-grid">
+                                            <div class="fd-field">
+                                                <label for="fd-loc-type">Location type <span class="fd-required" aria-hidden="true">*</span></label>
+                                                <select class="form-control" id="fd-loc-type">
+                                                    <option value="doorstep">Doorstep delivery</option>
+                                                    <option value="park">Park delivery</option>
+                                                </select>
+                                            </div>
+                                            <div class="fd-field">
+                                                <label for="fd-loc-name">Location name <span class="fd-required" aria-hidden="true">*</span></label>
+                                                <input class="form-control" type="text" id="fd-loc-name" maxlength="80" placeholder="e.g. Camp or Ibadan">
+                                                <span class="fd-field-error" id="fd-loc-name-error" hidden></span>
+                                            </div>
+                                            <div class="fd-field fd-loc-doorstep-only">
+                                                <label for="fd-loc-areas">Areas covered <span class="fd-optional">(Optional)</span></label>
+                                                <input class="form-control" type="text" id="fd-loc-areas" maxlength="200" placeholder="e.g. Fatola, Apakila, Surulere">
+                                            </div>
+                                            <div class="fd-field">
+                                                <label for="fd-loc-fee" id="fd-loc-fee-label">Delivery fee (₦) <span class="fd-required" aria-hidden="true">*</span></label>
+                                                <input class="form-control" type="number" id="fd-loc-fee" min="0" step="50" inputmode="numeric" placeholder="e.g. 5000">
+                                                <span class="fd-field-error" id="fd-loc-fee-error" hidden></span>
+                                                <p class="fd-dash-hint" id="fd-loc-fee-hint">Enter the fixed fee added to the checkout total.</p>
+                                            </div>
+                                            <div class="fd-field fd-loc-doorstep-only">
+                                                <label for="fd-loc-city">City <span class="fd-optional">(Optional)</span></label>
+                                                <input class="form-control" type="text" id="fd-loc-city" maxlength="80" placeholder="e.g. Abeokuta">
+                                            </div>
+                                            <div class="fd-field fd-loc-doorstep-only">
+                                                <label for="fd-loc-state">State <span class="fd-optional">(Optional)</span></label>
+                                                <input class="form-control" type="text" id="fd-loc-state" maxlength="80" placeholder="e.g. Ogun">
+                                            </div>
+                                            <div class="fd-field fd-loc-park-only">
+                                                <label for="fd-loc-instructions">Customer note <span class="fd-optional">(Optional)</span></label>
+                                                <input class="form-control" type="text" id="fd-loc-instructions" maxlength="300" placeholder="e.g. Receiving park confirmed before dispatch">
+                                            </div>
+                                            <div class="fd-field fd-loc-active-field">
+                                                <label class="fd-loc-check" for="fd-loc-active">
+                                                    <input type="checkbox" id="fd-loc-active" checked>
+                                                    <span>Available at checkout</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="fd-settings-actions fd-loc-editor-actions">
+                                            <button type="button" class="vs-btn fd-dash-btn" id="fd-loc-save">
+                                                <i class="fas fa-check" aria-hidden="true"></i><span>Save location</span>
+                                            </button>
+                                            <button type="button" class="fd-ghost-btn fd-dash-btn" id="fd-loc-cancel">Cancel</button>
+                                        </div>
+                                    </div>
+
+                                    <p class="fd-loc-feedback" id="fd-loc-feedback" role="status" aria-live="polite" tabindex="-1" hidden></p>
+                                    <p class="fd-loc-note"><i class="fas fa-info-circle" aria-hidden="true"></i> Locations are saved in this browser on this device and reach checkout through the shared frontend store. They are not shared with other browsers or devices.</p>
+                                </div>
+
+                                <div class="fd-settings-callout">
+                                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                    <p><strong>Payment arrangement.</strong> <span id="fd-settings-delivery-payment">—</span></p>
+                                </div>
+                            </section>
+
+                            <!-- 04. Storefront preferences -->
+                            <section class="fd-dash-section fd-settings-section" id="fd-settings-storefront" data-settings-section aria-labelledby="fd-settings-storefront-title">
+                                <div class="fd-settings-section-head">
+                                    <span class="fd-settings-index" aria-hidden="true">04</span>
+                                    <div class="fd-settings-section-copy">
+                                        <h2 id="fd-settings-storefront-title" tabindex="-1">Storefront preferences</h2>
+                                        <p class="fd-settings-section-lead">The introduction kept for the farm shop and the categories customers can browse.</p>
+                                    </div>
+                                </div>
+                                <div class="fd-field fd-settings-description-field">
+                                    <label for="fd-settings-description">Storefront introduction <span class="fd-required" aria-hidden="true">*</span></label>
+                                    <textarea class="form-control" id="fd-settings-description" name="description" rows="4" maxlength="500" required aria-describedby="fd-settings-description-hint fd-settings-description-error"></textarea>
+                                    <p class="fd-dash-hint" id="fd-settings-description-hint">A plain summary of the farm’s range and how customers order. Keep it concise.</p>
+                                    <div class="fd-settings-field-meta">
+                                        <span class="fd-field-error" id="fd-settings-description-error" hidden></span>
+                                        <span class="fd-settings-counter" id="fd-settings-description-count">0 / 500</span>
+                                    </div>
+                                </div>
+                                <div class="fd-settings-preview">
+                                    <p class="fd-settings-preview-label">Introduction preview</p>
+                                    <p class="fd-settings-preview-text" id="fd-settings-description-preview">—</p>
+                                </div>
+                                <div class="fd-settings-category-block">
+                                    <p class="fd-settings-preview-label">Marketplace categories</p>
+                                    <ul class="fd-settings-category-list" id="fd-settings-category-list"></ul>
+                                </div>
+                            </section>
+
+                            <!-- 05. Appearance -->
+                            <section class="fd-dash-section fd-settings-section" id="fd-settings-appearance" data-settings-section aria-labelledby="fd-settings-appearance-title">
+                                <div class="fd-settings-section-head">
+                                    <span class="fd-settings-index" aria-hidden="true">05</span>
+                                    <div class="fd-settings-section-copy">
+                                        <h2 id="fd-settings-appearance-title" tabindex="-1">Appearance</h2>
+                                        <p class="fd-settings-section-lead">Choose the theme used across the admin on this device.</p>
+                                    </div>
+                                    <span class="fd-dash-pill is-muted">Applies immediately</span>
+                                </div>
+                                <fieldset class="fd-settings-theme-fieldset">
+                                    <legend class="fd-settings-theme-legend">Admin theme</legend>
+                                    <div class="fd-settings-theme-options" id="fd-settings-theme-options">
+                                        <label class="fd-settings-theme-option" for="fd-settings-theme-light">
+                                            <input type="radio" id="fd-settings-theme-light" name="adminTheme" value="light">
+                                            <span class="fd-settings-theme-icon" aria-hidden="true"><i class="fas fa-sun"></i></span>
+                                            <span class="fd-settings-theme-copy">
+                                                <strong>Light</strong>
+                                                <small>The default bright admin view.</small>
+                                            </span>
+                                            <span class="fd-settings-theme-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                                        </label>
+                                        <label class="fd-settings-theme-option" for="fd-settings-theme-dark">
+                                            <input type="radio" id="fd-settings-theme-dark" name="adminTheme" value="dark">
+                                            <span class="fd-settings-theme-icon" aria-hidden="true"><i class="fas fa-moon"></i></span>
+                                            <span class="fd-settings-theme-copy">
+                                                <strong>Dark</strong>
+                                                <small>A lower-glare admin view.</small>
+                                            </span>
+                                            <span class="fd-settings-theme-check" aria-hidden="true"><i class="fas fa-check"></i></span>
+                                        </label>
+                                    </div>
+                                    <p class="fd-settings-theme-note" id="fd-settings-theme-note" aria-live="polite">The admin theme updates immediately.</p>
+                                </fieldset>
+                            </section>
+
+                            <!-- One save action for all editable business sections. -->
+                            <section class="fd-dash-section fd-settings-save" id="fd-settings-save" aria-labelledby="fd-settings-save-title">
+                                <div class="fd-settings-save-copy">
+                                    <h2 id="fd-settings-save-title" tabindex="-1">Save changes</h2>
+                                    <p class="fd-settings-save-lead">Review the business details above, then save all editable sections together. Changes are saved in this browser for this device.</p>
+                                    <p class="fd-settings-dirty" id="fd-settings-dirty" aria-live="polite" hidden><i class="far fa-circle" aria-hidden="true"></i>You have unsaved changes.</p>
+                                    <p class="fd-settings-feedback" id="fd-settings-feedback" role="status" aria-live="polite" tabindex="-1" hidden></p>
+                                </div>
+                                <div class="fd-settings-actions">
+                                    <button type="submit" class="vs-btn fd-dash-btn" id="fd-settings-submit" aria-busy="false" disabled>
+                                        <i class="fas fa-check" aria-hidden="true"></i><span id="fd-settings-submit-label">Save changes</span>
+                                    </button>
+                                    <button type="button" class="fd-ghost-btn fd-dash-btn" id="fd-settings-discard" disabled>
+                                        <i class="fas fa-undo" aria-hidden="true"></i>Discard changes
+                                    </button>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+
+                <p class="fd-dash-foot-note">
+                    Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. Farm admin.
+                </p>
+            </main>
+        </div>
+    </div>
+
+    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
+         customer cart store can never leak into the admin. -->
+    <script src="assets/js/fd-admin.js?v=6.8"></script>
+    <script src="assets/js/fd-theme.js"></script>
+    <!-- Shared delivery-location boundary used by checkout and this page. -->
+    <script src="assets/js/fd-delivery-locations.js?v=1.1"></script>
+    <!-- Settings source boundary (store record kept in this browser;
+         the settings UI consumes only this boundary). -->
+    <script src="assets/js/fd-admin-settings-data.js?v=2.2"></script>
+    <!-- Settings page (consumes the data boundary above). -->
+    <script src="assets/js/fd-admin-settings.js?v=2.2"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of a turkey breast joint with carved slices">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f4d29a"/><stop offset="1" stop-color="#d59c56"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="292" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <rect x="70" y="238" width="340" height="42" rx="18" fill="#c99562" opacity=".9"/>
+  <ellipse cx="240" cy="240" rx="166" ry="38" fill="#fffdf8"/>
+  <g transform="translate(126 98)">
+    <path d="M12 54C28 18 84 4 128 16c48 13 76 58 66 96-10 40-58 64-104 50C42 148 4 108 12 54Z" fill="url(#skin)" stroke="#c28743" stroke-width="4"/>
+    <path d="M32 54c12-24 50-34 84-26 38 9 58 38 52 64-7 30-42 46-76 36-34-10-56-38-60-74Z" fill="#f9e3b8" opacity=".7"/>
+    <path d="M44 96c22-16 48-20 74-12M52 118c24-12 48-12 68-4" fill="none" stroke="#e0b877" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g fill="#f7ddaf" stroke="#d1a066" stroke-width="3">
+    <ellipse cx="332" cy="176" rx="40" ry="54" transform="rotate(16 332 176)"/>
+    <ellipse cx="360" cy="206" rx="38" ry="52" transform="rotate(24 360 206)"/>
+    <ellipse cx="378" cy="238" rx="34" ry="46" transform="rotate(30 378 238)"/>
+  </g>
+  <path d="M80 288c20-18 42-19 60-6M342 278c18-13 34-12 48-3" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="356" cy="300" r="7" fill="#8a3f3f"/><circle cx="374" cy="292" r="6" fill="#a24b46"/>
+</svg>

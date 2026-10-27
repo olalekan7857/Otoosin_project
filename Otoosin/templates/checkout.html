@@ -1,0 +1,516 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Checkout | O’TOOSIN Farms</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <meta name="description" content="Complete your O’TOOSIN Farms checkout by choosing delivery to a supported doorstep or park location, or pickup from a selected pickup location.">
+    <meta name="keywords" content="O’TOOSIN Farms, checkout, farm shop, meats, fish, live animals, eggs, veggies, fruits">
+    <meta name="robots" content="INDEX,FOLLOW">
+    <meta property="og:title" content="Checkout | O’TOOSIN Farms">
+    <meta property="og:description" content="Choose how you would like to receive your order, review your details and see your total before you order.">
+    <meta property="og:type" content="website">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="assets/css/magnific-popup.min.css">
+    <link rel="stylesheet" href="assets/css/slick.min.css">
+    <link rel="stylesheet" href="assets/css/harvest-castle.css">
+    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
+    <link rel="stylesheet" href="assets/css/fd-theme.css">
+    <link rel="stylesheet" href="assets/css/otoosin-shop.css?v=8.0">
+    <link rel="stylesheet" href="assets/css/otoosin-checkout.css?v=2.1">
+    <link rel="stylesheet" href="assets/css/otoosin-mobile-nav.css">
+    <link rel="stylesheet" href="assets/css/otoosin-footer.css?v=2.0">
+    <noscript>
+        <style>.sideCartToggler,[data-theme-toggle],#fd-cart-count,#fd-cart-count-mobile{display:none!important}</style>
+    </noscript>
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+    <script src="assets/js/otoosin-mobile-nav.js" defer></script>
+    <script src="assets/js/otoosin-header.js" defer></script>
+</head>
+
+<body class="otoosin-shop otoosin-checkout">
+
+    <a class="fd-skip-link" href="#fd-main">Skip to main content</a>
+
+    <div class="vs-menu-wrapper" id="fd-mobile-menu">
+        <div class="vs-menu-area text-center">
+            <button class="vs-menu-toggle" aria-label="Close menu" aria-expanded="false" aria-controls="fd-mobile-menu"><i class="fal fa-times" aria-hidden="true"></i></button>
+            <div class="mobile-logo">
+                <a href="index.html" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
+            </div>
+            <nav class="vs-mobile-menu" aria-label="Mobile navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="product.html">Shop All</a></li>
+                    <li>
+                        <a href="product.html#oto-shop-categories">Product Categories</a>
+                        <ul>
+                            <li><a href="product.html?category=Meats">Meats</a></li>
+                            <li><a href="product.html?category=Fish">Fish</a></li>
+                            <li><a href="product.html?category=Live-Animals">Live Animals</a></li>
+                            <li><a href="product.html?category=Eggs">Eggs</a></li>
+                            <li><a href="product.html?category=Veggies">Veggies</a></li>
+                            <li><a href="product.html?category=Fruits">Fruits</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="index.html#states">Freshness</a>
+                        <ul>
+                            <li><a href="product.html?state=fresh">Fresh</a></li>
+                            <li><a href="product.html?state=fried">Fried</a></li>
+                            <li><a href="product.html?state=frozen">Frozen</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </nav>
+            <form class="oto-mobile-search" action="product.html" method="get" role="search">
+                <label class="visually-hidden" for="oto-mobile-search-input">Search products</label>
+                <input id="oto-mobile-search-input" name="q" type="search" placeholder="Search products">
+                <button type="submit" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <div class="sideCart-wrapper offcanvas-wrapper" role="dialog" aria-modal="true" aria-label="Shopping cart preview">
+        <div class="sidemenu-content">
+            <button class="closeButton border-theme bg-theme-hover sideMenuCls2" aria-label="Close cart preview"><i class="far fa-times" aria-hidden="true"></i></button>
+            <div class="widget widget_shopping_cart">
+                <h3 class="widget_title">Shopping cart</h3>
+                <div class="widget_shopping_cart_content">
+                    <div class="fd-cart-empty">
+                        <i class="far fa-shopping-basket" aria-hidden="true"></i>
+                        <p><strong>Your cart is empty.</strong></p>
+                        <p>Browse the farm shop and add the first item you need.</p>
+                    </div>
+                    <div class="buttons">
+                        <a href="product.html" class="vs-btn">Shop All Products</a>
+                        <a href="cart.html" class="fd-view-cart-btn">View cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="vs-header header-layout1">
+        <div class="header-top oto-announcement">
+            <div class="container">
+                <div class="oto-announcement-inner">
+                    <p class="mb-0"><i class="fas fa-truck" aria-hidden="true"></i> Doorstep delivery in Abeokuta &middot; Park delivery &middot; Pickup</p>
+                    <a href="index.html#delivery-pickup">Delivery and pickup details <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sticky-wrapper">
+            <div class="sticky-active">
+                <div class="menu-area">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <div class="header-logo">
+                                    <a href="index.html" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <nav class="main-menu menu-style1 d-none d-lg-block" aria-label="Primary navigation">
+                                    <ul>
+                                        <li><a href="index.html">Home</a></li>
+                                        <li><a href="product.html">Shop All</a></li>
+                                        <li class="oto-has-dropdown">
+                                            <a href="product.html#oto-shop-categories">Product Categories</a>
+                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-categories" aria-haspopup="true" aria-label="Show Product Categories menu">
+                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <ul class="sub-menu" id="oto-submenu-categories">
+                                                <li><a href="product.html?category=Meats">Meats</a></li>
+                                                <li><a href="product.html?category=Fish">Fish</a></li>
+                                                <li><a href="product.html?category=Live-Animals">Live Animals</a></li>
+                                                <li><a href="product.html?category=Eggs">Eggs</a></li>
+                                                <li><a href="product.html?category=Veggies">Veggies</a></li>
+                                                <li><a href="product.html?category=Fruits">Fruits</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="oto-has-dropdown">
+                                            <a href="index.html#states">Freshness</a>
+                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-states" aria-haspopup="true" aria-label="Show Freshness menu">
+                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <ul class="sub-menu" id="oto-submenu-states">
+                                                <li><a href="product.html?state=fresh">Fresh</a></li>
+                                                <li><a href="product.html?state=fried">Fried</a></li>
+                                                <li><a href="product.html?state=frozen">Frozen</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="about.html">About Us</a></li>
+                                        <li><a href="contact.html">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="col-auto d-lg-none">
+                                <div class="fd-header-actions">
+                                    <button type="button" class="icon-btn fd-mobile-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                                    </button>
+                                    <a href="cart.html" class="icon-btn fd-mobile-btn fd-cart-btn" aria-label="View cart">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <span class="badge" id="fd-cart-count-mobile">0</span>
+                                    </a>
+                                    <button class="vs-menu-toggle d-inline-block" aria-label="Open menu" aria-expanded="false" aria-controls="fd-mobile-menu">
+                                        <i class="fal fa-bars" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-auto d-none d-lg-block">
+                                <div class="header-icons fd-header-actions">
+                                    <a href="product.html#fd-shop-search" class="icon-btn" aria-label="Search products">
+                                        <i class="fas fa-search" aria-hidden="true"></i>
+                                    </a>
+                                    <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                                    </button>
+                                    <button type="button" class="icon-btn sideCartToggler fd-cart-btn" aria-label="Open cart preview">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <span class="badge" id="fd-cart-count">0</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="fd-main">
+
+        <section class="fd-shop-intro oto-shop-intro oto-checkout-intro" aria-labelledby="oto-checkout-heading">
+            <div class="container">
+                <nav aria-label="Breadcrumb">
+                    <ol class="fd-breadcrumb">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="cart.html">Cart</a></li>
+                        <li aria-current="page">Checkout</li>
+                    </ol>
+                </nav>
+                <span class="sec-subtitle">Almost there</span>
+                <h1 class="sec-title" id="oto-checkout-heading">Checkout</h1>
+                <p>Tell us how you would like to receive your order, add your details, and review the total before you order. Guest checkout is available, so no account is needed.</p>
+            </div>
+        </section>
+
+        <section class="oto-checkout-section" aria-label="Checkout">
+            <div class="container" id="oto-checkout-wrap">
+
+                <div class="fd-shop-state oto-checkout-empty" id="oto-checkout-empty" hidden>
+                    <i class="far fa-shopping-basket" aria-hidden="true"></i>
+                    <h2>Your cart is empty</h2>
+                    <p>Add the farm products you need to your cart before checking out. Your selection will be waiting for you here.</p>
+                    <div class="oto-checkout-actions">
+                        <a href="product.html" class="vs-btn">Shop All Products</a>
+                        <a href="cart.html" class="fd-ghost-btn">View Cart</a>
+                    </div>
+                </div>
+
+                <div class="row g-4 g-xl-5 align-items-stretch" id="oto-checkout-main" hidden>
+                    <div class="col-lg-7">
+                        <div class="oto-checkout-guest">
+                            <i class="fas fa-user-check" aria-hidden="true"></i>
+                            <div>
+                                <strong>Guest checkout</strong>
+                                <span>No account or sign-in is needed. We only ask for the details required to arrange your order.</span>
+                            </div>
+                        </div>
+
+                        <form id="fd-checkout-form" class="oto-checkout-form" novalidate>
+                            <fieldset class="fd-checkout-card oto-checkout-card">
+                                <legend>Customer information</legend>
+                                <div class="fd-field">
+                                    <label for="oto-co-name">Full name <span class="fd-required" aria-hidden="true">*</span></label>
+                                    <input class="form-control" type="text" id="oto-co-name" name="name" autocomplete="name" placeholder="e.g. Adaeze Okafor" required>
+                                    <span class="fd-field-error" id="oto-co-name-error" hidden></span>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="fd-field">
+                                            <label for="oto-co-phone">Phone number <span class="fd-required" aria-hidden="true">*</span></label>
+                                            <input class="form-control" type="tel" id="oto-co-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="e.g. 0803 123 4567" required>
+                                            <span class="fd-field-error" id="oto-co-phone-error" hidden></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="fd-field">
+                                            <label for="oto-co-email">Email address <span class="fd-optional">(Optional)</span></label>
+                                            <input class="form-control" type="email" id="oto-co-email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com">
+                                            <span class="fd-field-error" id="oto-co-email-error" hidden></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="fd-checkout-card oto-checkout-card">
+                                <legend>How would you like to receive your order?</legend>
+                                <p class="oto-receive-lead">Choose delivery to a supported location or collect your order from a pickup location. Your order total updates based on your selection.</p>
+                                <div class="oto-receive-options" role="radiogroup" aria-label="How would you like to receive your order?">
+                                    <label class="fd-check-radio oto-receive-option">
+                                        <input type="radio" name="receive-method" value="delivery" checked>
+                                        <span class="oto-pay-icon" aria-hidden="true"><i class="fas fa-truck"></i></span>
+                                        <span class="oto-pay-copy">
+                                            <strong>Delivery</strong>
+                                            <small>Choose an available doorstep or park delivery location. The details required will depend on the selected location.</small>
+                                        </span>
+                                        <span class="oto-pay-tick" aria-hidden="true"><i class="fas fa-check"></i></span>
+                                    </label>
+                                    <label class="fd-check-radio oto-receive-option">
+                                        <input type="radio" name="receive-method" value="pickup">
+                                        <span class="oto-pay-icon" aria-hidden="true"><i class="fas fa-store"></i></span>
+                                        <span class="oto-pay-copy">
+                                            <strong>Pickup</strong>
+                                            <small>Choose a pickup location and collect your order yourself. No delivery fee applies.</small>
+                                        </span>
+                                        <span class="oto-pay-tick" aria-hidden="true"><i class="fas fa-check"></i></span>
+                                    </label>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="fd-checkout-card oto-checkout-card oto-receive-panel" id="oto-delivery-panel">
+                                <legend>Delivery details</legend>
+                                <div class="fd-field oto-loc-field">
+                                    <label id="oto-delivery-location-label" for="oto-loc-trigger">Delivery location <span class="fd-required" aria-hidden="true">*</span></label>
+                                    <div class="oto-loc-select" id="oto-loc-select">
+                                        <button type="button" class="oto-loc-trigger" id="oto-loc-trigger" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="oto-loc-listbox" aria-labelledby="oto-delivery-location-label" aria-describedby="oto-loc-hint">
+                                            <span class="oto-loc-trigger-copy">
+                                                <span class="oto-loc-trigger-name" id="oto-loc-trigger-name">Select a delivery location</span>
+                                                <span class="oto-loc-trigger-meta" id="oto-loc-trigger-meta">Doorstep or park delivery</span>
+                                            </span>
+                                            <span class="oto-loc-trigger-price" id="oto-loc-trigger-price"></span>
+                                            <svg class="oto-loc-caret" width="14" height="14" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        </button>
+                                        <input type="hidden" id="oto-co-delivery-location" name="delivery-location" value="">
+                                        <div class="oto-loc-popup" id="oto-loc-popup" hidden>
+                                            <div class="oto-loc-search">
+                                                <label class="oto-loc-search-label" for="oto-loc-search">Search locations</label>
+                                                <input class="oto-loc-search-input" type="search" id="oto-loc-search" placeholder="Search by area, town or park" autocomplete="off" spellcheck="false">
+                                            </div>
+                                            <div class="oto-loc-scroll" id="oto-loc-listbox" role="listbox" aria-labelledby="oto-delivery-location-label"></div>
+                                        </div>
+                                    </div>
+                                    <span class="fd-field-error" id="oto-co-delivery-location-error" hidden></span>
+                                    <p class="oto-loc-hint" id="oto-loc-hint">Doorstep locations appear first, followed by approved park destinations.</p>
+                                </div>
+
+                                <div class="oto-loc-fields" id="oto-doorstep-fields" hidden>
+                                    <div class="fd-field">
+                                        <label for="oto-co-address">Delivery address <span class="fd-required" aria-hidden="true">*</span></label>
+                                        <input class="form-control" type="text" id="oto-co-address" name="address" autocomplete="street-address" placeholder="e.g. No. 12, Camp Road, Alabata">
+                                        <span class="fd-field-error" id="oto-co-address-error" hidden></span>
+                                    </div>
+                                    <div class="fd-field">
+                                        <label for="oto-co-landmark">Nearest landmark <span class="fd-optional">(Optional)</span></label>
+                                        <input class="form-control" type="text" id="oto-co-landmark" name="landmark" autocomplete="off" placeholder="e.g. Opposite the filling station">
+                                    </div>
+                                    <p class="oto-receive-note"><i class="fas fa-info-circle" aria-hidden="true"></i><span>Doorstep delivery is available in Abeokuta. Your delivery fee is based on <strong id="oto-doorstep-zone-name">the selected location</strong>, not your exact house address.</span></p>
+                                </div>
+
+                                <div class="oto-loc-fields" id="oto-park-fields" hidden>
+                                    <div class="oto-park-selected">
+                                        <span class="oto-park-selected-label">Park destination</span>
+                                        <strong id="oto-park-name">Select a park destination</strong>
+                                        <span class="oto-park-selected-fee" id="oto-park-fee">—</span>
+                                    </div>
+                                    <p class="oto-receive-note"><i class="fas fa-info-circle" aria-hidden="true"></i><span id="oto-park-detail">Park delivery is available to approved destinations. Delivery arrangements and any applicable park charge depend on the selected destination.</span></p>
+                                </div>
+
+                                <p class="oto-receive-note oto-delivery-cutoff"><i class="far fa-clock" aria-hidden="true"></i><span><strong>Delivery timing:</strong> Orders placed after 5:00 PM will be delivered the next day.</span></p>
+                            </fieldset>
+
+                            <fieldset class="fd-checkout-card oto-checkout-card oto-receive-panel" id="oto-pickup-panel" hidden>
+                                <legend>Pickup location</legend>
+                                <div class="oto-pickup-options" id="oto-pickup-options" role="radiogroup" aria-label="Pickup location"></div>
+                                <span class="fd-field-error" id="oto-co-pickup-error" hidden></span>
+                                <p class="oto-receive-note"><i class="fas fa-info-circle" aria-hidden="true"></i><span>There is no delivery fee for pickup. Complete your order and payment securely at checkout, then collect from the selected pickup location.</span></p>
+                            </fieldset>
+
+                            <fieldset class="fd-checkout-card oto-checkout-card">
+                                <legend>Order notes <span class="fd-optional">(Optional)</span></legend>
+                                <div class="fd-field">
+                                    <label for="oto-co-notes">Anything you would like us to know?</label>
+                                    <textarea class="form-control" id="oto-co-notes" name="instructions" rows="3" placeholder="e.g. Call when you arrive."></textarea>
+                                </div>
+                            </fieldset>
+
+                            <fieldset class="fd-checkout-card oto-checkout-card">
+                                <legend>Payment</legend>
+                                <p class="oto-pay-note" aria-live="polite"><i class="fas fa-wallet" aria-hidden="true"></i><span id="oto-pay-note">Complete your order and payment securely at checkout. Your total includes your selected products and, where applicable, the delivery fee.</span></p>
+                            </fieldset>
+
+                            <p class="fd-checkout-status" id="fd-checkout-status" role="status" aria-live="polite" hidden></p>
+
+                            <div class="oto-checkout-actions">
+                                <button type="submit" class="vs-btn" id="fd-proceed-payment">Proceed to Payment</button>
+                                <button type="button" class="fd-ghost-btn oto-action-secondary" id="fd-review-order">Review Order</button>
+                                <a href="cart.html" class="oto-back-cart">Back to Cart</a>
+                            </div>
+                        </form>
+
+                        <section class="oto-checkout-review" id="fd-checkout-review" hidden aria-labelledby="oto-review-title">
+                            <span class="oto-review-kicker">Review</span>
+                            <h2 id="oto-review-title" tabindex="-1">Review your order</h2>
+                            <p class="oto-review-lead">Check how you will receive the order, your details and the total below. You can edit anything before you proceed to payment.</p>
+
+                            <div class="oto-review-block">
+                                <h3>Order details</h3>
+                                <div class="oto-review-details" id="oto-review-details"></div>
+                            </div>
+
+                            <div class="oto-review-block">
+                                <h3>Payment</h3>
+                                <div class="oto-review-payment" id="oto-review-payment"></div>
+                            </div>
+
+                            <div class="oto-review-block">
+                                <h3>Products</h3>
+                                <ul class="oto-review-items" id="oto-review-items"></ul>
+                                <div class="oto-review-total">
+                                    <span id="oto-review-total-label">Total for products</span>
+                                    <strong data-checkout-total>₦0</strong>
+                                </div>
+                            </div>
+
+                            <p class="oto-review-note"><i class="fas fa-shield-alt" aria-hidden="true"></i><span>Check your details once more, then proceed to complete your order and payment securely at checkout.</span></p>
+
+                            <div class="oto-review-actions">
+                                <button type="button" class="vs-btn" id="fd-review-confirm">Proceed to Payment</button>
+                                <button type="button" class="fd-ghost-btn" id="fd-review-edit">Edit details</button>
+                                <a href="cart.html" class="oto-back-cart">Back to cart</a>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <aside class="fd-cart-summary oto-checkout-summary" aria-labelledby="oto-checkout-summary-title">
+                            <span class="oto-checkout-summary-kicker">Order summary</span>
+                            <h2 id="oto-checkout-summary-title">Your order</h2>
+                            <ul class="oto-checkout-lines" id="oto-checkout-lines" aria-label="Items in your order"></ul>
+                            <div class="fd-cart-summary-row">
+                                <span>Products subtotal</span>
+                                <strong data-checkout-subtotal>₦0</strong>
+                            </div>
+                            <div class="fd-cart-summary-row" id="oto-receive-summary-row">
+                                <span>Delivery &amp; pickup</span>
+                                <strong id="oto-receive-name">Delivery</strong>
+                            </div>
+                            <div class="oto-checkout-delivery-row">
+                                <span id="oto-delivery-label">Delivery fee</span>
+                                <strong id="oto-delivery-value">Select a location</strong>
+                            </div>
+                            <div class="fd-cart-summary-row is-total">
+                                <span id="oto-checkout-total-label">Order total</span>
+                                <strong data-checkout-total>₦0</strong>
+                            </div>
+                            <p class="oto-checkout-pay-summary"><i class="fas fa-wallet" aria-hidden="true"></i><span id="oto-pay-summary">Complete your order and payment securely at checkout. Your total includes your selected products and, where applicable, the delivery fee.</span></p>
+                            <div class="fd-cart-summary-actions">
+                                <a href="cart.html" class="fd-ghost-btn oto-checkout-edit">Edit cart</a>
+                            </div>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer-wrapper footer-layout1 oto-footer" id="footer">
+        <div class="container">
+            <div class="widget-area">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="widget footer-widget">
+                            <a href="index.html" class="fd-logo oto-logo oto-footer-logo" aria-label="O’TOOSIN Farms home"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async" loading="lazy"></a>
+                            <p class="footer-text oto-footer-text">Delivering safe, healthy, and nutritious foods at your doorstep . . . Shop meats, fish, live animals, eggs, veggies and fruits.</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Shop</h3>
+                            <ul class="widget_categories">
+                                <li><a href="product.html">Shop All</a></li>
+                                <li><a href="product.html?category=Meats">Meats</a></li>
+                                <li><a href="product.html?category=Fish">Fish</a></li>
+                                <li><a href="product.html?category=Live-Animals">Live Animals</a></li>
+                                <li><a href="product.html?category=Eggs">Eggs</a></li>
+                                <li><a href="product.html?category=Veggies">Veggies</a></li>
+                                <li><a href="product.html?category=Fruits">Fruits</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Ordering</h3>
+                            <ul class="widget_categories">
+                                <li><a href="index.html#how-it-works">How It Works</a></li>
+                                <li><a href="index.html#delivery-pickup">Delivery &amp; Pickup</a></li>
+                                <li><a href="product.html?state=fresh">Fresh</a></li>
+                                <li><a href="product.html?state=fried">Fried</a></li>
+                                <li><a href="product.html?state=frozen">Frozen</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Company</h3>
+                            <ul class="widget_categories">
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="about.html">About Us</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="index.html#faq">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright-wrap oto-copyright">
+                <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. All Rights Reserved.</p>
+                <ul class="oto-legal-links">
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/vendor/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/slick.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/fresh-direct.js?v=7.1"></script>
+    <script src="assets/js/fd-delivery-locations.js?v=1.1"></script>
+    <script src="assets/js/otoosin-checkout.js?v=2.1"></script>
+    <script src="assets/js/fd-theme.js"></script>
+
+    <div data-otoosin-mobile-nav-mount></div>
+</body>
+
+</html>

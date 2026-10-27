@@ -1,0 +1,363 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Product Categories | O’TOOSIN Farms Admin</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <!-- Admin is private: never index admin pages or expose product data. -->
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="description" content="Private O’TOOSIN Farms whole-farm category management area.">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+
+    <!--==============================
+	  Google Fonts (same as storefront)
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File (same stack + scoped admin foundation)
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="assets/css/harvest-castle.css">
+    <!-- Storefront foundation overrides -->
+    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
+    <!-- Admin foundation (shared shell + category list styles). -->
+    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
+    <!-- Categories page only -->
+    <link rel="stylesheet" href="assets/css/fd-admin-categories.css?v=1.0">
+    <!-- Theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
+    <link rel="stylesheet" href="assets/css/fd-theme.css">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+</head>
+
+<body class="fd-admin">
+
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to categories</a>
+
+    <!--==============================
+    Admin shell (shared admin layout).
+    Categories sets aria-current="page" on its own nav item.
+    ============================== -->
+    <div class="fd-admin-shell" id="fd-admin-shell">
+
+        <!-- Sidebar navigation -->
+        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
+            <div class="fd-admin-brand">
+                <a href="index.html" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
+            </div>
+            <p class="fd-admin-role">Farm Admin</p>
+            <nav class="fd-admin-nav" aria-label="Management sections">
+                <ul>
+                    <li>
+                        <a href="admin-dashboard.html" class="fd-admin-nav-link">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-products.html" class="fd-admin-nav-link">
+                            <i class="fas fa-box" aria-hidden="true"></i>Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-inventory.html" class="fd-admin-nav-link">
+                            <i class="fas fa-warehouse" aria-hidden="true"></i>Inventory
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-categories.html" class="fd-admin-nav-link" aria-current="page">
+                            <i class="fas fa-layer-group" aria-hidden="true"></i>Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-orders.html" class="fd-admin-nav-link">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-settings.html" class="fd-admin-nav-link">
+                            <i class="fas fa-cog" aria-hidden="true"></i>Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="fd-admin-side-foot">
+                <a class="fd-admin-logout" href="admin-login.html">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Staff sign-in
+                </a>
+                <p class="fd-admin-logout-hint">Open the staff access page.</p>
+            </div>
+        </aside>
+
+        <!-- Drawer scrim (mobile only, shown via CSS when .nav-open) -->
+        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
+
+        <!-- Main column -->
+        <div class="fd-admin-main">
+            <header class="fd-admin-topbar">
+                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <h1 class="fd-admin-title">Categories</h1>
+                <span class="fd-admin-context">Farm admin &middot; product categories</span>
+                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                </button>
+            </header>
+
+            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
+                <div class="fd-dash-head">
+                    <p class="fd-dash-lead">Review the six storefront categories, their product counts and the lines customers can browse.</p>
+                </div>
+
+                <!-- ------------------------------------------------------------------
+                     CATEGORY RECORDS
+                     The six canonical O’TOOSIN Farms storefront categories are
+                     listed below with counts read from the current product
+                     catalogue. The same card markup can become a template loop
+                     when the store backend is connected.
+                     ------------------------------------------------------------------ -->
+
+                <!-- Category overview -->
+                <section class="fd-dash-section" aria-labelledby="fd-cat-overview-title">
+                    <div class="fd-prod-head">
+                        <div class="fd-prod-head-text">
+                            <h2 id="fd-cat-overview-title">Category overview</h2>
+                            <p class="fd-dash-lead">Counts are read from the current product catalogue, including products added in this browser.</p>
+                        </div>
+                        <a href="admin-product-edit.html" class="vs-btn fd-dash-btn">
+                            <i class="fas fa-plus" aria-hidden="true"></i>Add Product
+                        </a>
+                    </div>
+                    <ul class="fd-dash-grid fd-prod-summary" aria-label="Category totals">
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                            <span class="fd-dash-card-label">Categories</span>
+                            <span class="fd-dash-card-value" id="fd-cat-summary-categories">6</span>
+                            <span class="fd-dash-card-context">Main storefront sections.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-box"></i></span>
+                            <span class="fd-dash-card-label">Products</span>
+                            <span class="fd-dash-card-value" id="fd-cat-summary-total">17</span>
+                            <span class="fd-dash-card-context">Product lines in the catalogue.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-drumstick-bite"></i></span>
+                            <span class="fd-dash-card-label">Meats</span>
+                            <span class="fd-dash-card-value" id="fd-cat-summary-meats">10</span>
+                            <span class="fd-dash-card-context">Pork, chicken, turkey, beef and goat meat.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-fish"></i></span>
+                            <span class="fd-dash-card-label">Fish</span>
+                            <span class="fd-dash-card-value" id="fd-cat-summary-fish">3</span>
+                            <span class="fd-dash-card-context">Fresh, frozen and fried fish.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-paw"></i></span>
+                            <span class="fd-dash-card-label">Live Animals</span>
+                            <span class="fd-dash-card-value" id="fd-cat-summary-live">1</span>
+                            <span class="fd-dash-card-context">Live animals listed for sale.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-seedling"></i></span>
+                            <span class="fd-dash-card-label">Farm produce</span>
+                            <span class="fd-dash-card-value" id="fd-cat-summary-produce">3</span>
+                            <span class="fd-dash-card-context">Eggs, veggies and fruits.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Category list -->
+                <section class="fd-dash-section" aria-labelledby="fd-cat-list-title">
+                    <div class="fd-prod-head">
+                        <div class="fd-prod-head-text">
+                            <h2 id="fd-cat-list-title">All categories</h2>
+                            <p class="fd-dash-count fd-cat-count" id="fd-cat-count" role="status" aria-live="polite">Showing 6 of 6 categories.</p>
+                        </div>
+                    </div>
+
+                    <div class="fd-prod-toolbar fd-cat-toolbar">
+                        <div class="fd-shop-search fd-prod-search">
+                            <i class="far fa-search" aria-hidden="true"></i>
+                            <label class="visually-hidden" for="fd-cat-search">Search categories by name or related products</label>
+                            <input id="fd-cat-search" class="form-control" type="search" placeholder="Search categories…" autocomplete="off">
+                        </div>
+                        <label class="fd-shop-select" for="fd-cat-group">Type
+                            <select id="fd-cat-group" class="form-select">
+                                <option value="all">All types</option>
+                                <option value="Meat">Meat</option>
+                                <option value="Seafood">Seafood</option>
+                                <option value="Farm animals">Farm animals</option>
+                                <option value="Farm produce">Farm produce</option>
+                            </select>
+                        </label>
+                        <button type="button" class="fd-ghost-btn fd-dash-btn" id="fd-cat-clear" disabled>
+                            <i class="far fa-undo" aria-hidden="true"></i>Clear filters
+                        </button>
+                    </div>
+
+                    <div class="fd-prod-list-wrap" id="fd-cat-list-wrap">
+                        <ul class="fd-cat-grid" id="fd-cat-list" aria-label="Product categories">
+                            <li class="fd-cat-card" data-category="Meats" data-slug="Meats" data-group="Meat" data-states="Fresh,Frozen,Fried" data-search="meats pork chicken turkey beef goat meat poultry red meat chops steak brisket wings drumsticks">
+                                <div class="fd-cat-card-top">
+                                    <span class="fd-cat-thumb"><img src="assets/img/hero/oto-hero-meat-sm.jpg" alt="A fresh selection of farm meats" width="144" height="144" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-cat-id">
+                                        <h3 class="fd-cat-name">Meats</h3>
+                                        <p class="fd-cat-group">Meat</p>
+                                    </div>
+                                </div>
+                                <p class="fd-cat-desc">Pork, chicken, turkey, beef and goat meat in fresh, frozen or fried cuts.</p>
+                                <ul class="fd-cat-stats" aria-label="Meats product counts">
+                                    <li><span class="fd-cat-stat-label">Products</span><span class="fd-cat-stat-value fd-cat-total">10</span></li>
+                                    <li><span class="fd-cat-stat-label">Fresh</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fresh">5</span></li>
+                                    <li><span class="fd-cat-stat-label">Frozen</span><span class="fd-cat-stat-value fd-cat-state" data-state="Frozen">4</span></li>
+                                    <li><span class="fd-cat-stat-label">Fried</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fried">1</span></li>
+                                </ul>
+                                <div class="fd-cat-actions">
+                                    <a class="fd-prod-btn" href="admin-products.html?category=Meats"><i class="fas fa-box" aria-hidden="true"></i>View products</a>
+                                    <a class="fd-prod-btn" href="product-category.html?category=Meats" target="_blank" rel="noopener"><i class="far fa-eye" aria-hidden="true"></i>Storefront</a>
+                                </div>
+                            </li>
+                            <li class="fd-cat-card" data-category="Fish" data-slug="Fish" data-group="Seafood" data-states="Fresh,Frozen,Fried" data-search="fish seafood catfish tilapia fresh frozen fried">
+                                <div class="fd-cat-card-top">
+                                    <span class="fd-cat-thumb"><img src="assets/img/categorie/fish-meat.png" alt="Fresh whole fish" width="144" height="144" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-cat-id">
+                                        <h3 class="fd-cat-name">Fish</h3>
+                                        <p class="fd-cat-group">Seafood</p>
+                                    </div>
+                                </div>
+                                <p class="fd-cat-desc">Catfish, tilapia and other fish, sold fresh, frozen or fried.</p>
+                                <ul class="fd-cat-stats" aria-label="Fish product counts">
+                                    <li><span class="fd-cat-stat-label">Products</span><span class="fd-cat-stat-value fd-cat-total">3</span></li>
+                                    <li><span class="fd-cat-stat-label">Fresh</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fresh">1</span></li>
+                                    <li><span class="fd-cat-stat-label">Frozen</span><span class="fd-cat-stat-value fd-cat-state" data-state="Frozen">1</span></li>
+                                    <li><span class="fd-cat-stat-label">Fried</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fried">1</span></li>
+                                </ul>
+                                <div class="fd-cat-actions">
+                                    <a class="fd-prod-btn" href="admin-products.html?category=Fish"><i class="fas fa-box" aria-hidden="true"></i>View products</a>
+                                    <a class="fd-prod-btn" href="product-category.html?category=Fish" target="_blank" rel="noopener"><i class="far fa-eye" aria-hidden="true"></i>Storefront</a>
+                                </div>
+                            </li>
+                            <li class="fd-cat-card" data-category="Live Animals" data-slug="Live-Animals" data-group="Farm animals" data-states="Live" data-search="live animals chicken farm animals poultry">
+                                <div class="fd-cat-card-top">
+                                    <span class="fd-cat-thumb"><img src="assets/img/categorie/otoosin-live-animals.png" alt="Live animals on the farm" width="144" height="144" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-cat-id">
+                                        <h3 class="fd-cat-name">Live Animals</h3>
+                                        <p class="fd-cat-group">Farm animals</p>
+                                    </div>
+                                </div>
+                                <p class="fd-cat-desc">Live chickens and other farm animals, priced per animal.</p>
+                                <ul class="fd-cat-stats" aria-label="Live Animals product counts">
+                                    <li><span class="fd-cat-stat-label">Products</span><span class="fd-cat-stat-value fd-cat-total">1</span></li>
+                                    <li><span class="fd-cat-stat-label">Live</span><span class="fd-cat-stat-value fd-cat-state" data-state="Live">1</span></li>
+                                </ul>
+                                <div class="fd-cat-actions">
+                                    <a class="fd-prod-btn" href="admin-products.html?category=Live-Animals"><i class="fas fa-box" aria-hidden="true"></i>View products</a>
+                                    <a class="fd-prod-btn" href="product-category.html?category=Live-Animals" target="_blank" rel="noopener"><i class="far fa-eye" aria-hidden="true"></i>Storefront</a>
+                                </div>
+                            </li>
+                            <li class="fd-cat-card" data-category="Eggs" data-slug="Eggs" data-group="Farm produce" data-states="Fresh" data-search="eggs farm eggs fresh crate poultry produce">
+                                <div class="fd-cat-card-top">
+                                    <span class="fd-cat-thumb"><img src="assets/img/categorie/otoosin-eggs.png" alt="Fresh farm eggs packed in a basket" width="144" height="144" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-cat-id">
+                                        <h3 class="fd-cat-name">Eggs</h3>
+                                        <p class="fd-cat-group">Farm produce</p>
+                                    </div>
+                                </div>
+                                <p class="fd-cat-desc">Fresh farm eggs, packed by the crate for household cooking and baking.</p>
+                                <ul class="fd-cat-stats" aria-label="Eggs product counts">
+                                    <li><span class="fd-cat-stat-label">Products</span><span class="fd-cat-stat-value fd-cat-total">1</span></li>
+                                    <li><span class="fd-cat-stat-label">Fresh</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fresh">1</span></li>
+                                </ul>
+                                <div class="fd-cat-actions">
+                                    <a class="fd-prod-btn" href="admin-products.html?category=Eggs"><i class="fas fa-box" aria-hidden="true"></i>View products</a>
+                                    <a class="fd-prod-btn" href="product-category.html?category=Eggs" target="_blank" rel="noopener"><i class="far fa-eye" aria-hidden="true"></i>Storefront</a>
+                                </div>
+                            </li>
+                            <li class="fd-cat-card" data-category="Veggies" data-slug="Veggies" data-group="Farm produce" data-states="Fresh" data-search="veggies vegetables fresh farm produce tomatoes peppers greens">
+                                <div class="fd-cat-card-top">
+                                    <span class="fd-cat-thumb"><img src="assets/img/categorie/otoosin-veggies.png" alt="Fresh vegetables from the farm" width="144" height="144" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-cat-id">
+                                        <h3 class="fd-cat-name">Veggies</h3>
+                                        <p class="fd-cat-group">Farm produce</p>
+                                    </div>
+                                </div>
+                                <p class="fd-cat-desc">Farm-fresh vegetables, sorted and packed by the basket.</p>
+                                <ul class="fd-cat-stats" aria-label="Veggies product counts">
+                                    <li><span class="fd-cat-stat-label">Products</span><span class="fd-cat-stat-value fd-cat-total">1</span></li>
+                                    <li><span class="fd-cat-stat-label">Fresh</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fresh">1</span></li>
+                                </ul>
+                                <div class="fd-cat-actions">
+                                    <a class="fd-prod-btn" href="admin-products.html?category=Veggies"><i class="fas fa-box" aria-hidden="true"></i>View products</a>
+                                    <a class="fd-prod-btn" href="product-category.html?category=Veggies" target="_blank" rel="noopener"><i class="far fa-eye" aria-hidden="true"></i>Storefront</a>
+                                </div>
+                            </li>
+                            <li class="fd-cat-card" data-category="Fruits" data-slug="Fruits" data-group="Farm produce" data-states="Fresh" data-search="fruits fruit fresh farm produce oranges mango pineapple banana">
+                                <div class="fd-cat-card-top">
+                                    <span class="fd-cat-thumb"><img src="assets/img/categorie/otoosin-fruits.png" alt="Fresh fruit from the farm" width="144" height="144" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-cat-id">
+                                        <h3 class="fd-cat-name">Fruits</h3>
+                                        <p class="fd-cat-group">Farm produce</p>
+                                    </div>
+                                </div>
+                                <p class="fd-cat-desc">Seasonal fruit from the farm, hand-picked and packed by the basket.</p>
+                                <ul class="fd-cat-stats" aria-label="Fruits product counts">
+                                    <li><span class="fd-cat-stat-label">Products</span><span class="fd-cat-stat-value fd-cat-total">1</span></li>
+                                    <li><span class="fd-cat-stat-label">Fresh</span><span class="fd-cat-stat-value fd-cat-state" data-state="Fresh">1</span></li>
+                                </ul>
+                                <div class="fd-cat-actions">
+                                    <a class="fd-prod-btn" href="admin-products.html?category=Fruits"><i class="fas fa-box" aria-hidden="true"></i>View products</a>
+                                    <a class="fd-prod-btn" href="product-category.html?category=Fruits" target="_blank" rel="noopener"><i class="far fa-eye" aria-hidden="true"></i>Storefront</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="fd-dash-empty" id="fd-cat-empty" hidden>
+                        <i class="far fa-search" aria-hidden="true"></i>
+                        <h3>No matching categories</h3>
+                        <p>No category matches the current search and type filter. Try different keywords or reset the filters below.</p>
+                        <div class="fd-dash-empty-actions">
+                            <button type="button" class="vs-btn fd-dash-btn" id="fd-cat-reset-empty">Clear search &amp; filters</button>
+                        </div>
+                    </div>
+
+                    <p class="fd-dash-hint">Counts show product lines in the current catalogue, not stock quantities. Category names and images follow the six storefront sections.</p>
+                </section>
+
+                <p class="fd-dash-foot-note">
+                    Copyright <i class="far fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. Farm admin.
+                </p>
+            </main>
+        </div>
+    </div>
+
+    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
+         customer cart store can never leak into the admin. -->
+    <script src="assets/js/fd-admin.js?v=6.8"></script>
+    <script src="assets/js/fd-theme.js"></script>
+    <script src="assets/js/fd-admin-store.js"></script>
+    <script src="assets/js/fd-admin-products-data.js"></script>
+    <script src="assets/js/fd-admin-categories.js"></script>
+
+</body>
+
+</html>

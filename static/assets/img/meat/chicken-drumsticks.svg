@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of fresh chicken drumsticks">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8dda9"/><stop offset="1" stop-color="#dda55e"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="292" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <ellipse cx="240" cy="258" rx="180" ry="52" fill="#fffdf8"/>
+  <g stroke="#cb924f" stroke-width="4">
+    <g transform="rotate(-14 170 190)">
+      <path d="M128 106c34-12 66 8 70 42 4 32-16 52-42 54-30 2-50-20-46-50 2-20 8-38 18-46Z" fill="url(#skin)"/>
+      <path d="M190 194l40 58" stroke="#efe1c9" stroke-width="18" stroke-linecap="round"/>
+      <circle cx="236" cy="258" r="15" fill="#f4ead8" stroke="#d8c3a1"/>
+    </g>
+    <g transform="rotate(12 300 200)">
+      <path d="M268 118c34-12 66 8 70 42 4 32-16 52-42 54-30 2-50-20-46-50 2-20 8-38 18-46Z" fill="url(#skin)"/>
+      <path d="M330 206l38 56" stroke="#efe1c9" stroke-width="18" stroke-linecap="round"/>
+      <circle cx="374" cy="268" r="15" fill="#f4ead8" stroke="#d8c3a1"/>
+    </g>
+    <g transform="rotate(2 228 246)">
+      <path d="M176 168c30-10 58 6 62 36 4 28-14 46-36 48-26 2-44-18-40-44 2-18 6-33 14-40Z" fill="url(#skin)"/>
+      <path d="M230 246l32 46" stroke="#efe1c9" stroke-width="16" stroke-linecap="round"/>
+      <circle cx="266" cy="298" r="13" fill="#f4ead8" stroke="#d8c3a1"/>
+    </g>
+  </g>
+  <path d="M76 292c18-16 38-17 54-6M344 286c18-13 34-12 48-3" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="358" cy="302" r="7" fill="#8a3f3f"/><circle cx="376" cy="294" r="6" fill="#a24b46"/>
+</svg>

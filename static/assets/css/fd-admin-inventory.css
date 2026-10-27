@@ -1,0 +1,77 @@
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Inventory page (admin-inventory.html only)
+   --------------------------------------------------------------------------
+   Loaded only by admin-inventory.html so the shared fd-admin.css stays
+   untouched. The product grid reuses the exact category-card design from
+   fd-admin-categories.css; this file only adds inventory toolbar widths,
+   the catalogue ID style and availability colour.
+   ========================================================================== */
+
+.fd-admin .fd-inv-toolbar .fd-shop-search {
+  flex: 1 1 260px;
+}
+
+.fd-admin .fd-inv-toolbar #fd-inv-category {
+  width: 158px;
+}
+
+.fd-admin .fd-inv-toolbar #fd-inv-state {
+  width: 140px;
+}
+
+.fd-admin .fd-inv-toolbar #fd-inv-availability {
+  width: 168px;
+}
+
+.fd-admin .fd-inv-toolbar #fd-inv-sort {
+  width: 190px;
+}
+
+.fd-admin .fd-inv-toolbar #fd-inv-clear {
+  flex: 0 0 auto;
+  min-width: 160px;
+  height: 50px;
+  min-height: 50px;
+  line-height: 21px;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+.fd-admin .fd-inv-grid {
+  margin-top: 18px;
+}
+
+.fd-admin .fd-inv-code {
+  font-size: 12.5px;
+  color: inherit;
+  background: none;
+  padding: 0;
+}
+
+/* Keep the category-card stat chip unchanged and colour only the status
+   value so availability stays scannable in both themes. */
+.fd-admin .fd-inv-status.is-ok {
+  color: var(--fd-brand-green-text);
+}
+
+.fd-admin .fd-inv-status.is-warn {
+  color: var(--fd-warn-text);
+}
+
+.fd-admin .fd-inv-status.is-bad {
+  color: var(--fd-error-text);
+}
+
+@media (max-width: 767px) {
+  .fd-admin .fd-inv-toolbar .fd-shop-search,
+  .fd-admin .fd-inv-toolbar .fd-shop-select,
+  .fd-admin .fd-inv-toolbar #fd-inv-category,
+  .fd-admin .fd-inv-toolbar #fd-inv-state,
+  .fd-admin .fd-inv-toolbar #fd-inv-availability,
+  .fd-admin .fd-inv-toolbar #fd-inv-sort,
+  .fd-admin .fd-inv-toolbar #fd-inv-clear {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+}

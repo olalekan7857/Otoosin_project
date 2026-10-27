@@ -1,0 +1,973 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>O’TOOSIN Farms | Meats, Fish, Live Animals, Eggs, Veggies and Fruits</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <meta name="description" content="O’TOOSIN Farms delivers safe, healthy and nutritious foods to your doorstep. Shop pork, chicken, turkey, beef, goat meat, fish, live animals, eggs, veggies and fruits.">
+    <meta name="keywords" content="O’TOOSIN Farms, farm products, pork, chicken, turkey, beef, goat meat, fish, catfish, tilapia, live animals, eggs, veggies, fruits, Abeokuta delivery">
+    <meta name="robots" content="INDEX,FOLLOW">
+    <meta property="og:title" content="O’TOOSIN Farms | Safe, Healthy and Nutritious Foods">
+    <meta property="og:description" content="Delivering safe, healthy, and nutritious foods at your doorstep. Shop O’TOOSIN Meats, Fish, Live Animals, Eggs, Veggies and Fruits.">
+    <meta property="og:type" content="website">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!--==============================
+	  Google Fonts
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <!-- Magnific Popup -->
+    <link rel="stylesheet" href="{% static 'assets/css/magnific-popup.min.css' %}">
+    <!-- Slick Slider -->
+    <link rel="stylesheet" href="{% static 'assets/css/slick.min.css' %}">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
+    <!-- Storefront foundation overrides -->
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css?v=8.1' %}">
+    <!-- Light/dark token layer -->
+    <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}">
+    <!-- Homepage-specific styling -->
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin.css?v=8.0' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-mobile-nav.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-footer.css?v=2.0' %}">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "O’TOOSIN Farms",
+      "slogan": "Delivering safe, healthy, and nutritious foods at your doorstep . . .",
+      "logo": "assets/img/harvest_castle/of_favicon.png",
+      "description": "A farm-products business offering meats, fish, live animals, eggs, veggies and fruits. Shop the full range online."
+    }
+    </script>
+
+    <script src="{% static 'assets/js/otoosin-mobile-nav.js' %}" defer></script>
+    <script src="{% static 'assets/js/otoosin-header.js' %}" defer></script>
+</head>
+
+<body class="otoosin-home">
+
+    <a class="fd-skip-link" href="#fd-main">Skip to main content</a>
+
+    <!--[if lte IE 9]>
+    	<p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+  <![endif]-->
+
+    <!--==============================
+    Mobile Menu
+    ============================== -->
+    <div class="vs-menu-wrapper" id="fd-mobile-menu">
+        <div class="vs-menu-area text-center">
+            <button class="vs-menu-toggle" aria-label="Close menu" aria-expanded="false" aria-controls="fd-mobile-menu"><i class="fal fa-times" aria-hidden="true"></i></button>
+            <div class="mobile-logo">
+                <a href="index.html" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
+            </div>
+            <nav class="vs-mobile-menu" aria-label="Mobile navigation">
+                <ul>
+                    <li><a href="index.html" aria-current="page">Home</a></li>
+                    <li><a href="product.html">Shop All</a></li>
+                    <li>
+                        <a href="#categories">Product Categories</a>
+                        <ul>
+                            <li><a href="product.html">Meats</a></li>
+                            <li><a href="product-category.html?category=Fish">Fish</a></li>
+                            <li><a href="product.html">Live Animals</a></li>
+                            <li><a href="product.html">Eggs</a></li>
+                            <li><a href="product.html">Veggies</a></li>
+                            <li><a href="product.html">Fruits</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#states">Freshness</a>
+                        <ul>
+                            <li><a href="product.html?state=fresh">Fresh</a></li>
+                            <li><a href="product.html?state=fried">Fried</a></li>
+                            <li><a href="product.html?state=frozen">Frozen</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="cart.html">Cart</a></li>
+                </ul>
+            </nav>
+            <form class="oto-mobile-search" action="product.html" method="get" role="search">
+                <label class="visually-hidden" for="oto-mobile-search-input">Search products</label>
+                <input id="oto-mobile-search-input" name="q" type="search" placeholder="Search products">
+                <button type="submit" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!--==============================
+    Cart Side bar
+    ============================== -->
+    <div class="sideCart-wrapper offcanvas-wrapper" role="dialog" aria-modal="true" aria-label="Shopping cart preview">
+        <div class="sidemenu-content">
+            <button class="closeButton border-theme bg-theme-hover sideMenuCls2" aria-label="Close cart preview"><i class="far fa-times" aria-hidden="true"></i></button>
+            <div class="widget widget_shopping_cart">
+                <h3 class="widget_title">Shopping cart</h3>
+                <div class="widget_shopping_cart_content">
+                    <div class="fd-cart-empty">
+                        <i class="far fa-shopping-basket" aria-hidden="true"></i>
+                        <p><strong>Your cart is empty.</strong></p>
+                        <p>Browse the farm shop and add the first item you need.</p>
+                    </div>
+                    <div class="buttons">
+                        <a href="product.html" class="vs-btn">Shop All Products</a>
+                        <a href="cart.html" class="fd-view-cart-btn">View cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--==============================
+    Header Area
+    ==============================-->
+    <header class="vs-header header-layout1">
+        <div class="header-top oto-announcement">
+            <div class="container">
+                <div class="oto-announcement-inner">
+                    <p class="mb-0"><i class="fas fa-truck" aria-hidden="true"></i> Doorstep delivery in Abeokuta &middot; Park delivery &middot; Pickup</p>
+                    <a href="#delivery-pickup">Delivery and pickup details <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="sticky-wrapper">
+            <div class="sticky-active">
+                <div class="menu-area">
+                    <div class="container">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <div class="header-logo">
+                                    <a href="index.html" class="fd-logo oto-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async"></a>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <nav class="main-menu menu-style1 d-none d-lg-block" aria-label="Primary navigation">
+                                    <ul>
+                                        <li><a href="index.html" aria-current="page">Home</a></li>
+                                        <li><a href="product.html">Shop All</a></li>
+                                        <li class="oto-has-dropdown">
+                                            <a href="#categories">Product Categories</a>
+                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-categories" aria-haspopup="true" aria-label="Show Product Categories menu">
+                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <ul class="sub-menu" id="oto-submenu-categories">
+                                                <li><a href="product.html">Meats</a></li>
+                                                <li><a href="product-category.html?category=Fish">Fish</a></li>
+                                                <li><a href="product.html">Live Animals</a></li>
+                                                <li><a href="product.html">Eggs</a></li>
+                                                <li><a href="product.html">Veggies</a></li>
+                                                <li><a href="product.html">Fruits</a></li>
+                                            </ul>
+                                        </li>
+                                        <li class="oto-has-dropdown">
+                                            <a href="#states">Freshness</a>
+                                            <button type="button" class="oto-dropdown-toggle" aria-expanded="false" aria-controls="oto-submenu-states" aria-haspopup="true" aria-label="Show Freshness menu">
+                                                <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                            </button>
+                                            <ul class="sub-menu" id="oto-submenu-states">
+                                                <li><a href="product.html?state=fresh">Fresh</a></li>
+                                                <li><a href="product.html?state=fried">Fried</a></li>
+                                                <li><a href="product.html?state=frozen">Frozen</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="about.html">About Us</a></li>
+                                        <li><a href="contact.html">Contact</a></li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="col-auto d-lg-none">
+                                <div class="fd-header-actions">
+                                    <button type="button" class="icon-btn fd-mobile-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                                    </button>
+                                    <a href="cart.html" class="icon-btn fd-mobile-btn fd-cart-btn" aria-label="View cart">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <span class="badge" id="fd-cart-count-mobile">0</span>
+                                    </a>
+                                    <button class="vs-menu-toggle d-inline-block" aria-label="Open menu" aria-expanded="false" aria-controls="fd-mobile-menu">
+                                        <i class="fal fa-bars" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-auto d-none d-lg-block">
+                                <div class="header-icons fd-header-actions">
+                                    <a href="#find-products" class="icon-btn" aria-label="Search products">
+                                        <i class="fas fa-search" aria-hidden="true"></i>
+                                    </a>
+                                    <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                                        <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                                        <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                                    </button>
+                                    <button type="button" class="icon-btn sideCartToggler fd-cart-btn" aria-label="Open cart preview">
+                                        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
+                                        <span class="badge" id="fd-cart-count">0</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="fd-main">
+
+        <!--==============================
+        Hero
+        ============================== -->
+        <section class="oto-hero" aria-labelledby="hero-title">
+            <div class="container">
+                <div class="row g-4 g-lg-5 align-items-center">
+                    <div class="col-lg-6">
+                        <div class="hero-content oto-hero-content">
+                            <span class="fd-hero-tag oto-hero-tag">Meats &middot; Fish &middot; Live Animals &middot; Eggs &middot; Veggies &middot; Fruits</span>
+                            <h1 class="hero-title" id="hero-title">O’TOOSIN Farms - delivering safe, healthy, and nutritious foods at your doorstep . . .</h1>
+                            <p class="hero-text">Shop meats, fish, live animals, eggs, veggies and fruits from one complete farm business. Add what you need to your cart, then choose delivery or pickup.</p>
+                            <div class="oto-hero-actions">
+                                <a href="product.html" class="vs-btn">Shop All Products</a>
+                                <a href="#categories" class="fd-ghost-btn oto-hero-secondary">Explore Product Categories</a>
+                            </div>
+                            <form class="oto-search" id="find-products" action="product.html" method="get" role="search">
+                                <i class="fas fa-search" aria-hidden="true"></i>
+                                <label class="visually-hidden" for="oto-home-search">Search products</label>
+                                <input id="oto-home-search" name="q" type="search" placeholder="Search meats, fish, live animals, eggs, veggies and fruits" autocomplete="off">
+                                <button class="vs-btn" type="submit">Search</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="oto-hero-media">
+                            <img class="oto-hero-photo"
+                                src="{% static 'assets/img/categorie/otoosin-farms.png' %}"
+                                width="1312" height="1199"
+                                alt="Assorted O’TOOSIN Farms meats, fish, eggs, vegetables and fruits"
+                                decoding="async" fetchpriority="high">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        Service strip
+        ============================== -->
+        <div class="oto-service-strip">
+            <div class="container">
+                <div class="oto-service-grid">
+                    <div class="oto-service-item">
+                        <span class="oto-service-icon"><i class="fas fa-seedling" aria-hidden="true"></i></span>
+                        <div>
+                            <p class="oto-service-title">One farm storefront</p>
+                            <p class="oto-service-text">Meats, fish, live animals, eggs, veggies and fruits.</p>
+                        </div>
+                    </div>
+                    <div class="oto-service-item">
+                        <span class="oto-service-icon"><i class="fas fa-credit-card" aria-hidden="true"></i></span>
+                        <div>
+                            <p class="oto-service-title">Clear checkout</p>
+                            <p class="oto-service-text">Delivery fees are included in your total at checkout. Complete your order and payment securely at checkout.</p>
+                        </div>
+                    </div>
+                    <div class="oto-service-item">
+                        <span class="oto-service-icon"><i class="fas fa-truck" aria-hidden="true"></i></span>
+                        <div>
+                            <p class="oto-service-title">Doorstep, park or pickup</p>
+                            <p class="oto-service-text">Choose delivery or pickup when you check out.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--==============================
+        Product categories
+        ============================== -->
+        <section class="space-top" id="categories" aria-labelledby="categories-title">
+            <div class="container">
+                <div class="title-area text-center mb-5">
+                    <span class="sec-subtitle">Shop by category</span>
+                    <h2 class="sec-title" id="categories-title">A complete farm shop, category by category</h2>
+                    <p class="oto-section-lead">Choose from Meats, Fish, Live Animals, Eggs, Veggies and Fruits. Each category takes you to the right shopping option for what you need.</p>
+                </div>
+                <div class="fd-cat-grid oto-cat-grid oto-category-grid">
+                    <div class="fd-cat-cell">
+                        <div class="categorie-style1 oto-cat-card">
+                            <a class="fd-categorie-link" href="product-category.html?category=Meats" aria-label="Shop Meats">
+                                <div class="categorie-img cat-meats" aria-hidden="true"></div>
+                                <div class="categorie-content">
+                                    <h3 class="categorie-title">O’TOOSIN Meats</h3>
+                                    <p class="categorie-text">Pork, chicken, turkey, beef and goat meat, fresh, fried or frozen where available.</p>
+                                    <span class="oto-cat-cta">Shop Meats <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="fd-cat-cell">
+                        <div class="categorie-style1 oto-cat-card">
+                            <a class="fd-categorie-link" href="product-category.html?category=Fish" aria-label="Shop Fish">
+                                <div class="categorie-img cat-fish" aria-hidden="true"></div>
+                                <div class="categorie-content">
+                                    <h3 class="categorie-title">O’TOOSIN Fish</h3>
+                                    <p class="categorie-text">Catfish and tilapia, available live or processed depending on your order.</p>
+                                    <span class="oto-cat-cta">Shop Fish <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="fd-cat-cell">
+                        <div class="categorie-style1 oto-cat-card">
+                            <a class="fd-categorie-link" href="product-category.html?category=Live-Animals" aria-label="Shop Live Animals">
+                                <div class="categorie-img cat-live" aria-hidden="true"></div>
+                                <div class="categorie-content">
+                                    <h3 class="categorie-title">Live Animals</h3>
+                                    <p class="categorie-text">Live chickens, turkeys, goats, pigs and other supported animals.</p>
+                                    <span class="oto-cat-cta">Shop Live Animals <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="fd-cat-cell">
+                        <div class="categorie-style1 oto-cat-card">
+                            <a class="fd-categorie-link" href="product-category.html?category=Eggs" aria-label="Shop Eggs">
+                                <div class="categorie-img cat-eggs" aria-hidden="true"></div>
+                                <div class="categorie-content">
+                                    <h3 class="categorie-title">O’TOOSIN Eggs</h3>
+                                    <p class="categorie-text">Fresh farm eggs, available as their own category.</p>
+                                    <span class="oto-cat-cta">Shop Eggs <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="fd-cat-cell">
+                        <div class="categorie-style1 oto-cat-card">
+                            <a class="fd-categorie-link" href="product-category.html?category=Veggies" aria-label="Shop Veggies">
+                                <div class="categorie-img cat-veggies" aria-hidden="true"></div>
+                                <div class="categorie-content">
+                                    <h3 class="categorie-title">O’TOOSIN Veggies</h3>
+                                    <p class="categorie-text">Fresh vegetables from the farm for everyday cooking.</p>
+                                    <span class="oto-cat-cta">Shop Veggies <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="fd-cat-cell">
+                        <div class="categorie-style1 oto-cat-card">
+                            <a class="fd-categorie-link" href="product-category.html?category=Fruits" aria-label="Shop Fruits">
+                                <div class="categorie-img cat-fruits" aria-hidden="true"></div>
+                                <div class="categorie-content">
+                                    <h3 class="categorie-title">O’TOOSIN Fruits</h3>
+                                    <p class="categorie-text">Fresh fruits from the farm for the table.</p>
+                                    <span class="oto-cat-cta">Shop Fruits <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        Product states
+        ============================== -->
+        <section class="space bg-smoke" id="states" aria-labelledby="states-title">
+            <div class="container">
+                <div class="title-area text-center mb-5">
+                    <span class="sec-subtitle">For meat and fish</span>
+                    <h2 class="sec-title" id="states-title">Choose the state that suits your kitchen</h2>
+                    <p class="oto-section-lead">Fresh, fried and frozen apply to meat and fish where available. Live animals, eggs, veggies and fruits are listed separately in their own categories.</p>
+                </div>
+                <div class="oto-state-grid">
+                    <a class="oto-state-card" href="product.html?state=fresh" aria-label="Browse fresh products">
+                        <span class="oto-state-icon"><i class="fas fa-drumstick-bite" aria-hidden="true"></i></span>
+                        <span class="oto-state-body">
+                            <span class="oto-state-title">Fresh</span>
+                            <span class="oto-state-text">Freshly prepared meat and fish for cooking soon.</span>
+                        </span>
+                        <i class="fas fa-arrow-right oto-state-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a class="oto-state-card" href="product.html?state=fried" aria-label="Browse fried products">
+                        <span class="oto-state-icon"><i class="fas fa-sun" aria-hidden="true"></i></span>
+                        <span class="oto-state-body">
+                            <span class="oto-state-title">Fried</span>
+                            <span class="oto-state-text">Fried meat and fish options for a longer pantry life.</span>
+                        </span>
+                        <i class="fas fa-arrow-right oto-state-arrow" aria-hidden="true"></i>
+                    </a>
+                    <a class="oto-state-card" href="product.html?state=frozen" aria-label="Browse frozen products">
+                        <span class="oto-state-icon"><i class="fas fa-snowflake" aria-hidden="true"></i></span>
+                        <span class="oto-state-body">
+                            <span class="oto-state-title">Frozen</span>
+                            <span class="oto-state-text">Frozen meat and fish for planning ahead.</span>
+                        </span>
+                        <i class="fas fa-arrow-right oto-state-arrow" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        Product discovery
+        ============================== -->
+        <section class="space" id="discover" aria-labelledby="discover-title">
+            <div class="container">
+                <div class="oto-discovery-head-row">
+                    <div class="oto-discovery-copy">
+                        <span class="sec-subtitle">Popular picks</span>
+                        <h2 id="discover-title">Popular Picks from O’TOOSIN Farms</h2>
+                        <p>A selection from across the farm, with the unit and price shown on each item. Choose fresh, fried or frozen where the product offers it.</p>
+                    </div>
+                    <div class="oto-discovery-actions">
+                        <a href="product.html" class="vs-btn">Shop All Products</a>
+                        <a href="product.html" class="fd-ghost-btn">Buy Meats</a>
+                    </div>
+                </div>
+                <!--
+                  DEMO PRODUCTS (static prototype).
+                  Illustrative Naira prices only; Django will replace these
+                  cards with live product records. Same product-style1 markup
+                  as product.html so both pages share one card language.
+                -->
+                <div class="fd-section-view" id="fd-home-toolbar">
+                    <p class="fd-result-count" id="fd-home-count" role="status" aria-live="polite"></p>
+                    <div class="fd-view-toggle" role="group" aria-label="Change product view">
+                        <button type="button" class="icon-btn" data-shop-view="grid" aria-pressed="true" aria-label="Grid view"><i class="fas fa-th" aria-hidden="true"></i></button>
+                        <button type="button" class="icon-btn" data-shop-view="list" aria-pressed="false" aria-label="List view"><i class="fas fa-list" aria-hidden="true"></i></button>
+                    </div>
+                </div>
+                <div class="row g-4" id="fd-home-grid">
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" data-product-id="demo-pork-chops" data-product-name="Pork Chops" data-price="4800" data-unit="1kg" data-category="Pork" data-stock="in" data-type="Pork" data-condition="Fresh">
+                            <span class="fd-badge">Fresh</span>
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/meat/pork-chops.svg' %}" alt="Fresh pork chops" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Meats &middot; Pork</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-pork-chops">Pork Chops</a></h3>
+                                <p class="fd-product-unit">1kg pack</p>
+                                <p class="fd-product-desc">Tender pork chops with a rich flavour, great for grilling or pan-searing.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦4,800</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-pork-chops">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-pork-chops" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" data-product-id="demo-whole-chicken" data-product-name="Whole Chicken" data-price="3500" data-unit="1kg" data-category="Chicken" data-stock="in" data-type="Chicken" data-condition="Fresh">
+                            <span class="fd-badge">Fresh</span>
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/meat/whole-chicken.svg' %}" alt="Whole fresh chicken" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Meats &middot; Chicken</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-whole-chicken">Whole Chicken</a></h3>
+                                <p class="fd-product-unit">1kg pack</p>
+                                <p class="fd-product-desc">A whole chicken for roasting, grilling or cutting into pieces for stews.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦3,500</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-whole-chicken">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-whole-chicken" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" data-product-id="demo-beef-steak" data-product-name="Beef Steak" data-price="7500" data-unit="1kg" data-category="Beef" data-stock="in" data-type="Beef" data-condition="Fresh">
+                            <span class="fd-badge">Fresh</span>
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/meat/beef-steak.svg' %}" alt="Fresh marbled beef steak" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Meats &middot; Beef</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-beef-steak">Beef Steak</a></h3>
+                                <p class="fd-product-unit">1kg pack</p>
+                                <p class="fd-product-desc">Marbled beef steak with a bold flavour and a tender bite.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦7,500</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-beef-steak">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-beef-steak" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" data-product-id="demo-fresh-catfish" data-product-name="Fresh Catfish" data-price="3200" data-unit="1kg" data-category="Fish" data-stock="in" data-type="Fish" data-condition="Fresh">
+                            <span class="fd-badge">Fresh</span>
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/meat/catfish.svg' %}" alt="Fresh whole catfish" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Fish &middot; Catfish</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-fresh-catfish">Fresh Catfish</a></h3>
+                                <p class="fd-product-unit">1kg pack</p>
+                                <p class="fd-product-desc">Whole fresh catfish, cleaned and ready for pepper soup or grilling.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦3,200</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-fresh-catfish">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-fresh-catfish" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <!-- DEMO PRODUCTS: static category-coverage entries with illustrative prices. -->
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" id="popular-live-chicken" data-product-id="demo-live-chicken" data-product-name="Live Chicken" data-price="9500" data-unit="1 live chicken" data-category="Live Animals" data-type="Live Animals">
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/families/live-animals-card.svg' %}" alt="Illustration of live farm chickens and a goat" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Live Animals</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-live-chicken">Live Chicken</a></h3>
+                                <p class="fd-product-unit">1 live chicken</p>
+                                <p class="fd-product-desc">A live chicken selected from the farm, available as part of the Live Animals category.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦9,500</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-live-chicken">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-live-chicken" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" id="popular-farm-eggs" data-product-id="demo-farm-eggs" data-product-name="Farm Eggs" data-price="3800" data-unit="1 crate" data-category="Eggs" data-type="Eggs">
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/families/eggs-card.svg' %}" alt="Illustration of a tray of fresh farm eggs" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Eggs</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-farm-eggs">Farm Eggs</a></h3>
+                                <p class="fd-product-unit">1 crate</p>
+                                <p class="fd-product-desc">Fresh eggs from the farm, packed as a crate for household cooking and baking.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦3,800</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-farm-eggs">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-farm-eggs" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" id="popular-fresh-tomatoes" data-product-id="demo-fresh-tomatoes" data-product-name="Fresh Tomatoes" data-price="2500" data-unit="1 basket" data-category="Veggies" data-type="Veggies">
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/families/vegetables-card.svg' %}" alt="Illustration of a basket of fresh vegetables" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Veggies</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-fresh-tomatoes">Fresh Tomatoes</a></h3>
+                                <p class="fd-product-unit">1 basket</p>
+                                <p class="fd-product-desc">Fresh farm tomatoes for stews, sauces and everyday cooking.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦2,500</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-fresh-tomatoes">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-fresh-tomatoes" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <article class="product-style1" id="popular-sweet-oranges" data-product-id="demo-sweet-oranges" data-product-name="Sweet Oranges" data-price="3000" data-unit="1 basket" data-category="Fruits" data-type="Fruits">
+                            <div class="product-img">
+                                <img src="{% static 'assets/img/families/fruits-card.svg' %}" alt="Illustration of a basket of fresh fruits" width="480" height="360" loading="lazy" decoding="async">
+                            </div>
+                            <div class="product-about">
+                                <span class="fd-product-cat">O’TOOSIN Fruits</span>
+                                <h3 class="product-title"><a href="product-details.html?id=demo-sweet-oranges">Sweet Oranges</a></h3>
+                                <p class="fd-product-unit">1 basket</p>
+                                <p class="fd-product-desc">Sweet farm oranges, packed in a basket for snacking and fresh juice.</p>
+                                <div class="fd-buy-row">
+                                    <span class="price">₦3,000</span>
+                                    <button type="button" class="vs-btn fd-add-btn" data-add-to-cart="demo-sweet-oranges">Add to Cart</button>
+                                </div>
+                                <div class="fd-secondary-row">
+                                    <a href="product-details.html?id=demo-sweet-oranges" class="fd-view-link">View product</a>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        Delivery and pickup
+        ============================== -->
+        <section class="oto-payment-section" id="delivery-pickup" aria-labelledby="delivery-title">
+            <div class="container">
+                <div class="fd-cta-band oto-payment-band oto-fulfil-band">
+                    <div class="row g-4 align-items-start">
+                        <div class="col-lg-5">
+                            <span class="oto-band-kicker">Delivery and pickup</span>
+                            <h2 id="delivery-title">Choose How to Receive Your Order</h2>
+                            <p>Doorstep delivery is currently available in Abeokuta. Park delivery serves selected destinations such as Lagos, Ibadan and Ijebu, subject to approved arrangements. Pickup is available at selected pickup locations; choose your location at checkout.</p>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="oto-fulfil-options">
+                                <article class="oto-fulfil-option">
+                                    <span class="oto-payment-icon"><i class="fas fa-motorcycle" aria-hidden="true"></i></span>
+                                    <h3>Doorstep delivery</h3>
+                                    <p>Currently available in Abeokuta. The applicable delivery fee is included at checkout based on your delivery zone.</p>
+                                </article>
+                                <article class="oto-fulfil-option">
+                                    <span class="oto-payment-icon"><i class="fas fa-bus" aria-hidden="true"></i></span>
+                                    <h3>Park delivery</h3>
+                                    <p>Available to selected destinations, including Lagos, Ibadan and Ijebu, subject to the farm's approved delivery arrangements.</p>
+                                </article>
+                                <article class="oto-fulfil-option">
+                                    <span class="oto-payment-icon"><i class="fas fa-store" aria-hidden="true"></i></span>
+                                    <h3>Pickup</h3>
+                                    <p>Choose a pickup location when pickup is available for your order.</p>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="oto-payment-note"><i class="fas fa-info-circle" aria-hidden="true"></i> Complete your order and payment securely at checkout. Your total includes your selected products and the applicable delivery fee.</p>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        Why O’TOOSIN
+        ============================== -->
+        <section class="space bg-smoke" id="why-otoosin" aria-labelledby="why-title">
+            <div class="container">
+                <div class="title-area text-center mb-5">
+                    <span class="sec-subtitle">Why O’TOOSIN Farms</span>
+                    <h2 class="sec-title" id="why-title">Built around the whole farm shop</h2>
+                    <p class="oto-section-lead">Browse across product categories, choose the right quantity and unit, then decide how you want to receive your order.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step oto-feature-card">
+                            <span class="oto-feature-icon"><i class="fas fa-seedling" aria-hidden="true"></i></span>
+                            <h3>One farm storefront</h3>
+                            <p>Shop meats, fish, live animals, eggs, veggies and fruits.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step oto-feature-card">
+                            <span class="oto-feature-icon"><i class="fas fa-balance-scale" aria-hidden="true"></i></span>
+                            <h3>Order in the right unit</h3>
+                            <p>Meat and fish are sold by the kilogram. Other categories use the unit that suits each product.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step oto-feature-card">
+                            <span class="oto-feature-icon"><i class="fas fa-credit-card" aria-hidden="true"></i></span>
+                            <h3>Clear totals at checkout</h3>
+                            <p>Doorstep delivery fees are included in your total. Complete your order and payment securely at checkout.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step oto-feature-card">
+                            <span class="oto-feature-icon"><i class="fas fa-route" aria-hidden="true"></i></span>
+                            <h3>Delivery &amp; pickup</h3>
+                            <p>Doorstep delivery in Abeokuta, park delivery on approved routes, or pickup from a selected pickup location.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        How ordering works
+        ============================== -->
+        <section class="oto-how" id="how-it-works" aria-labelledby="how-title">
+            <div class="container">
+                <div class="title-area text-center mb-5">
+                    <span class="sec-subtitle">How ordering works</span>
+                    <h2 class="sec-title" id="how-title">Four steps from browsing to delivery or pickup</h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step">
+                            <span class="fd-step-num">01</span>
+                            <h3>Browse the farm shop</h3>
+                            <p>Choose a product category, then open the item you need or browse the related range.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step">
+                            <span class="fd-step-num">02</span>
+                            <h3>Choose quantity and unit</h3>
+                            <p>Set the quantity shown for that product and add it to your cart.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step">
+                            <span class="fd-step-num">03</span>
+                            <h3>Review your order</h3>
+                            <p>Enter your contact and delivery details, choose how to receive the order, and review the total before finishing.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-3">
+                        <div class="fd-step">
+                            <span class="fd-step-num">04</span>
+                            <h3>Complete your order</h3>
+                            <p>Complete your order and payment securely at checkout. Delivery or pickup is then prepared for the option you chose.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="oto-policy-note">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
+                    <p><strong>Delivery and pickup:</strong> Doorstep delivery is currently limited to Abeokuta. Delivery fees are included at checkout based on your delivery zone, and park delivery is subject to approved arrangements.</p>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        FAQ
+        ============================== -->
+        <section class="space bg-smoke" id="faq" aria-labelledby="faq-title">
+            <div class="container">
+                <div class="row g-4 g-lg-5">
+                    <div class="col-lg-4">
+                        <div class="oto-faq-intro">
+                            <span class="sec-subtitle">Questions</span>
+                            <h2 class="sec-title" id="faq-title">Good to know before you order</h2>
+                            <p>If your question is not covered here, the contact page is the place to ask.</p>
+                            <a href="contact.html" class="vs-btn">Contact O’TOOSIN Farms</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="accordion accordion-style1 fd-faq oto-faq" id="otoFaq">
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-1">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-1" aria-expanded="true" aria-controls="faq-collapse-1">
+                                        What products can I order from O’TOOSIN Farms?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-1" class="accordion-collapse collapse show" aria-labelledby="faq-heading-1" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>You can shop meats, fish, live animals, eggs, veggies and fruits. Meats and fish are ordered by the kilogram, while other categories use the unit shown on each product.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-2">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-2" aria-expanded="false" aria-controls="faq-collapse-2">
+                                        How do I browse and order the different categories?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-2" class="accordion-collapse collapse" aria-labelledby="faq-heading-2" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>Use Product Categories to open the range you need, choose an item and its quantity, then add it to your cart. The same cart is used across the farm shop.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-3">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-3" aria-expanded="false" aria-controls="faq-collapse-3">
+                                        Where do you deliver?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-3" class="accordion-collapse collapse" aria-labelledby="faq-heading-3" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>Doorstep delivery is currently available in Abeokuta. Park delivery is available to selected destinations, including neighbouring destinations such as Lagos, Ibadan and Ijebu, subject to the farm’s approved delivery arrangements.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-4">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-4" aria-expanded="false" aria-controls="faq-collapse-4">
+                                        How are delivery fees handled?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-4" class="accordion-collapse collapse" aria-labelledby="faq-heading-4" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>For delivery orders, the applicable delivery fee is included at checkout based on your delivery zone. Delivery is not free, and charges depend on your destination.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-5">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-5" aria-expanded="false" aria-controls="faq-collapse-5">
+                                        How do I pay for a pickup order?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-5" class="accordion-collapse collapse" aria-labelledby="faq-heading-5" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>Complete your order and payment securely at checkout, then collect from your selected pickup location. Pickup orders have no delivery fee.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-6">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-6" aria-expanded="false" aria-controls="faq-collapse-6">
+                                        How do I choose a pickup location?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-6" class="accordion-collapse collapse" aria-labelledby="faq-heading-6" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>Pickup location options are shown where pickup is available for your order. Select the location that suits you before completing checkout.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h3 class="accordion-header" id="faq-heading-7">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-7" aria-expanded="false" aria-controls="faq-collapse-7">
+                                        How can I contact the farm for help?
+                                    </button>
+                                </h3>
+                                <div id="faq-collapse-7" class="accordion-collapse collapse" aria-labelledby="faq-heading-7" data-bs-parent="#otoFaq">
+                                    <div class="accordion-body">
+                                        <p>Visit the contact page to ask about products, delivery destinations or help with an order. Our team will confirm the details with you.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!--==============================
+        Contact CTA
+        ============================== -->
+        <section class="space-bottom" aria-labelledby="contact-cta-title">
+            <div class="container">
+                <div class="fd-cta-band oto-contact-band">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-8">
+                            <span class="oto-band-kicker">Contact</span>
+                            <h2 id="contact-cta-title">Need help with a product or your delivery?</h2>
+                            <p>Ask about products, delivery destinations or help with an order. No account needed.</p>
+                        </div>
+                        <div class="col-lg-4 text-lg-end">
+                            <a href="contact.html" class="vs-btn">Contact O’TOOSIN Farms</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!--==============================
+    Footer
+    ============================== -->
+    <footer class="footer-wrapper footer-layout1 oto-footer" id="footer">
+        <div class="container">
+            <div class="widget-area">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="widget footer-widget">
+                            <a href="index.html" class="fd-logo oto-logo oto-footer-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async" loading="lazy"></a>
+                            <p class="footer-text oto-footer-text">Delivering safe, healthy, and nutritious foods at your doorstep . . . Shop meats, fish, live animals, eggs, veggies and fruits.</p>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-2">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Shop</h3>
+                            <ul class="widget_categories">
+                                <li><a href="product.html">Shop All</a></li>
+                                <li><a href="product.html">Meats</a></li>
+                                <li><a href="product-category.html?category=Fish">Fish</a></li>
+                                <li><a href="product.html">Live Animals</a></li>
+                                <li><a href="product.html">Eggs</a></li>
+                                <li><a href="product.html">Veggies</a></li>
+                                <li><a href="product.html">Fruits</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Ordering</h3>
+                            <ul class="widget_categories">
+                                <li><a href="#how-it-works">How It Works</a></li>
+                                <li><a href="#delivery-pickup">Delivery &amp; Pickup</a></li>
+                                <li><a href="product.html?state=fresh">Fresh</a></li>
+                                <li><a href="product.html?state=fried">Fried</a></li>
+                                <li><a href="product.html?state=frozen">Frozen</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="widget footer-widget">
+                            <h3 class="widget_title">Company</h3>
+                            <ul class="widget_categories">
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="about.html">About Us</a></li>
+                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="#faq">FAQ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="copyright-wrap oto-copyright">
+                <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. All Rights Reserved.</p>
+                <ul class="oto-legal-links">
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms &amp; Conditions</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <!--==============================
+        All Js File
+    ============================== -->
+    <!-- Jquery -->
+    <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <!-- Slick Slider -->
+    <script src="{% static 'assets/js/slick.min.js' %}"></script>
+    <!-- Bootstrap -->
+    <script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <!-- Magnific Popup -->
+    <script src="{% static 'assets/js/jquery.magnific-popup.min.js' %}"></script>
+    <!-- Isotope Filter -->
+    <script src="{% static 'assets/js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'assets/js/isotope.pkgd.min.js' %}"></script>
+    <!-- Main Js File -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+    <!-- Storefront interactions and cart -->
+    <script src="{% static 'assets/js/fresh-direct.js?v=7.1' %}"></script>
+    <script src="{% static 'assets/js/fd-theme.js' %}"></script>
+
+    <div data-otoosin-mobile-nav-mount></div>
+</body>
+
+</html>

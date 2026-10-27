@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of a fresh whole catfish">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="fish" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6d7f8c"/><stop offset="1" stop-color="#3f4f5c"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="296" rx="176" ry="30" fill="#d6c2a8" opacity=".5"/>
+  <ellipse cx="240" cy="256" rx="182" ry="48" fill="#fffdf8"/>
+  <path d="M118 200c30-48 96-66 154-52 44 11 78 42 92 78-14 34-50 58-94 62-60 5-126-18-152-52-8-11-8-24 0-36Z" fill="url(#fish)" stroke="#2f3d48" stroke-width="4"/>
+  <path d="M108 214c-30-26-58-30-76-22 18 18 24 42 18 66 20-4 44-18 62-32" fill="#4c5d6a" stroke="#2f3d48" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M180 158c18-26 44-38 70-38-6 18-2 38 10 54" fill="#546673" stroke="#2f3d48" stroke-width="3"/>
+  <path d="M212 266c-6 24 2 42 18 50 8-16 24-26 42-28" fill="#546673" stroke="#2f3d48" stroke-width="3"/>
+  <g fill="none" stroke="#a8b7c0" stroke-width="3" opacity=".6">
+    <path d="M184 182c26 8 50 24 64 48"/>
+    <path d="M222 168c24 14 44 34 52 58"/>
+    <path d="M260 162c20 18 34 40 38 64"/>
+  </g>
+  <circle cx="342" cy="196" r="9" fill="#f5e9d4"/><circle cx="342" cy="196" r="4" fill="#1f2a32"/>
+  <path d="M356 232c18 4 34 14 44 28M352 176c14-10 26-14 40-14M294 252c-10 16-14 30-12 44" fill="none" stroke="#2f3d48" stroke-width="3" stroke-linecap="round"/>
+  <path d="M96 290c20-16 40-17 56-6M346 288c16-12 32-11 46-2" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="372" cy="302" r="7" fill="#d8a94f"/><circle cx="390" cy="294" r="6" fill="#d8a94f"/>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of stacked pork belly strips">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d3a271"/><stop offset="1" stop-color="#b97d4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="292" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <rect x="62" y="250" width="356" height="44" rx="20" fill="url(#wood)"/>
+  <ellipse cx="240" cy="254" rx="172" ry="36" fill="#fffdf8"/>
+  <g transform="translate(88 84)">
+    <rect x="10" y="116" width="286" height="46" rx="16" fill="#f2d3c9" stroke="#d8a092" stroke-width="4"/>
+    <path d="M20 134h266M20 146h266" stroke="#d97d7b" stroke-width="8" stroke-linecap="round" opacity=".75"/>
+    <rect x="28" y="72" width="272" height="46" rx="16" fill="#f4d8cf" stroke="#d8a092" stroke-width="4"/>
+    <path d="M38 90h252M38 102h252" stroke="#dd8b87" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+    <rect x="48" y="28" width="256" height="46" rx="16" fill="#f6ded6" stroke="#d8a092" stroke-width="4"/>
+    <path d="M58 46h236M58 58h236" stroke="#e0938e" stroke-width="8" stroke-linecap="round" opacity=".8"/>
+    <path d="M20 128c-8-18 2-40 18-52M290 120c14-14 20-32 14-50" fill="none" stroke="#e7b6a7" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <path d="M112 296c18-16 38-17 54-6M322 292c18-13 34-12 48-3" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="352" cy="304" r="7" fill="#8a3f3f"/><circle cx="370" cy="298" r="6" fill="#a24b46"/>
+</svg>

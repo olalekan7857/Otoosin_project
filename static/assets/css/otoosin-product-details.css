@@ -1,0 +1,487 @@
+/* ==========================================================================
+   O'Toosin Farms — Product Details
+   Scoped to .otoosin-product-details so Home, Shop and category pages keep
+   their existing layout. Shared header, footer, cards, cart and PDP shell
+   continue to come from fresh-direct.css / otoosin-shop.css.
+   ========================================================================== */
+
+.otoosin-product-details .oto-pdp-main {
+  padding-top: 36px;
+  padding-bottom: 64px;
+}
+
+.otoosin-product-details .fd-shop-intro.oto-pdp-intro {
+  /* Clears the header's negative overlap, as on the Shop intro. */
+  padding: 56px 0 24px;
+  border-bottom: 0;
+  background: var(--smoke-color);
+}
+
+.oto-pdp-intro .fd-breadcrumb {
+  margin-bottom: 10px;
+}
+
+.oto-pdp-intro .sec-subtitle {
+  margin-bottom: 0;
+  color: var(--body-color);
+}
+
+/* ---------- Gallery ---------- */
+.otoosin-product-details .fd-pdp-gallery.oto-pdp-gallery {
+  min-height: 0;
+  display: block;
+  padding: 14px;
+  background: linear-gradient(155deg, var(--white-color) 0%, var(--smoke-color) 100%);
+  border: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.oto-pdp-gallery .fd-badge {
+  top: 16px;
+  left: 16px;
+}
+
+.oto-pdp-gallery .fd-pdp-main-img {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.oto-pdp-gallery .fd-pdp-main-img img {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  height: auto;
+  margin: 0;
+  border-radius: calc(var(--fd-radius) - 6px);
+  object-fit: cover;
+}
+
+/* ---------- Info panel ---------- */
+.oto-pdp-info .fd-product-cat {
+  margin-bottom: 8px;
+}
+
+.oto-pdp-info .fd-pdp-name {
+  margin-bottom: 10px;
+}
+
+.oto-pdp-info .fd-pdp-price-row {
+  margin-bottom: 8px;
+}
+
+.oto-pdp-info .fd-pdp-unit {
+  font-weight: 600;
+}
+
+.oto-pdp-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 16px;
+}
+
+.oto-pdp-meta-row .fd-pdp-stock {
+  margin-bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.oto-pdp-meta-row .fd-pdp-stock::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.oto-pdp-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--white-color);
+  color: var(--title-color);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.oto-pdp-info .fd-pdp-desc {
+  margin-bottom: 20px;
+}
+
+.oto-pdp-info .fd-pdp-field-label {
+  margin-bottom: 9px;
+}
+
+.oto-pdp-info .fd-pdp-buy-row {
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.oto-pdp-info .fd-pdp-qty {
+  min-height: 54px;
+}
+
+.oto-pdp-info .fd-pdp-qty .oto-pdp-qty-unit {
+  min-width: 0;
+  margin-left: -2px;
+  margin-right: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--body-color);
+}
+
+.oto-pdp-info .fd-pdp-qty-input {
+  width: 48px;
+  max-width: 56px;
+}
+
+.oto-pdp-info .fd-pdp-entry-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.oto-pdp-info .fd-pdp-add,
+.oto-pdp-info .fd-pdp-buy {
+  min-height: 54px;
+}
+
+.oto-pdp-info .fd-pdp-buy {
+  flex: 1 1 220px;
+  justify-content: center;
+  border-color: var(--secondary-color);
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.oto-pdp-info .fd-pdp-buy:hover,
+.oto-pdp-info .fd-pdp-buy:focus-visible {
+  border-color: var(--title-color);
+  background: var(--title-color);
+  color: var(--white-color);
+}
+
+.oto-pdp-info .fd-pdp-total {
+  margin-bottom: 18px;
+}
+
+.oto-pdp-purchase-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid #f0dfae;
+  border-radius: var(--fd-radius);
+  background: #fff8e5;
+}
+
+.oto-pdp-purchase-note i {
+  margin-top: 2px;
+  color: var(--secondary-color);
+  font-size: 17px;
+}
+
+.oto-pdp-purchase-note p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--body-color);
+}
+
+.oto-pdp-purchase-note strong {
+  color: var(--title-color);
+}
+
+.oto-pdp-info .fd-pdp-facts.oto-pdp-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+  margin-bottom: 18px;
+  padding: 18px 20px;
+  border-color: var(--border-color);
+  background: var(--white-color);
+}
+
+.oto-pdp-facts li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.oto-pdp-facts li span {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.oto-pdp-facts li strong {
+  color: var(--title-color);
+  font-weight: 600;
+}
+
+.oto-pdp-payment {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px 18px;
+  border-radius: var(--fd-radius);
+  background: var(--theme-color);
+  color: var(--title-color);
+}
+
+.oto-pdp-payment > i {
+  margin-top: 3px;
+  font-size: 18px;
+  color: var(--secondary-color);
+}
+
+.oto-pdp-payment div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.oto-pdp-payment strong {
+  font-size: 15px;
+}
+
+.oto-pdp-payment span {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ---------- Before you order ---------- */
+.oto-pdp-know {
+  padding: 56px 0 60px;
+  background: var(--smoke-color);
+}
+
+.oto-pdp-know-head {
+  max-width: 720px;
+  margin-bottom: 28px;
+}
+
+.oto-pdp-know-head h2 {
+  margin-bottom: 10px;
+}
+
+.oto-pdp-know-head p {
+  margin-bottom: 0;
+  color: var(--body-color);
+}
+
+.oto-pdp-know-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.oto-pdp-know-card {
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--fd-radius);
+  background: var(--white-color);
+}
+
+.oto-pdp-know-icon {
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  color: var(--secondary-color);
+  font-size: 18px;
+}
+
+.oto-pdp-know-card h3 {
+  font-size: 19px;
+  margin-bottom: 7px;
+}
+
+.oto-pdp-know-card p {
+  margin-bottom: 0;
+  color: var(--body-color);
+  font-size: 15px;
+}
+
+html[data-theme="dark"] .oto-pdp-pill,
+html[data-theme="dark"] .oto-pdp-info .fd-pdp-facts.oto-pdp-facts,
+html[data-theme="dark"] .oto-pdp-know-card {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-pdp-purchase-note {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-pdp-purchase-note i {
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .oto-pdp-know-icon {
+  background: var(--fd-surface-2);
+  color: var(--fd-brand-green-text);
+}
+
+/* ---------- Related + CTA ---------- */
+.oto-pdp-related {
+  padding-top: 56px;
+  padding-bottom: 64px;
+}
+
+.oto-pdp-related .title-area {
+  margin-bottom: 22px;
+}
+
+.oto-pdp-related .fd-section-view {
+  margin-bottom: 24px;
+}
+
+.oto-pdp-cta-section {
+  padding-bottom: 64px;
+}
+
+.oto-pdp-cta h2 {
+  margin-bottom: 8px;
+}
+
+.oto-pdp-cta p {
+  margin-bottom: 0;
+}
+
+.oto-pdp-cta .vs-btn {
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  color: var(--title-color);
+}
+
+.oto-pdp-cta .vs-btn:hover {
+  background: transparent;
+  border-color: var(--white-color);
+  color: var(--white-color);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+  .otoosin-product-details .fd-pdp-gallery.oto-pdp-gallery {
+    padding: 12px;
+  }
+
+  .oto-pdp-info .fd-pdp-buy-row .fd-pdp-add,
+  .oto-pdp-info .fd-pdp-buy-row .fd-pdp-buy {
+    flex: 1 1 180px;
+  }
+}
+
+@media (max-width: 767px) {
+  .otoosin-product-details .fd-shop-intro.oto-pdp-intro {
+    padding: 52px 0 18px;
+  }
+
+  .otoosin-product-details .oto-pdp-main {
+    padding-top: 22px;
+    padding-bottom: 44px;
+  }
+
+  .oto-pdp-gallery .fd-badge {
+    top: 14px;
+    left: 14px;
+  }
+
+  .oto-pdp-meta-row {
+    margin-bottom: 14px;
+  }
+
+  .oto-pdp-info .fd-pdp-qty {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .oto-pdp-info .fd-pdp-qty button {
+    flex: 0 0 44px;
+  }
+
+  .oto-pdp-info .fd-pdp-qty-input {
+    width: auto;
+    flex: 1 1 auto;
+    max-width: none;
+  }
+
+  .oto-pdp-info .fd-pdp-qty > span:not(.fd-qty-entry) {
+    flex: 0 0 auto;
+  }
+
+  .oto-pdp-info .fd-pdp-qty .fd-qty-entry {
+    flex: 1 1 auto;
+    align-items: stretch;
+  }
+
+  .oto-pdp-info .fd-pdp-qty .fd-qty-entry-row {
+    width: 100%;
+  }
+
+  .oto-pdp-info .fd-pdp-qty .fd-pdp-entry-field {
+    flex: 1 1 auto;
+  }
+
+  .oto-pdp-info .fd-pdp-qty .fd-pdp-entry-field .fd-pdp-qty-input {
+    width: 100%;
+  }
+
+  .oto-pdp-info .fd-pdp-qty .oto-pdp-qty-unit {
+    margin-right: 10px;
+  }
+
+  .oto-pdp-info .fd-pdp-add,
+  .oto-pdp-info .fd-pdp-buy {
+    flex: 1 1 100%;
+  }
+
+  .oto-pdp-info .fd-pdp-facts.oto-pdp-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .oto-pdp-purchase-note {
+    border-radius: 14px;
+  }
+
+  .oto-pdp-know {
+    padding: 38px 0 42px;
+  }
+
+  .oto-pdp-know-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .oto-pdp-know-card {
+    padding: 20px;
+  }
+
+  .oto-pdp-related {
+    padding-top: 38px;
+    padding-bottom: 44px;
+  }
+
+  .oto-pdp-cta-section {
+    padding-bottom: 44px;
+  }
+}

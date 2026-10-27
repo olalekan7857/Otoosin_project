@@ -1,0 +1,399 @@
+/* ==========================================================================
+   O'Toosin Farms — legal pages (privacy.html, terms.html) and error page
+   (404.html). Page-scoped only; shared storefront styles are unchanged.
+   ========================================================================== */
+
+.oto-legal {
+  background: var(--body-bg);
+}
+
+.otoosin-legal a:focus-visible,
+.otoosin-legal button:focus-visible,
+.otoosin-error a:focus-visible,
+.otoosin-error button:focus-visible {
+  outline: 3px solid var(--secondary-color) !important;
+  outline-offset: 2px !important;
+}
+
+html[data-theme="dark"] .otoosin-legal a:focus-visible,
+html[data-theme="dark"] .otoosin-legal button:focus-visible,
+html[data-theme="dark"] .otoosin-error a:focus-visible,
+html[data-theme="dark"] .otoosin-error button:focus-visible {
+  outline-color: var(--fd-focus);
+}
+
+.oto-legal-section {
+  padding: 56px 0 88px;
+}
+
+.oto-legal-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 52px;
+  align-items: start;
+}
+
+.oto-legal-toc {
+  position: sticky;
+  top: 110px;
+  padding: 24px 22px;
+  border: 1px solid #e6e6e6;
+  border-radius: 18px;
+  background: var(--white-color);
+}
+
+.oto-legal-toc-title {
+  margin: 0 0 14px;
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.oto-legal-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: oto-toc;
+}
+
+.oto-legal-toc li {
+  counter-increment: oto-toc;
+  margin-bottom: 9px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.oto-legal-toc li:last-child {
+  margin-bottom: 0;
+}
+
+.oto-legal-toc a {
+  display: flex;
+  gap: 9px;
+  color: var(--body-color);
+  text-decoration: none;
+}
+
+.oto-legal-toc a::before {
+  content: counter(oto-toc, decimal-leading-zero);
+  flex: 0 0 auto;
+  color: #9a9a9a;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+.oto-legal-toc a:hover,
+.oto-legal-toc a:focus-visible {
+  color: var(--secondary-color);
+}
+
+.oto-legal-doc {
+  max-width: 780px;
+}
+
+.oto-legal-doc h2 {
+  margin: 42px 0 14px;
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-size: 27px;
+  font-weight: 600;
+  line-height: 1.25;
+  scroll-margin-top: 120px;
+}
+
+.oto-legal-doc h2:first-child {
+  margin-top: 0;
+}
+
+.oto-legal-doc h3 {
+  margin: 26px 0 10px;
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.oto-legal-doc p,
+.oto-legal-doc li {
+  color: var(--body-color);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.oto-legal-doc p {
+  margin-bottom: 16px;
+}
+
+.oto-legal-doc ul,
+.oto-legal-doc ol {
+  margin: 0 0 18px;
+  padding-left: 24px;
+}
+
+.oto-legal-doc li {
+  margin-bottom: 8px;
+}
+
+.oto-legal-doc li:last-child {
+  margin-bottom: 0;
+}
+
+.oto-legal-doc a {
+  color: var(--secondary-color);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.oto-legal-doc a:hover {
+  color: var(--title-color);
+}
+
+.oto-legal-doc strong {
+  color: var(--title-color);
+  font-weight: 600;
+}
+
+.oto-legal-lead {
+  margin-bottom: 26px;
+  padding: 20px 22px;
+  border-radius: 14px;
+  background: var(--smoke-color);
+}
+
+.oto-legal-lead p:last-child {
+  margin-bottom: 0;
+}
+
+.oto-legal-contact {
+  margin-top: 46px;
+  padding: 26px 28px;
+  border: 1px solid #e6e6e6;
+  border-radius: 18px;
+  background: var(--smoke-color);
+}
+
+.oto-legal-contact h2 {
+  margin-top: 0;
+}
+
+.oto-legal-contact p:last-of-type {
+  margin-bottom: 18px;
+}
+
+.oto-legal-contact .vs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-theme="dark"] .oto-legal-toc,
+html[data-theme="dark"] .oto-legal-contact {
+  border-color: #2e3b33;
+  background: var(--fd-surface);
+}
+
+html[data-theme="dark"] .oto-legal-doc a,
+html[data-theme="dark"] .oto-error-help a {
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .oto-legal-doc a.vs-btn,
+html[data-theme="dark"] .oto-error-help a.vs-btn {
+  color: var(--white-color);
+}
+
+html[data-theme="dark"] .oto-legal-doc a:hover,
+html[data-theme="dark"] .oto-error-help a:hover,
+html[data-theme="dark"] .oto-legal-toc a:hover,
+html[data-theme="dark"] .oto-legal-toc a:focus-visible {
+  color: var(--theme-color);
+}
+
+html[data-theme="dark"] .oto-legal-lead {
+  background: var(--fd-surface-2);
+}
+
+@media (max-width: 1199px) {
+  .oto-legal-layout {
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 36px;
+  }
+}
+
+@media (max-width: 991px) {
+  .otoosin-legal .oto-copyright,
+  .otoosin-error .oto-copyright {
+    padding-bottom: 32px;
+  }
+
+  .oto-legal-section {
+    padding: 40px 0 64px;
+  }
+
+  .oto-legal-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+
+  .oto-legal-toc {
+    position: static;
+    padding: 20px 20px 16px;
+  }
+
+  .oto-legal-toc ol {
+    columns: 2;
+    column-gap: 22px;
+  }
+
+  .oto-legal-toc li {
+    break-inside: avoid;
+  }
+
+  .oto-legal-doc {
+    max-width: none;
+  }
+
+  .oto-legal-doc h2 {
+    font-size: 24px;
+    margin-top: 36px;
+  }
+}
+
+@media (max-width: 575px) {
+  .oto-legal-section {
+    padding: 32px 0 52px;
+  }
+
+  .oto-legal-toc {
+    display: none;
+  }
+
+  .oto-legal-doc h2 {
+    font-size: 22px;
+  }
+
+  .oto-legal-doc p,
+  .oto-legal-doc li {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+
+  .oto-legal-lead,
+  .oto-legal-contact {
+    padding: 20px;
+  }
+}
+
+/* ==========================================================================
+   Custom 404 page
+   ========================================================================== */
+
+.oto-error-section {
+  padding: 64px 0 84px;
+}
+
+.oto-error-panel {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.oto-error-code {
+  display: block;
+  margin: 0 0 6px;
+  color: rgba(222, 173, 57, 0.35);
+  font-family: var(--title-font);
+  font-size: clamp(112px, 20vw, 200px);
+  font-weight: 700;
+  line-height: 0.82;
+  letter-spacing: -0.04em;
+}
+
+.oto-error-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 18px;
+  border-radius: 18px;
+  background: rgba(222, 173, 57, 0.18);
+  color: var(--secondary-color);
+  font-size: 22px;
+}
+
+.oto-error-panel h1 {
+  margin-bottom: 14px;
+  color: var(--title-color);
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 1.12;
+}
+
+.oto-error-panel > p {
+  max-width: 540px;
+  margin: 0 auto 26px;
+  color: var(--body-color);
+  font-size: 16.5px;
+  line-height: 1.75;
+}
+
+.oto-error-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+
+.oto-error-help {
+  margin: 0;
+  color: var(--body-color);
+  font-size: 15px;
+}
+
+.oto-error-help a {
+  color: var(--secondary-color);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.oto-error-help a:hover {
+  color: var(--title-color);
+}
+
+html[data-theme="dark"] .oto-error-icon {
+  background: rgba(222, 173, 57, 0.14);
+  color: var(--theme-color);
+}
+
+html[data-theme="dark"] .oto-error-code {
+  color: rgba(222, 173, 57, 0.24);
+}
+
+@media (max-width: 767px) {
+  .oto-error-section {
+    padding: 44px 0 60px;
+  }
+
+  .oto-error-actions {
+    flex-direction: column;
+    align-items: stretch;
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .oto-error-actions .vs-btn,
+  .oto-error-actions .fd-ghost-btn {
+    width: 100%;
+  }
+}

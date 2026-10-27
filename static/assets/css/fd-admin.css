@@ -1,0 +1,3789 @@
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Stage 1 foundation (admin shell + login)
+   --------------------------------------------------------------------------
+   Scoped ENTIRELY under `.fd-admin` so customer storefront styles are never
+   affected. Reuses the existing project system only:
+     tokens    -> assets/css/harvest-castle.css :root (theme/secondary/title/body/
+                  smoke/border/error/success/white + title/body fonts)
+     buttons   -> .vs-btn (template)
+     fields    -> .form-control (template) + .fd-field / .fd-field-error
+                 (fresh-direct.css, checkout convention)
+     focus     -> :focus-visible rules in fresh-direct.css
+     icons     -> Font Awesome 5 (project icon system)
+     overlay   -> same off-canvas pattern as .vs-menu-wrapper (scoped copy)
+   No new color decisions: every color below is an existing token or the
+   project's #ececec hairline. No framework, no dependencies.
+   Future pages (Dashboard / Products / Orders / Settings) reuse this shell
+   by copying the <div class="fd-admin-shell"> structure in admin-login.html
+   and setting aria-current on their own nav item.
+   ========================================================================== */
+
+/* ---------- Shell layout (desktop) ---------- */
+.fd-admin {
+  background: var(--smoke-color);
+  min-height: 100vh;
+}
+
+.fd-admin-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar: persistent management navigation. */
+.fd-admin-sidebar {
+  width: 264px;
+  flex: 0 0 264px;
+  background: var(--white-color);
+  border-right: 1px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  z-index: 60;
+}
+
+.fd-admin-brand {
+  display: flex;
+  align-items: center;
+  padding: 20px 20px 16px 20px;
+}
+
+/* Reuse the customer wordmark at a quieter size; same markup (.fd-logo). */
+.fd-admin-brand .fd-logo {
+  font-size: 22px;
+}
+
+.fd-admin-brand .fd-logo img.fd-logo-img {
+  height: 54px;
+  width: auto;
+  max-width: 150px;
+  margin-right: 0;
+}
+
+.fd-admin-brand .fd-logo i {
+  width: 36px;
+  height: 36px;
+  font-size: 17px;
+}
+
+.fd-admin-role {
+  margin: 0 20px 16px 20px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--body-color);
+}
+
+.fd-admin-nav {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 4px 12px 12px 12px;
+}
+
+.fd-admin-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fd-admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15.5px;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background ease 0.25s, border-color ease 0.25s;
+}
+
+.fd-admin-nav-link i {
+  width: 22px;
+  text-align: center;
+  color: var(--secondary-color);
+  font-size: 16px;
+  flex: 0 0 auto;
+}
+
+/* Active page: quiet filled state in existing tokens. */
+.fd-admin-nav-link[aria-current="page"] {
+  background: var(--smoke-color);
+  border-color: var(--border-color);
+}
+
+.fd-admin-nav-link:not([aria-disabled="true"]):hover {
+  background: var(--smoke-color);
+}
+
+/* Future stages: deliberate disabled placeholder, never a broken link. */
+.fd-admin-nav-link[aria-disabled="true"] {
+  cursor: not-allowed;
+  color: var(--body-color);
+  opacity: 0.85;
+}
+
+.fd-admin-nav-link[aria-disabled="true"] i {
+  color: var(--body-color);
+}
+
+.fd-admin-soon {
+  margin-left: auto;
+  font-family: var(--body-font);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--smoke-color);
+  border: 1px solid var(--border-color);
+  color: var(--body-color);
+  border-radius: 9999px;
+  padding: 2px 10px;
+  white-space: nowrap;
+}
+
+.fd-admin-side-foot {
+  padding: 16px 20px 20px 20px;
+  border-top: 1px solid #ececec;
+}
+
+.fd-admin-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 9999px;
+  border: 2px solid var(--theme-color);
+  background: transparent;
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background ease 0.3s, color ease 0.3s;
+}
+
+.fd-admin-logout:not([aria-disabled="true"]):hover {
+  background: var(--theme-color);
+}
+
+.fd-admin-logout[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.fd-admin-logout-hint {
+  margin: 10px 0 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--body-color);
+  text-align: center;
+}
+
+/* Main column + top bar. */
+.fd-admin-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fd-admin-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--white-color);
+  border-bottom: 1px solid #ececec;
+  padding: 12px 24px;
+  min-height: 68px;
+}
+
+.fd-admin-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 0;
+  border: 1px solid var(--theme-color);
+  background: var(--theme-color);
+  color: var(--black-color);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.fd-admin-title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.fd-admin-context {
+  margin-left: auto;
+  font-size: 13.5px;
+  color: var(--body-color);
+  white-space: nowrap;
+}
+
+.fd-admin-content {
+  flex: 1 1 auto;
+  padding: 28px 24px 48px 24px;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* ---------- Login (admin-login.html only) ----------
+   A deliberate two-part sign-in surface: brand context on the left, the
+   working form on the right. Everything is scoped to .fd-admin-login so
+   the signed-in admin shell and storefront are unaffected. */
+.fd-admin.fd-admin-login {
+  background: var(--smoke-color);
+}
+
+.fd-admin.fd-admin-login .fd-admin-shell--login {
+  display: block;
+}
+
+.fd-admin.fd-admin-login .fd-admin-main {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-theme {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: max(14px, env(safe-area-inset-right));
+  z-index: 80;
+  display: flex;
+  align-items: center;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-theme .fd-theme-toggle {
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-hairline);
+  border-radius: 12px;
+  color: var(--fd-text);
+}
+
+html[data-theme="dark"] .fd-admin.fd-admin-login {
+  background: var(--fd-bg);
+}
+
+html[data-theme="dark"] .fd-admin.fd-admin-login .fd-admin-login-theme .fd-theme-toggle {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-content {
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 88px 24px 40px;
+}
+
+.fd-admin-login-wrap {
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.fd-admin-login-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-hairline);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 70px rgba(6, 65, 29, 0.12);
+}
+
+html[data-theme="dark"] .fd-admin-login-shell {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.36);
+}
+
+/* Brand context — desktop only. */
+.fd-admin.fd-admin-login .fd-admin-login-brand {
+  display: none;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  padding: 46px 42px 38px;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand .fd-logo {
+  align-self: flex-start;
+  color: var(--white-color);
+  font-size: 26px;
+  margin-bottom: 48px;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand .fd-logo img.fd-logo-img {
+  height: 64px;
+  width: auto;
+  max-width: 180px;
+  margin-right: 0;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand .fd-logo span {
+  color: var(--theme-color);
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand .fd-logo:focus-visible {
+  outline-color: var(--theme-color);
+}
+
+.fd-admin-login-brand-eyebrow,
+.fd-admin-login-eyebrow {
+  margin: 0 0 10px 0;
+  font-family: var(--title-font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.fd-admin-login-brand-eyebrow {
+  color: var(--theme-color);
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand h2 {
+  margin: 0 0 14px 0;
+  color: var(--white-color);
+  font-size: 32px;
+  line-height: 1.16;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand-copy > p:last-child {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15.5px;
+  line-height: 1.7;
+}
+
+.fd-admin-login-brand-list {
+  list-style: none;
+  margin: 38px 0 0 0;
+  padding: 0;
+}
+
+.fd-admin-login-brand-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14.5px;
+  line-height: 1.5;
+}
+
+.fd-admin-login-brand-list li:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.fd-admin-login-brand-list i {
+  flex: 0 0 auto;
+  width: 20px;
+  margin-top: 2px;
+  color: var(--theme-color);
+  text-align: center;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-brand-foot {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: auto 0 0 0;
+  padding-top: 30px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.fd-admin-login-brand-foot i {
+  color: var(--theme-color);
+}
+
+/* Working form surface. */
+.fd-admin-login-form-panel {
+  min-width: 0;
+  padding: 42px 44px 34px;
+  background: var(--fd-surface);
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-mobile-brand {
+  display: inline-flex;
+  margin-bottom: 28px;
+  font-size: 24px;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-mobile-brand img.fd-logo-img {
+  height: 52px;
+  width: auto;
+  max-width: 145px;
+  margin-right: 0;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-card {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-card .fd-admin-card-head {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.fd-admin-login-eyebrow {
+  color: var(--fd-brand-green-text);
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-card .fd-admin-card-head h1 {
+  margin: 0 0 10px 0;
+  font-size: 32px;
+  line-height: 1.2;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-card .fd-admin-card-head p {
+  margin: 0;
+  color: var(--fd-text-2);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+.fd-admin.fd-admin-login .fd-admin-login-card .fd-admin-card-head .fd-admin-login-eyebrow {
+  margin-bottom: 8px;
+  color: var(--fd-brand-green-text);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.fd-admin.fd-admin-login .form-control {
+  min-height: 54px;
+  font-size: 15px;
+}
+
+/* Sentence-case action label; the template globally capitalises button text. */
+.fd-admin.fd-admin-login .fd-admin-login-card .vs-btn {
+  text-transform: none;
+}
+
+/* The template hides checkboxes globally; restore the remember control. */
+.fd-admin.fd-admin-login .fd-admin-remember input[type="checkbox"] {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  visibility: visible;
+  opacity: 1;
+  accent-color: var(--secondary-color);
+}
+
+.fd-admin.fd-admin-login .fd-admin-back-link.fd-admin-login-back {
+  display: inline-flex;
+  width: 100%;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--fd-hairline);
+}
+
+.fd-admin-login-copyright {
+  margin: 22px 0 0 0;
+  color: var(--fd-text-3);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.fd-admin-login-copyright a {
+  color: var(--fd-brand-green-text);
+  font-weight: 600;
+}
+
+@media (min-width: 992px) {
+  .fd-admin-login-shell {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+
+  .fd-admin.fd-admin-login .fd-admin-login-brand {
+    display: flex;
+  }
+
+  .fd-admin.fd-admin-login .fd-admin-login-mobile-brand {
+    display: none;
+  }
+}
+
+@media (max-width: 991px) {
+  .fd-admin.fd-admin-login .fd-admin-login-content {
+    padding: 80px 16px 30px;
+  }
+
+  .fd-admin-login-wrap {
+    max-width: 560px;
+  }
+
+  .fd-admin-login-shell {
+    border-radius: 20px;
+  }
+
+  .fd-admin-login-form-panel {
+    padding: 30px 26px 26px;
+  }
+}
+
+@media (max-width: 575px) {
+  .fd-admin.fd-admin-login .fd-admin-login-content {
+    padding: 76px 12px 24px;
+  }
+
+  .fd-admin.fd-admin-login .fd-admin-login-form-panel {
+    padding: 24px 18px 20px;
+  }
+
+  .fd-admin.fd-admin-login .fd-admin-login-mobile-brand {
+    margin-bottom: 24px;
+  }
+
+  .fd-admin.fd-admin-login .fd-admin-login-card .fd-admin-card-head h1 {
+    font-size: 28px;
+  }
+
+  .fd-admin.fd-admin-login .fd-admin-login-brand h2 {
+    font-size: 28px;
+  }
+}
+
+.fd-admin-card {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius, 18px);
+  padding: 32px 30px;
+}
+
+.fd-admin-card-head {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.fd-admin-card-head .fd-logo {
+  font-size: 24px;
+  margin-bottom: 14px;
+}
+
+.fd-admin-card-head h2 {
+  font-size: 24px;
+  margin: 0 0 8px 0;
+}
+
+.fd-admin-card-head p {
+  margin: 0;
+  font-size: 14.5px;
+}
+
+/* Slightly roomier auth fields; still the template .form-control. */
+.fd-admin .form-control {
+  border-radius: 12px;
+  min-height: 52px;
+}
+
+.fd-admin-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 4px 0 20px 0;
+}
+
+.fd-admin-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14.5px;
+  font-weight: 600;
+  font-family: var(--title-font);
+  color: var(--title-color);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.fd-admin-remember input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.fd-admin-forgot {
+  background: none;
+  border: none;
+  padding: 10px 4px;
+  min-height: 44px;
+  color: var(--secondary-color);
+  font-weight: 700;
+  font-size: 14.5px;
+  font-family: var(--title-font);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fd-admin .vs-btn {
+  width: 100%;
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* Password visibility toggle pinned inside the field. */
+.fd-admin-pass-wrap {
+  position: relative;
+}
+
+.fd-admin-pass-wrap .form-control {
+  padding-right: 56px;
+}
+
+.fd-admin-pass-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--body-color);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.fd-admin-pass-toggle:hover {
+  color: var(--secondary-color);
+  background: var(--smoke-color);
+}
+
+/* ---------- Reusable admin notices / states ----------
+   .fd-admin-notice is the single feedback pattern for this stage:
+   validation summary, dev-boundary note, loading, error, empty. */
+.fd-admin-notice {
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 18px 0;
+  background: var(--smoke-color);
+  color: var(--title-color);
+  border: 1px solid var(--border-color);
+}
+
+.fd-admin-notice[hidden] {
+  display: none;
+}
+
+.fd-admin-notice.is-error {
+  background: rgba(220, 53, 69, 0.08);
+  border-color: var(--error-color);
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.fd-admin-notice.is-success {
+  background: rgba(40, 167, 69, 0.1);
+  border-color: var(--success-color);
+  color: var(--title-color);
+  font-weight: 600;
+}
+
+/* Development-only boundary note: dashed so it never reads as branding. */
+.fd-admin-notice.is-dev {
+  background: var(--white-color);
+  border: 1px dashed var(--body-color);
+  color: var(--body-color);
+}
+
+.fd-admin-notice strong {
+  display: block;
+  font-family: var(--title-font);
+  margin-bottom: 2px;
+}
+
+.fd-admin-forgot-panel {
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  margin-top: 18px;
+}
+
+.fd-admin-forgot-panel[hidden] {
+  display: none;
+}
+
+.fd-admin-forgot-panel p {
+  margin: 0 0 6px 0;
+}
+
+.fd-admin-forgot-panel p:last-child {
+  margin-bottom: 0;
+}
+
+.fd-admin-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--secondary-color);
+}
+
+/* Invalid fields: error color border, message via .fd-field-error. */
+.fd-admin .form-control[aria-invalid="true"] {
+  border-color: var(--error-color);
+}
+
+/* Button busy state (loading pattern for future stages too). */
+.fd-admin .vs-btn[aria-busy="true"] {
+  opacity: 0.75;
+  cursor: wait;
+}
+
+/* ---------- Mobile drawer (<=991px, project's mobile breakpoint) ---------- */
+.fd-admin-scrim {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  .fd-admin-menu-btn {
+    display: inline-flex;
+  }
+
+  .fd-admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(300px, 86vw);
+    flex-basis: auto;
+    /* Above the base menu (z-index 900) like the storefront drawer is
+       above the storefront base menu. */
+    z-index: 960;
+    transform: translateX(-105%);
+    transition: transform ease 0.3s;
+    box-shadow: none;
+  }
+
+  .fd-admin-shell.nav-open .fd-admin-sidebar {
+    transform: translateX(0);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.18);
+  }
+
+  .fd-admin-shell.nav-open .fd-admin-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .fd-admin-context {
+    display: none;
+  }
+
+  .fd-admin-content {
+    padding: 22px 16px 40px 16px;
+  }
+
+  .fd-admin-card {
+    padding: 26px 20px;
+  }
+}
+
+/* ---------- Small phones ---------- */
+@media (max-width: 360px) {
+  .fd-admin-title {
+    font-size: 19px;
+  }
+
+  .fd-admin-topbar {
+    padding: 10px 14px;
+  }
+
+  .fd-admin-check-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fd-admin-forgot {
+    text-align: left;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .fd-admin-sidebar,
+  .fd-admin-nav-link,
+  .fd-admin-logout {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Stage 2 dashboard (admin-dashboard.html only)
+   --------------------------------------------------------------------------
+   New classes only (.fd-dash-*). Every value reuses the existing system:
+     tokens  -> style.css :root (theme/secondary/title/body/smoke/border/
+                error/success/yellow/white + title/body fonts, --fd-radius)
+     buttons -> .vs-btn (template) + .fd-ghost-btn (fresh-direct.css)
+     pills   -> .fd-badge tones (green/yellow/grey) + .fd-admin-soon
+               (smoke) + .fd-admin-notice.is-error (error tint)
+     notice  -> .fd-admin-notice / .is-dev / .is-error (Stage 1)
+     shell   -> .fd-admin-shell / sidebar / topbar (Stage 1, untouched)
+   All selectors stay under .fd-admin so the storefront can never change.
+   No charts, no animations, no new colors, no framework.
+   ========================================================================== */
+
+.fd-dash-head {
+  margin-bottom: 18px;
+}
+
+.fd-dash-lead {
+  margin: 0;
+  font-size: 15px;
+  max-width: 68ch;
+}
+
+html[data-theme="dark"] .fd-dash-card-icon {
+  background: var(--fd-surface-2);
+  color: var(--fd-brand-green-text);
+}
+
+/* Sample order references are plain text, not links: the dashboard must
+   not imply that clicking a demonstration record opens a real order. */
+.fd-admin .fd-dash-ref {
+  font-family: var(--title-font);
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-dash-date {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--body-font);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--body-color);
+  white-space: nowrap;
+}
+
+/* Dashboard buttons keep their natural width (Stage 1 forces .vs-btn
+   full-width for the login form only). */
+.fd-admin .fd-dash-btn {
+  width: auto;
+}
+
+.fd-admin .fd-dash-btn .fd-admin-soon {
+  margin-left: 8px;
+}
+
+/* ---------- Sections ---------- */
+.fd-dash-section {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius, 18px);
+  padding: 24px 22px;
+  margin: 0 0 20px 0;
+  min-width: 0;
+}
+
+.fd-dash-section h2 {
+  font-size: 20px;
+  margin: 0 0 16px 0;
+}
+
+.fd-dash-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-bottom: 16px;
+}
+
+.fd-dash-section-head h2 {
+  margin: 0;
+}
+
+.fd-dash-count {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--body-color);
+}
+
+.fd-dash-hint {
+  margin: 16px 0 0 0;
+  font-size: 13.5px;
+  color: var(--body-color);
+  line-height: 1.6;
+}
+
+.fd-dash-foot {
+  margin-top: 16px;
+}
+
+.fd-dash-foot-note {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--body-color);
+  margin: 22px 0 0 0;
+}
+
+/* ---------- Overview cards ---------- */
+.fd-dash-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.fd-dash-card {
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius, 18px);
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  background: var(--white-color);
+}
+
+.fd-dash-card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.fd-dash-card-label {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--body-color);
+}
+
+.fd-dash-card-value {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.15;
+  color: var(--title-color);
+}
+
+.fd-dash-card-context {
+  font-size: 13.5px;
+  color: var(--body-color);
+  line-height: 1.55;
+}
+
+/* ---------- Quick actions ---------- */
+.fd-dash-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ---------- Status pills (same tones as .fd-badge + .fd-admin-soon) ---------- */
+.fd-dash-pill {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--body-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  background: var(--smoke-color);
+  color: var(--body-color);
+}
+
+.fd-dash-pill.is-ok {
+  background: rgba(6, 65, 29, 0.1);
+  border-color: rgba(6, 65, 29, 0.25);
+  color: var(--secondary-color);
+}
+
+.fd-dash-pill.is-warn {
+  background: var(--yellow-color);
+  border-color: var(--yellow-color);
+  color: var(--title-color);
+}
+
+.fd-dash-pill.is-bad {
+  background: rgba(220, 53, 69, 0.08);
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.fd-dash-pill.is-muted {
+  background: var(--smoke-color);
+  border-color: var(--border-color);
+  color: var(--body-color);
+}
+
+/* ---------- Recent orders table ----------
+   One semantic table; the wrapper scrolls horizontally on narrow screens
+   so the PAGE never overflows and text never shrinks. */
+.fd-dash-table-scroll {
+  overflow-x: auto;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  max-width: 100%;
+}
+
+.fd-dash-table-scroll[hidden] {
+  display: none;
+}
+
+.fd-dash-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 14.5px;
+}
+
+.fd-dash-caption {
+  text-align: left;
+  font-size: 13px;
+  color: var(--body-color);
+  padding: 12px 16px 0 16px;
+}
+
+.fd-dash-table th,
+.fd-dash-table td {
+  text-align: left;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ececec;
+  vertical-align: middle;
+}
+
+.fd-dash-table thead th {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--body-color);
+  white-space: nowrap;
+}
+
+.fd-dash-table tbody tr:last-child th,
+.fd-dash-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.fd-dash-table tbody th[scope="row"] {
+  font-family: var(--title-font);
+  font-weight: 600;
+  color: var(--title-color);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.fd-dash-table td.is-amount {
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Dashboard order summary: seven readable columns on desktop, horizontal
+   scroll inside the wrapper on smaller screens. */
+.fd-admin .fd-dash-orders-table {
+  min-width: 920px;
+}
+
+.fd-admin .fd-dash-orders-table th,
+.fd-admin .fd-dash-orders-table td {
+  padding: 12px 14px;
+}
+
+.fd-admin .fd-dash-items {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body-color);
+}
+
+.fd-admin .fd-dash-pay {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fd-admin .fd-dash-pay-method {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--title-color);
+  white-space: nowrap;
+}
+
+.fd-admin .fd-dash-pay-state {
+  font-size: 12.5px;
+  color: var(--body-color);
+  white-space: normal;
+}
+
+/* Delivery & pickup summary: same quiet hierarchy as the payment cell. */
+.fd-admin .fd-dash-receive {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.fd-admin .fd-dash-receive-method {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-dash-receive-note {
+  font-size: 12.5px;
+  color: var(--body-color);
+}
+
+/* The order table keeps its full seven-column layout on every screen and
+   scrolls INSIDE this wrapper. The wrapper is the only scroll container,
+   so the page itself can never gain a horizontal scrollbar. */
+.fd-admin .fd-dash-orders-wrap {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+}
+
+@media (max-width: 1023px) {
+  .fd-admin .fd-dash-orders-table {
+    min-width: 940px;
+  }
+
+  .fd-admin .fd-dash-orders-table th,
+  .fd-admin .fd-dash-orders-table td {
+    padding: 12px 14px;
+  }
+}
+
+/* ---------- Product availability list ---------- */
+.fd-dash-products {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fd-dash-products[hidden] {
+  display: none;
+}
+
+.fd-dash-products li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 2px;
+  border-bottom: 1px solid #ececec;
+}
+
+.fd-dash-products li:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.fd-dash-products li:first-child {
+  padding-top: 2px;
+}
+
+.fd-dash-product-id {
+  min-width: 0;
+}
+
+.fd-dash-product-id strong {
+  display: block;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15.5px;
+  line-height: 1.35;
+}
+
+.fd-dash-product-id span {
+  display: block;
+  font-size: 13.5px;
+  color: var(--body-color);
+}
+
+/* ---------- Needs attention (calm, no alarm styling) ---------- */
+.fd-dash-attention {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fd-dash-attention[hidden] {
+  display: none;
+}
+
+.fd-dash-attention li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 2px;
+  border-bottom: 1px solid #ececec;
+}
+
+.fd-dash-attention li:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.fd-dash-attention li:first-child {
+  padding-top: 2px;
+}
+
+.fd-dash-attention i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--body-color);
+  font-size: 15px;
+}
+
+.fd-dash-attention strong {
+  display: block;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.fd-dash-attention span {
+  display: block;
+  font-size: 13.5px;
+  color: var(--body-color);
+}
+
+/* ---------- Empty states (quiet dashed panels, never blank gaps) ---------- */
+.fd-dash-empty {
+  text-align: center;
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 36px 20px;
+  background: var(--white-color);
+}
+
+.fd-dash-empty[hidden] {
+  display: none;
+}
+
+.fd-dash-empty i {
+  font-size: 38px;
+  color: var(--border-color);
+  margin-bottom: 12px;
+}
+
+.fd-dash-empty h3 {
+  font-size: 19px;
+  margin: 0 0 8px 0;
+}
+
+.fd-dash-empty p {
+  font-size: 14px;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+/* Positive rest state stays restrained: no success green, no fanfare. */
+.fd-dash-empty.is-calm i {
+  color: var(--secondary-color);
+}
+
+.fd-dash-empty-cell {
+  padding: 32px 16px !important;
+  text-align: center;
+  color: var(--body-color);
+  line-height: 1.6;
+}
+
+/* ---------- Error retry ---------- */
+.fd-dash-error-actions {
+  margin-top: 14px;
+}
+
+/* ---------- Dashboard responsive ---------- */
+@media (max-width: 767px) {
+  .fd-dash-section {
+    padding: 20px 16px;
+  }
+
+  .fd-dash-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+
+  .fd-dash-card {
+    padding: 16px 14px;
+  }
+
+  .fd-dash-card-value {
+    font-size: 28px;
+  }
+
+  .fd-dash-actions .fd-dash-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .fd-dash-foot .fd-dash-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .fd-dash-error-actions .fd-dash-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .fd-dash-section {
+    padding: 18px 14px;
+  }
+
+  .fd-dash-section h2 {
+    font-size: 18px;
+  }
+
+  .fd-dash-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fd-dash-card-value {
+    font-size: 26px;
+  }
+
+  .fd-dash-products li {
+    align-items: flex-start;
+  }
+
+  .fd-dash-products .fd-dash-pill {
+    flex: 0 0 auto;
+  }
+}
+
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Stage 3A product list (admin-products.html only)
+   --------------------------------------------------------------------------
+   New classes only (.fd-prod-*). Reuses the existing system exactly:
+     controls -> .fd-shop-search / .fd-shop-select / .form-control /
+                 .form-select (fresh-direct.css + Bootstrap, context-free)
+     table    -> .fd-dash-table / .fd-dash-table-scroll / .fd-dash-caption
+                 (Stage 2; product column widths added below only)
+     pills    -> .fd-dash-pill tones (Stage 2)
+     states   -> .fd-admin-notice / .fd-dash-empty (Stages 1–2)
+     buttons  -> .vs-btn + .fd-ghost-btn (template / fresh-direct.css)
+   All selectors stay under .fd-admin so the storefront can never change.
+   No Grid/List toggle by decision: one card list keeps the same layout
+   from desktop to mobile, with search, filters and sorting applied to the
+   rendered product cards.
+   ========================================================================== */
+
+/* ---------- List header: title + count left, primary action right ---------- */
+.fd-prod-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  margin-bottom: 4px;
+}
+
+.fd-prod-head-text h2 {
+  margin: 0 0 4px 0;
+}
+
+.fd-prod-overview .fd-prod-head {
+  margin-bottom: 18px;
+}
+
+.fd-prod-overview .fd-prod-head .fd-dash-lead {
+  margin-bottom: 0;
+}
+
+.fd-prod-summary {
+  margin-top: 0;
+}
+
+/* ---------- Toolbar: search owns a full row, selects share the rest -------
+   Intentional desktop widths: each control gets a fixed width that fits
+   its longest option, so controls look deliberate instead of collapsing
+   around their text — without stretching full-width. */
+.fd-prod-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  /* Center: every control in a row shares the same middle line, and the
+     Clear buttons below carry an explicit height equal to the selects,
+     so the whole row sits on one exact straight line. */
+  align-items: center;
+  margin: 18px 0;
+}
+
+.fd-prod-toolbar .fd-prod-search {
+  flex: 1 1 100%;
+}
+
+.fd-prod-toolbar .fd-shop-select {
+  display: flex;
+  flex: 0 0 auto;
+  width: auto;
+  white-space: nowrap;
+  /* The storefront shop style gives these labels a negative top margin
+     that suited the shop toolbar but lifts them off the admin row.
+     Zero it here so labels and Clear filters share one exact line. */
+  margin: 0;
+}
+
+.fd-prod-toolbar .fd-shop-select .form-select {
+  flex: none;
+  min-width: 0;
+}
+
+.fd-prod-toolbar #fd-prod-cat {
+  width: 172px;
+}
+
+.fd-prod-toolbar #fd-prod-state {
+  width: 140px;
+}
+
+.fd-prod-toolbar #fd-prod-sort {
+  width: 210px;
+}
+
+.fd-prod-toolbar #fd-prod-clear {
+  flex: 0 0 auto;
+  min-width: 160px;
+  /* Exact match to the selects (50px): explicit height plus a 21px line
+     leaves the content vertically centered with room to spare, so the
+     button sits on precisely the same straight line at the same size. */
+  height: 50px;
+  min-height: 50px;
+  line-height: 21px;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+/* Same straight-row treatment for the Orders clear button. */
+.fd-admin .fd-orders-toolbar #fd-orders-clear {
+  line-height: 21px;
+  height: 50px;
+  min-height: 50px;
+}
+
+.fd-prod-toolbar .fd-dash-btn {
+  justify-content: center;
+  min-height: 44px;
+}
+
+/* Disabled ghost button: same quiet treatment as disabled nav/logout. */
+.fd-admin .fd-ghost-btn:disabled,
+.fd-admin .fd-ghost-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- Product list: one bordered card per product -------------------
+   Structural fix for nested-border clutter: each product owns exactly ONE
+   border (.fd-prod-card). Inside the card there are no dividers, no inner
+   boxes, no table rules — hierarchy comes from spacing and typography
+   only, so product information can never touch a nested border line.
+   Variant chips are borderless smoke pills pairing each variant label
+   with its own price. Mobile-first: the same list stacks on small
+   screens and becomes a multi-column row on desktop (see min-width
+   rules below) — one component, not two systems. */
+.fd-prod-list-wrap[hidden] {
+  display: none;
+}
+
+.fd-prod-list {
+  list-style: none;
+  margin: 18px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.fd-admin .fd-prod-card[hidden] {
+  display: none;
+}
+
+.fd-prod-card {
+  background: var(--white-color);
+  /* Outer boundary uses the existing --border-color token (already used
+     for the active nav item and pills) so each card reads clearly
+     against the smoke page background. Interior stays border-free. */
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Identity row: image (strongest anchor) + name + subordinate category,
+   with the availability pill pinned top-right. Wraps instead of
+   squeezing on the narrowest screens. */
+.fd-prod-card-top {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px 14px;
+  min-width: 0;
+}
+
+.fd-prod-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 auto;
+  background: var(--smoke-color);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.fd-prod-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fd-prod-id-block {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.fd-prod-name {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--title-color);
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+.fd-prod-cat {
+  margin: 2px 0 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+.fd-prod-card-top .fd-dash-pill {
+  flex: 0 0 auto;
+  margin-left: auto;
+  margin-top: 2px;
+  max-width: 100%;
+}
+
+/* Variants: borderless chips, each pairing a variant label with its own
+   price — readable without a wall of tiny bordered boxes. */
+.fd-prod-variants {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fd-prod-variants li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  background: var(--smoke-color);
+  border-radius: 9999px;
+  padding: 7px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.fd-prod-var-label {
+  font-family: var(--title-font);
+  font-weight: 700;
+  color: var(--title-color);
+}
+
+.fd-prod-var-price {
+  color: var(--body-color);
+  white-space: nowrap;
+}
+
+.fd-prod-no-variants {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--body-color);
+}
+
+/* Foot: honest price range plus actions, separated from the variants by
+   whitespace (a 14px card gap), never by a divider line. */
+.fd-prod-card-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  min-width: 0;
+}
+
+.fd-prod-price {
+  margin: 0;
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--title-color);
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.fd-prod-unit {
+  font-family: var(--body-font);
+  font-weight: 500;
+  font-size: 13.5px;
+  color: var(--body-color);
+  white-space: nowrap;
+}
+
+/* ---------- Product actions: compact tappable control, never cramped ----
+   View is a real storefront link (new tab, admin state preserved). The
+   product editor is not yet wired to these catalogue IDs, so no per-row
+   Edit link is offered. There is intentionally no Delete control. These
+   bordered buttons are controls, not information boxes. */
+.fd-prod-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+/* Card actions always meet the 44px touch target (orders buttons keep
+   their own sizing — this stays scoped to product cards). */
+.fd-prod-card-foot .fd-prod-btn {
+  min-height: 44px;
+}
+
+.fd-prod-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--white-color);
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color ease 0.25s, color ease 0.25s, background ease 0.25s;
+}
+
+.fd-admin a.fd-prod-btn:hover {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.fd-prod-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---------- Filtered-empty call to action spacing -------------------------- */
+.fd-dash-empty-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Product list responsive --------------------------------------- */
+@media (max-width: 767px) {
+  .fd-prod-head .fd-dash-btn {
+    flex: 1 1 100%;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  /* Toolbar stacks full-width rows on small screens; the fixed desktop
+     widths below are released so nothing overflows. */
+  .fd-prod-toolbar .fd-shop-select {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .fd-prod-toolbar .fd-shop-select .form-select {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .fd-prod-toolbar #fd-prod-cat,
+  .fd-prod-toolbar #fd-prod-state,
+  .fd-prod-toolbar #fd-prod-sort {
+    width: 100%;
+  }
+
+  .fd-prod-toolbar .fd-dash-btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  /* Shared table-to-card transformation, now serving the Orders list
+     (its table carries the fd-prod-table classes): headers retire
+     visually (screen readers keep them); each cell names itself via
+     data-label so nothing depends on color or position. The Products
+     list no longer uses this — it renders .fd-prod-card items. */
+  .fd-prod-table-scroll {
+    border: none;
+    overflow: visible;
+  }
+
+  /* Sections already holding bordered cards stay slim on small screens:
+     less space outside the cards, more air inside. */
+  .fd-dash-section:has(.fd-prod-table-scroll),
+  .fd-dash-section:has(.fd-prod-list-wrap) {
+    padding: 16px 12px;
+  }
+
+  .fd-prod-table {
+    min-width: 0;
+  }
+
+  .fd-prod-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .fd-prod-table,
+  .fd-prod-table tbody,
+  .fd-prod-table tr,
+  .fd-prod-table td {
+    display: block;
+    width: 100%;
+  }
+
+  /* Caption must join the block layout: left as table-caption inside a
+     display:block table it gets squeezed into vertical one-word lines. */
+  .fd-prod-table caption {
+    display: block;
+    width: 100%;
+    padding: 0 0 12px 0;
+  }
+
+  .fd-prod-table tbody tr {
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    padding: 20px 20px 24px 20px;
+    margin-bottom: 14px;
+    min-width: 0;
+  }
+
+  .fd-prod-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Grid (not flex): the label takes only what it needs while the value
+     column minmax(0, 1fr) always shrinks, so long variant lists and prices
+     wrap instead of pushing past the card edge.
+     The divider is each cell's bottom border: the 20px vertical padding
+     gives every divider generous breathing room above and below, so no
+     line ever touches text, images, or pills. */
+  .fd-prod-table td {
+    border-bottom: 1px solid #ececec;
+    padding: 20px 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 12px;
+    min-width: 0;
+    text-align: right;
+    overflow-wrap: break-word;
+  }
+
+  /* Desktop keeps prices on one line inside a scrolling table; on cards
+     the range must wrap instead of overflowing narrow screens. */
+  .fd-prod-table td.is-amount {
+    white-space: normal;
+  }
+
+  /* Grid items stretch by default, which pulled the pill edge-to-edge.
+     Pin it to its content against the right edge instead. */
+  .fd-prod-table td .fd-dash-pill {
+    justify-self: end;
+    max-width: 100%;
+  }
+
+  .fd-prod-table td:last-child {
+    border-bottom: none;
+  }
+
+  .fd-prod-table td::before {
+    content: attr(data-label);
+    font-family: var(--title-font);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--body-color);
+    text-align: left;
+    flex: 0 0 auto;
+  }
+}
+
+/* ---------- Product cards: small screens ----------------------------------
+   The mobile-first base above already stacks; here the card tightens so
+   nothing overflows at 320px, and actions become equal tappable halves. */
+@media (max-width: 560px) {
+  .fd-prod-card {
+    padding: 18px 16px;
+  }
+
+  /* Slightly more air between separate product cards on mobile only;
+     desktop spacing is untouched. */
+  .fd-prod-list {
+    gap: 20px;
+  }
+
+  .fd-prod-thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .fd-prod-card-foot {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fd-prod-price {
+    font-size: 17px;
+  }
+
+  .fd-prod-card-foot .fd-prod-actions {
+    flex-wrap: nowrap;
+  }
+
+  .fd-prod-card-foot .fd-prod-actions .fd-prod-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    /* Slightly more compact on mobile only: still a comfortable 40px
+       tap target with readable text; desktop sizing untouched. */
+    min-height: 40px;
+    padding: 6px 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* Out-of-stock parity on mobile: the top row never wraps, so the
+     availability pill stays top-right on the identity row in every
+     card — "Out of Stock" exactly like "Available" and "Limited".
+     The identity block shrinks (min-width:0) and the name wraps within
+     the remaining width instead. Tablet/desktop untouched. */
+  .fd-prod-card-top {
+    flex-wrap: nowrap;
+  }
+}
+
+/* ----- Product cards: very small phones (320px) ---------------------------
+   Tighter card and thumb so every card stays readable at 320px. */
+@media (max-width: 360px) {
+  .fd-prod-card {
+    padding: 16px 14px;
+  }
+
+  /* At this width no pill of any length can share the identity row
+     without shredding the product name, so wrapping returns here only:
+     every card's pill drops below uniformly and names stay readable.
+     From 361px up the nowrap rule above keeps all badges top-right. */
+  .fd-prod-card-top {
+    flex-wrap: wrap;
+    gap: 10px 12px;
+  }
+
+  .fd-prod-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+  }
+
+  .fd-prod-name {
+    font-size: 16px;
+  }
+}
+
+/* ---------- Product cards: tablet and desktop ----------------------------
+   One efficient row: identity on the left, price and actions on the right.
+   The same cards stack on phones, so there is only one component. */
+@media (min-width: 768px) {
+  .fd-prod-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 14px 24px;
+    align-items: center;
+  }
+
+  .fd-prod-card-top {
+    grid-column: 1;
+  }
+
+  .fd-prod-card-foot {
+    grid-column: 2;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: right;
+  }
+
+  .fd-prod-card-foot .fd-prod-actions {
+    flex-wrap: nowrap;
+  }
+}
+
+@media (min-width: 1024px) {
+  .fd-prod-card {
+    grid-template-columns: minmax(0, 1.45fr) auto;
+    gap: 14px 28px;
+    padding: 20px 24px;
+  }
+}
+
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Stage 3B product editor (admin-product-edit.html only)
+   --------------------------------------------------------------------------
+   New classes only (.fd-edit-*). Reuses the existing system exactly:
+     shell    -> .fd-admin-shell / sidebar / topbar (Stage 1, untouched)
+     sections -> .fd-dash-section / .fd-dash-head / .fd-dash-lead /
+                 .fd-dash-hint / .fd-dash-empty (Stage 2)
+     fields   -> .fd-field / .fd-field-error (fresh-direct.css, context-free)
+     controls -> .form-control (template + Stage 1 admin rounding) /
+                 .form-select (Bootstrap, as in the Stage 3A toolbar)
+     buttons  -> .vs-btn (template) + .fd-ghost-btn (fresh-direct.css)
+     states   -> .fd-admin-notice / .is-dev / .is-error (Stage 1)
+     pills    -> .fd-admin-soon (unused here; kept for shell consistency)
+   All selectors stay under .fd-admin so the storefront can never change.
+   Every color is an existing token; no new palette, no framework.
+   Layouts stack to a single column on small screens so nothing
+   overflows at 320px; no page-wide horizontal scrolling by construction
+   (grids use minmax(0,1fr), code/payload blocks wrap).
+   ========================================================================== */
+
+/* ---------- Editor heading ---------- */
+.fd-admin .fd-edit-back {
+  margin: 0 0 10px 0;
+}
+
+.fd-admin .fd-edit-back a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14.5px;
+  color: var(--secondary-color);
+  min-height: 44px;
+}
+
+.fd-admin .fd-edit-title {
+  font-size: 24px;
+  margin: 0 0 8px 0;
+}
+
+/* ---------- Basic-information grid: two columns on desktop, one below --- */
+.fd-admin .fd-edit-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 16px;
+}
+
+.fd-admin #fd-ed-form textarea.form-control,
+.fd-admin #fd-bed-form textarea.form-control {
+  height: auto;
+  min-height: 110px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  resize: vertical;
+}
+
+.fd-admin #fd-ed-form .form-select,
+.fd-admin #fd-bed-form .form-select {
+  min-height: 52px;
+  border-radius: 12px;
+}
+
+/* ---------- Product identity (edit mode): ID is shown, never editable --- */
+.fd-admin .fd-edit-id-line {
+  margin: 0;
+  font-size: 15px;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-edit-id-line code {
+  display: inline-block;
+  font-size: 14px;
+  background: var(--smoke-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 2px 10px;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Image section: fields + live preview side by side ----------- */
+.fd-admin .fd-edit-image-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 20px;
+  align-items: start;
+}
+
+.fd-admin .fd-edit-preview {
+  margin: 0;
+  text-align: center;
+}
+
+.fd-admin .fd-edit-preview-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: 240px;
+  background: var(--smoke-color);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.fd-admin .fd-edit-preview-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fd-admin .fd-edit-preview-frame img[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-edit-preview figcaption {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+/* ---------- Variant cards: one product-specific variant each ------------ */
+.fd-admin .fd-edit-variants {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fd-admin .fd-edit-variant {
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 18px 16px;
+  min-width: 0;
+  background: var(--white-color);
+}
+
+.fd-admin .fd-edit-variant-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fd-admin .fd-edit-variant-num {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--title-color);
+}
+
+.fd-admin .fd-edit-variant-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--error-color);
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.fd-admin .fd-edit-variant-remove[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-edit-variant-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 180px);
+  gap: 0 16px;
+}
+
+.fd-admin .fd-edit-variant-fields .fd-field {
+  min-width: 0;
+}
+
+.fd-admin .fd-edit-default {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 2px 0 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--title-font);
+  color: var(--title-color);
+  cursor: pointer;
+  min-height: 44px;
+}
+
+.fd-admin .fd-edit-default input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+  accent-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.fd-admin .fd-edit-variant-add {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ---------- Product price ------------------------------------------------ */
+.fd-admin .fd-edit-price-field {
+  max-width: 460px;
+}
+
+.fd-admin .fd-edit-price-input {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--smoke-color);
+  overflow: hidden;
+}
+
+.fd-admin .fd-edit-price-input .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 50px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.fd-admin .fd-edit-price-input .form-control:focus {
+  box-shadow: none;
+}
+
+.fd-admin .fd-edit-price-input:focus-within {
+  outline: 2px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+.fd-admin .fd-edit-price-input:has(.form-control[aria-invalid="true"]) {
+  border-color: var(--error-color);
+}
+
+.fd-admin .fd-edit-price-prefix,
+.fd-admin .fd-edit-price-suffix {
+  flex: 0 0 auto;
+  padding: 0 14px;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--body-color);
+}
+
+.fd-admin .fd-edit-price-suffix {
+  border-left: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.fd-admin .fd-edit-result-price {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--title-color);
+}
+
+/* ---------- Availability: the three storefront states, nothing more ----- */
+.fd-admin fieldset.fd-edit-availability {
+  min-width: 0;
+}
+
+.fd-admin fieldset.fd-edit-availability legend {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--title-color);
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.fd-admin .fd-edit-radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* Anchored focus/scroll targets sit below the sticky admin topbar. */
+.fd-admin #fd-ed-summary,
+.fd-admin #fd-ed-result-title {
+  scroll-margin-top: 84px;
+}
+
+.fd-admin .fd-edit-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 14px;
+  cursor: pointer;
+  min-height: 44px;
+  margin: 0;
+}
+
+/* Checked state uses :has (same progressive enhancement as the Stage 3A
+   :has rule below); without it the native radio still reads clearly. */
+.fd-admin .fd-edit-radio:has(input:checked) {
+  border-color: var(--secondary-color);
+  background: var(--smoke-color);
+}
+
+.fd-admin .fd-edit-radio input {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+  accent-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.fd-admin .fd-edit-radio > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fd-admin .fd-edit-radio strong {
+  font-family: var(--title-font);
+  font-size: 15px;
+}
+
+.fd-admin .fd-edit-radio-sub {
+  font-size: 13px;
+  color: var(--body-color);
+  line-height: 1.5;
+}
+
+/* ---------- Actions: primary + safe exit, always reachable --------------- */
+.fd-admin .fd-edit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fd-admin .fd-edit-actions .vs-btn,
+.fd-admin .fd-edit-actions .fd-ghost-btn {
+  justify-content: center;
+}
+
+/* ---------- Validation summary links ---------- */
+.fd-admin #fd-ed-summary ul {
+  margin: 10px 0 0 0;
+  padding-left: 20px;
+}
+
+.fd-admin #fd-ed-summary li {
+  margin-bottom: 4px;
+}
+
+.fd-admin #fd-ed-summary a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Result: confirmation summary + follow-ups ------------------ */
+.fd-admin .fd-edit-result-summary {
+  margin-top: 18px;
+}
+
+.fd-admin .fd-edit-result-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 18px 16px;
+  min-width: 0;
+  background: var(--white-color);
+}
+
+.fd-admin .fd-edit-result-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  background: var(--smoke-color);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.fd-admin .fd-edit-result-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fd-admin .fd-edit-result-body {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fd-admin .fd-edit-result-name {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-edit-result-meta {
+  font-size: 13.5px;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-edit-result-variants {
+  list-style: none;
+  margin: 4px 0 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-edit-result-desc {
+  margin: 6px 0 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+  white-space: pre-line;
+}
+
+.fd-admin .fd-edit-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.fd-admin .fd-edit-result-actions .vs-btn,
+.fd-admin .fd-edit-result-actions .fd-ghost-btn {
+  justify-content: center;
+}
+
+/* ---------- Editor responsive ---------- */
+@media (max-width: 767px) {
+  .fd-admin .fd-edit-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-admin .fd-edit-image-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-admin .fd-edit-preview-frame {
+    max-width: 280px;
+    margin: 0 auto;
+  }
+
+  .fd-admin .fd-edit-actions .vs-btn,
+  .fd-admin .fd-edit-actions .fd-ghost-btn,
+  .fd-admin .fd-edit-result-actions .vs-btn,
+  .fd-admin .fd-edit-result-actions .fd-ghost-btn,
+  .fd-admin .fd-edit-variant-add .fd-dash-btn {
+    flex: 1 1 100%;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .fd-admin .fd-dash-empty-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 560px) {
+  .fd-admin .fd-edit-variant-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-admin .fd-edit-variant {
+    padding: 16px 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .fd-admin .fd-edit-title {
+    font-size: 21px;
+  }
+
+  .fd-admin .fd-edit-radio-group {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-admin .fd-edit-result-card {
+    padding: 16px 14px;
+  }
+}
+
+/* ---------- Stage 3B recovery: primary file upload + secondary reference --
+   New classes only (.fd-edit-upload / .fd-edit-file-* / .fd-edit-image-ref /
+   .fd-edit-ref-title). Reuses the existing system exactly: .fd-field /
+   .fd-field-error / .fd-dash-hint / .form-control / .fd-ghost-btn / tokens.
+   Stays under .fd-admin; single-column stack from the editor rules above
+   already applies, so nothing overflows at 320px (long filenames wrap via
+   overflow-wrap:anywhere). */
+.fd-admin .fd-edit-upload .fd-edit-file-input {
+  min-height: 52px;
+  height: auto;
+  padding: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.fd-admin .fd-edit-upload .fd-edit-file-input[aria-invalid="true"] {
+  border-color: var(--error-color);
+}
+
+.fd-admin .fd-edit-file-meta {
+  margin: 10px 0 0 0;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-edit-file-name {
+  margin: 6px 0 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--title-color);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.fd-admin .fd-edit-file-name[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-edit-file-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fd-admin .fd-edit-file-actions:has([hidden]) {
+  margin-top: 0;
+}
+
+.fd-admin .fd-edit-file-remove[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-edit-file-remove {
+  min-height: 44px;
+  justify-content: center;
+}
+
+/* Secondary existing-image option: visually quiet, never the primary. */
+.fd-admin .fd-edit-image-ref {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.fd-admin .fd-edit-ref-title {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--title-color);
+  margin: 0;
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Native disclosure marker is replaced by the explicit chevron icon
+     below, so sellers get one consistent dropdown affordance. */
+  list-style: none;
+}
+
+.fd-admin .fd-edit-ref-title::-webkit-details-marker {
+  display: none;
+}
+
+/* Dropdown affordance: chevron sits right after the reuse text and
+   flips when the section opens. Decorative only (aria-hidden) — the
+   native <details>/<summary> semantics already announce expandability. */
+.fd-admin .fd-edit-ref-title i {
+  font-size: 13px;
+  color: var(--secondary-color);
+}
+
+.fd-admin .fd-edit-image-ref[open] .fd-edit-ref-title i {
+  transform: rotate(180deg);
+}
+
+/* Visible existing-image dropdown sits right after the reuse text, with
+   the paste field below it — the seller always sees what is available. */
+.fd-admin .fd-edit-image-pick {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.fd-admin .fd-edit-image-src-label {
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Stage 4 order management (admin-orders.html +
+   admin-order.html only)
+   --------------------------------------------------------------------------
+   New classes only (.fd-orders-* / .fd-order-*). Reuses the existing
+   system exactly:
+     shell    -> .fd-admin-shell / sidebar / topbar (Stage 1, untouched)
+     sections -> .fd-dash-section / .fd-dash-head / .fd-dash-lead /
+                 .fd-dash-hint / .fd-dash-count / .fd-dash-empty (Stage 2)
+     table    -> .fd-dash-table / .fd-dash-table-scroll / .fd-dash-caption
+                 (Stage 2) + the Stage 3A card transformation, extended
+                 below to row-header cells (order references)
+     toolbar  -> .fd-prod-toolbar / .fd-shop-search / .fd-shop-select /
+                 .form-control / .form-select (Stage 3A, context-free)
+     actions  -> .fd-prod-btn (Stage 3A) + .vs-btn / .fd-ghost-btn
+     pills    -> .fd-dash-pill tones (Stage 2; text always accompanies
+                 color so status never depends on color alone)
+     states   -> .fd-admin-notice / .is-error (Stage 1)
+     fields   -> .fd-field (fresh-direct.css) + .form-select (Bootstrap)
+   All selectors stay under .fd-admin so the storefront can never change.
+   Every color is an existing token; no new palette, no framework.
+   Layouts use minmax(0,1fr) and overflow-wrap so long references, phone
+   numbers, addresses and instructions wrap safely — no page-wide
+   horizontal scrolling at 320px by construction.
+   ========================================================================== */
+
+/* ---------- Order list: reference + customer cells ---------- */
+.fd-admin .fd-orders-ref {
+  font-family: var(--title-font);
+  font-weight: 600;
+  color: var(--secondary-color);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.fd-admin a.fd-orders-ref {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.fd-admin .fd-orders-cust {
+  display: block;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-orders-sub {
+  display: block;
+  font-size: 13px;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-orders-date {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--body-font);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--body-color);
+  white-space: normal;
+}
+
+.fd-admin .fd-orders-items {
+  display: block;
+  max-width: 240px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.fd-admin .fd-orders-receive {
+  display: block;
+  min-width: 0;
+}
+
+.fd-admin .fd-orders-receive-method {
+  display: block;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--title-color);
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-orders-receive-place {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+@media (min-width: 768px) {
+  .fd-admin .fd-orders-table {
+    min-width: 900px;
+  }
+
+  /* Fit all eight order columns at 1280px without clipping the action.
+     Vertical rhythm stays on the shared table rules. */
+  .fd-admin .fd-orders-table th,
+  .fd-admin .fd-orders-table td {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .fd-admin .fd-orders-table .fd-prod-btn {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .fd-admin .fd-orders-table .fd-dash-pill {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+}
+
+/* ---------- Order list pagination ---------- */
+.fd-admin .fd-orders-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 18px;
+}
+
+.fd-admin .fd-orders-pagination[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-orders-pageinfo {
+  margin: 0;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--body-color);
+  text-align: center;
+}
+
+.fd-admin .fd-orders-pagination .fd-dash-btn {
+  min-width: 120px;
+  justify-content: center;
+}
+
+/* ---------- Order list toolbar: deliberate desktop widths ----------
+   Tuned so the four selects share one row wherever ~990px is available
+   (desktop content width, capped by .fd-admin-content) while Clear
+   filters can never join that row — it always wraps beneath. */
+.fd-admin .fd-orders-toolbar #fd-orders-status {
+  width: 158px;
+}
+
+.fd-admin .fd-orders-toolbar #fd-orders-payment {
+  width: 156px;
+}
+
+.fd-admin .fd-orders-toolbar #fd-orders-delivery {
+  width: 150px;
+}
+
+.fd-admin .fd-orders-toolbar #fd-orders-sort {
+  width: 170px;
+}
+
+/* Large screens: the four selects fill the first row, so Clear filters
+   always sits alone beneath them — centered, at its natural width. */
+@media (min-width: 1366px) {
+  .fd-admin .fd-orders-toolbar #fd-orders-clear {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ---------- Order detail: header ---------- */
+.fd-admin .fd-order-head-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  margin-bottom: 14px;
+}
+
+.fd-admin .fd-order-ref-label {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 12.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--body-color);
+}
+
+.fd-admin .fd-order-ref {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--title-color);
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.fd-admin .fd-order-date {
+  font-size: 14px;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-order-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Order detail: two-column grid, one column below ---------- */
+.fd-admin .fd-order-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 20px;
+  align-items: start;
+}
+
+.fd-admin .fd-order-grid .fd-dash-section {
+  min-width: 0;
+}
+
+/* ---------- Order detail: fact lists (customer / delivery / payment) -- */
+.fd-admin .fd-order-facts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fd-admin .fd-order-facts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 2px;
+  border-bottom: 1px solid #ececec;
+  min-width: 0;
+}
+
+.fd-admin .fd-order-facts li:last-child {
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+
+.fd-admin .fd-order-facts li:first-child {
+  padding-top: 2px;
+}
+
+.fd-admin .fd-order-facts span {
+  flex: 0 0 auto;
+  font-size: 13.5px;
+  color: var(--body-color);
+}
+
+.fd-admin .fd-order-facts strong {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14.5px;
+  text-align: right;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-order-delivery-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 16px;
+}
+
+.fd-admin .fd-order-delivery-head h2 {
+  margin: 0;
+}
+
+.fd-admin .fd-order-contact-actions {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.fd-admin .fd-order-contact-actions .fd-dash-btn {
+  justify-content: center;
+}
+
+/* ---------- Order detail: items total row ---------- */
+.fd-admin .fd-order-items-table tfoot th,
+.fd-admin .fd-order-items-table tfoot td {
+  border-top: 2px solid var(--border-color);
+  border-bottom: none;
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 16px;
+  padding: 14px 16px;
+}
+
+.fd-admin .fd-order-items-table tfoot td.is-amount {
+  white-space: nowrap;
+}
+
+.fd-admin .fd-order-items-scroll {
+  margin-bottom: 4px;
+}
+
+@media (min-width: 768px) {
+  .fd-admin .fd-order-items-table {
+    min-width: 720px;
+  }
+}
+
+/* ---------- Order detail: status form note ---------- */
+.fd-admin .fd-order-status-note {
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--title-font);
+  color: var(--secondary-color);
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-order-status-note[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-order-status-note.is-error {
+  color: var(--error-color);
+}
+
+.fd-admin #fd-order-status-form .form-select {
+  min-height: 52px;
+  border-radius: 12px;
+}
+
+.fd-admin #fd-order-status-form .vs-btn {
+  justify-content: center;
+}
+
+/* ---------- Order list + detail responsive ---------- */
+@media (max-width: 900px) {
+  .fd-admin .fd-order-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  /* Toolbar stacks full-width rows; desktop widths released. */
+  .fd-admin .fd-orders-toolbar .fd-shop-select {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .fd-admin .fd-orders-toolbar .fd-shop-select .form-select {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .fd-admin .fd-orders-toolbar #fd-orders-status,
+  .fd-admin .fd-orders-toolbar #fd-orders-payment,
+  .fd-admin .fd-orders-toolbar #fd-orders-delivery,
+  .fd-admin .fd-orders-toolbar #fd-orders-sort {
+    width: 100%;
+  }
+
+  .fd-admin .fd-orders-toolbar .fd-dash-btn {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  /* Row-header cell (order reference) joins the card layout: the shared
+     Stage 3A rules only unroll td cells, so th cells are unrolled here
+     to match — prominent, left-aligned, wrapping safely. */
+  .fd-admin .fd-orders-table tbody th[scope="row"] {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #ececec;
+    padding: 20px 0;
+    text-align: left;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .fd-admin .fd-orders-table tbody th[scope="row"]::before {
+    content: "Order";
+    display: block;
+    font-family: var(--title-font);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--body-color);
+    margin-bottom: 12px;
+  }
+
+  .fd-admin a.fd-orders-ref {
+    font-size: 17px;
+  }
+
+  /* Items table becomes cards like the product list: headers retire
+     visually (screen readers keep them); each cell names itself via
+     data-label. The Product cell keeps its own layout under its label. */
+  .fd-admin .fd-order-items-scroll {
+    border: none;
+    overflow: visible;
+  }
+
+  .fd-admin .fd-dash-section:has(.fd-order-items-scroll) {
+    padding: 16px 12px;
+  }
+
+  .fd-admin .fd-order-items-table {
+    min-width: 0;
+  }
+
+  .fd-admin .fd-order-items-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .fd-admin .fd-order-items-table,
+  .fd-admin .fd-order-items-table tbody,
+  .fd-admin .fd-order-items-table tr,
+  .fd-admin .fd-order-items-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .fd-admin .fd-order-items-table caption {
+    display: block;
+    width: 100%;
+    padding: 0 0 12px 0;
+  }
+
+  .fd-admin .fd-order-items-table tbody tr {
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    padding: 20px 20px 24px 20px;
+    margin-bottom: 14px;
+    min-width: 0;
+  }
+
+  .fd-admin .fd-order-items-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .fd-admin .fd-order-items-table td {
+    border-bottom: 1px solid #ececec;
+    border-top: none;
+    padding: 20px 0;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 6px 12px;
+    min-width: 0;
+    text-align: right;
+    overflow-wrap: break-word;
+    font-size: 14.5px;
+  }
+
+  /* Product cell keeps its own layout under its label (name + variant
+     stay left-aligned together instead of splitting across the grid). */
+  .fd-admin .fd-order-items-table tbody th[scope="row"] {
+    display: block;
+    width: 100%;
+    border-bottom: 1px solid #ececec;
+    border-top: none;
+    padding: 20px 0;
+    text-align: left;
+    min-width: 0;
+    font-size: 14.5px;
+  }
+
+  .fd-admin .fd-order-items-table td.is-amount {
+    white-space: normal;
+  }
+
+  .fd-admin .fd-order-items-table td::before {
+    content: attr(data-label);
+    font-family: var(--title-font);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--body-color);
+    text-align: left;
+  }
+
+  .fd-admin .fd-order-items-table tbody th[scope="row"]::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--title-font);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--body-color);
+    text-align: left;
+    margin-bottom: 12px;
+  }
+
+  .fd-admin .fd-order-items-table tbody th[scope="row"] {
+    font-weight: 600;
+  }
+
+  .fd-admin .fd-order-items-table tbody th[scope="row"] strong {
+    overflow-wrap: break-word;
+  }
+
+  /* Total row: one calm summary line per table, no card chrome. */
+  .fd-admin .fd-order-items-table tfoot,
+  .fd-admin .fd-order-items-table tfoot tr {
+    display: block;
+    width: 100%;
+  }
+
+  .fd-admin .fd-order-items-table tfoot tr {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 4px 4px 4px;
+  }
+
+  .fd-admin .fd-order-items-table tfoot th,
+  .fd-admin .fd-order-items-table tfoot td {
+    border: none;
+    padding: 0;
+  }
+
+  .fd-admin .fd-order-contact-actions .fd-dash-btn,
+  .fd-admin #fd-order-status-form .vs-btn {
+    flex: 1 1 100%;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+
+  .fd-admin .fd-orders-items {
+    max-width: none;
+    text-align: left;
+  }
+
+  .fd-admin .fd-orders-receive {
+    text-align: left;
+  }
+
+  .fd-admin .fd-orders-pagination .fd-dash-btn {
+    flex: 1 1 130px;
+    min-width: 0;
+  }
+
+  .fd-admin .fd-orders-pageinfo {
+    flex: 1 1 100%;
+    order: -1;
+  }
+}
+
+@media (max-width: 360px) {
+  .fd-admin .fd-order-ref {
+    font-size: 21px;
+  }
+
+  .fd-admin .fd-order-facts li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .fd-admin .fd-order-facts strong {
+    text-align: left;
+  }
+}
+
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Stage 5 settings (admin-settings.html only)
+   --------------------------------------------------------------------------
+   New classes only (.fd-set-* / .fd-required). Reuses the existing system
+   exactly:
+     shell    -> .fd-admin-shell / sidebar / topbar (Stage 1, untouched)
+     sections -> .fd-dash-section / .fd-dash-head / .fd-dash-lead /
+                 .fd-dash-hint / .fd-dash-empty (Stage 2)
+     fields   -> .fd-field / .fd-field-error / .fd-optional
+                 (fresh-direct.css, context-free) + .form-control /
+                 .form-select (template + Stage 1 admin rounding)
+     facts    -> .fd-order-facts (Stage 4; same label/value rows reused
+                 for delivery + account summaries, never duplicated)
+     buttons  -> .vs-btn (template) + .fd-ghost-btn (fresh-direct.css) +
+                 .fd-admin-logout (Stage 1)
+     states   -> .fd-admin-notice / .is-error (Stage 1)
+   All selectors stay under .fd-admin so the storefront can never change.
+   Every color is an existing token; no new palette, no framework.
+   Grids use minmax(0,1fr) and long values wrap, so phone numbers and
+   addresses stay inside the cards at 320px — no page-wide horizontal
+   scrolling by construction.
+   ========================================================================== */
+
+/* ---------- Required marker (sibling to the existing .fd-optional) ------- */
+.fd-admin .fd-required {
+  color: var(--error-color);
+  font-weight: 700;
+}
+
+/* ---------- Business-information grid: two columns, one below ------------ */
+.fd-admin .fd-set-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 16px;
+}
+
+.fd-admin #fd-set-business-form textarea.form-control,
+.fd-admin #fd-set-whatsapp-form textarea.form-control {
+  height: auto;
+  min-height: 110px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  resize: vertical;
+}
+
+/* ---------- Unsaved-changes hint (per form, announced politely) ---------- */
+.fd-admin .fd-set-dirty {
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--title-font);
+  color: var(--title-color);
+  line-height: 1.55;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-set-dirty[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-set-dirty i {
+  color: var(--secondary-color);
+}
+
+/* ---------- Per-form result note (success calm, errors loud) ------------- */
+.fd-admin .fd-set-note {
+  margin: 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--title-font);
+  color: var(--secondary-color);
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-set-note[hidden] {
+  display: none;
+}
+
+.fd-admin .fd-set-note.is-error {
+  color: var(--error-color);
+}
+
+/* ---------- Save / discard / follow-up actions ---------------------------- */
+.fd-admin .fd-set-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.fd-admin .fd-set-actions .vs-btn,
+.fd-admin .fd-set-actions .fd-ghost-btn {
+  justify-content: center;
+}
+
+/* Pristine forms rest their primary action: same quiet treatment as the
+   disabled ghost button, scoped to settings so login behavior is
+   untouched. */
+.fd-admin .fd-set-actions .vs-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* The account Log out reuses the shell logout shape at content width. */
+.fd-admin .fd-set-actions .fd-set-logout {
+  width: auto;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+/* ---------- Delivery summary cards --------------------------------------- */
+.fd-admin .fd-set-delivery-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 20px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.fd-admin .fd-set-delivery-card {
+  border: 1px solid #ececec;
+  border-radius: 12px;
+  padding: 18px 16px;
+  min-width: 0;
+  background: var(--white-color);
+}
+
+.fd-admin .fd-set-delivery-card h3 {
+  font-size: 17px;
+  margin: 0 0 12px 0;
+}
+
+.fd-admin .fd-set-subhead {
+  font-size: 17px;
+  margin: 0 0 12px 0;
+}
+
+/* ---------- Settings responsive ------------------------------------------ */
+@media (max-width: 767px) {
+  .fd-admin .fd-set-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-admin .fd-set-delivery-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .fd-admin .fd-set-actions .vs-btn,
+  .fd-admin .fd-set-actions .fd-ghost-btn,
+  .fd-admin .fd-set-actions .fd-set-logout {
+    flex: 1 1 100%;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+}
+
+/* ==========================================================================
+   SMALL-SCREEN SAFETY LAYER — admin responsive hardening, no redesign.
+   Complements the storefront layer in fresh-direct.css. Approved admin
+   card/table improvements above are untouched; rules below only adjust
+   spacing, wrapping and control sizing at narrow widths so the topbar,
+   cards, tables-as-cards, forms and buttons stay usable down to 320px.
+   Touch targets never drop below 40px. Dark-mode colors untouched.
+   ========================================================================== */
+
+/* ---------- A. Shared admin overflow guards (all viewports) ------------ */
+.fd-admin .fd-admin-topbar,
+.fd-admin .fd-prod-card-top,
+.fd-admin .fd-prod-card-foot,
+.fd-admin .fd-order-facts li {
+  min-width: 0;
+}
+
+.fd-admin .fd-admin-title {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.fd-admin .fd-admin-menu-btn,
+.fd-admin .fd-admin-topbar .fd-theme-toggle {
+  flex: 0 0 auto;
+}
+
+.fd-admin .fd-dash-card-value,
+.fd-admin .fd-prod-name,
+.fd-admin .fd-order-ref,
+.fd-admin .fd-orders-cust {
+  overflow-wrap: break-word;
+}
+
+/* ---------- B. Small mobile (<=575px): topbar + content breathing room - */
+@media (max-width: 575px) {
+  .fd-admin .fd-admin-topbar {
+    gap: 8px;
+    padding: 10px 14px;
+    min-height: 60px;
+  }
+
+  .fd-admin .fd-admin-title {
+    font-size: 20px;
+    flex: 1 1 auto;
+  }
+
+  .fd-admin .fd-admin-content {
+    padding: 18px 12px 36px 12px;
+  }
+
+  .fd-admin .fd-dash-grid {
+    gap: 10px;
+  }
+
+  .fd-admin .fd-dash-card {
+    padding: 14px 12px;
+  }
+
+  .fd-admin .fd-prod-card {
+    padding: 16px 14px;
+  }
+
+  .fd-admin .fd-order-facts strong {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* ---------- C. Very small phones (<=360px): tighten, never tiny -------- */
+@media (max-width: 360px) {
+  .fd-admin .fd-admin-menu-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .fd-admin .fd-admin-topbar .fd-theme-toggle {
+    --icon-size: 40px;
+  }
+
+  .fd-admin .fd-admin-card {
+    padding: 22px 16px;
+  }
+
+  .fd-admin .fd-prod-variants li {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .fd-admin .fd-edit-variant-top {
+    flex-wrap: wrap;
+  }
+}
+
+/* ---------- D. Smallest realistic phones (<=330px, covers 320px) ------- */
+@media (max-width: 330px) {
+  .fd-admin .fd-admin-topbar {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .fd-admin .fd-admin-title {
+    font-size: 18px;
+  }
+
+  .fd-admin .fd-admin-content {
+    padding: 14px 10px 32px 10px;
+  }
+
+  .fd-admin .fd-dash-grid {
+    gap: 8px;
+  }
+
+  .fd-admin .fd-dash-card-value {
+    font-size: 24px;
+  }
+
+  .fd-admin .fd-prod-card {
+    padding: 14px 12px;
+  }
+
+  .fd-admin .fd-prod-card-foot .fd-prod-actions .fd-prod-btn {
+    padding: 6px 8px;
+    font-size: 12.5px;
+    min-height: 40px;
+  }
+
+  .fd-admin .fd-dash-section {
+    padding: 16px 12px;
+  }
+}
+
+/* ---------- Order detail: item thumbnail + product cell ---------------- */
+.fd-admin .fd-order-item-product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.fd-admin .fd-order-item-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: var(--smoke-color);
+  color: var(--body-color);
+  font-size: 18px;
+  overflow: hidden;
+}
+
+.fd-admin .fd-order-item-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fd-admin .fd-order-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fd-admin .fd-order-item-text strong {
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Admin mobile base navigation ------------------------------
+   Mirrors the storefront's fixed base navigation for the admin area:
+   five primary destinations, icon + short label, and an accent active
+   state. Hidden on desktop; the persistent sidebar remains the desktop
+   navigation. Never rendered on the standalone sign-in page. */
+.fd-admin-base-nav {
+  display: none;
+}
+
+@media (max-width: 991px) {
+  /* Use the storefront's page canvas behind the admin shell. Without this,
+     the admin body's grey shows in the device safe-area / overscroll strip
+     below the white base navigation, while the storefront (white canvas)
+     stays flush to the screen edge. */
+  html {
+    background-color: var(--body-bg);
+  }
+
+  /* Same container properties as .otoosin-mobile-nav (the storefront base
+     menu), including its exact box model, padding, border reset and safe
+     area handling. */
+  .fd-admin-base-nav {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 900;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 5px 6px calc(5px + env(safe-area-inset-bottom, 0px));
+    background: var(--fd-surface);
+    border: 0;
+    border-top: 1px solid var(--fd-hairline);
+    border-radius: 0;
+    box-shadow: 0 -10px 30px rgba(6, 65, 29, 0.12);
+    font-family: var(--title-font);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fd-admin-base-nav ul {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fd-admin-base-nav li {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .fd-admin-base-nav__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    min-height: 54px;
+    padding: 6px 2px;
+    border-radius: 16px;
+    color: var(--fd-text-2);
+    text-align: center;
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .fd-admin-base-nav__item:hover {
+    color: var(--fd-brand-green-text);
+    background: var(--fd-surface-2);
+  }
+
+  .fd-admin-base-nav__item:focus-visible {
+    outline: 3px solid var(--fd-focus);
+    outline-offset: -1px;
+  }
+
+  .fd-admin-base-nav__item.is-active,
+  .fd-admin-base-nav__item[aria-current="page"] {
+    color: var(--fd-brand-green-text);
+  }
+
+  .fd-admin-base-nav__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 26px;
+    border-radius: 9999px;
+    font-size: 16px;
+    line-height: 1;
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .fd-admin-base-nav__item.is-active .fd-admin-base-nav__icon,
+  .fd-admin-base-nav__item[aria-current="page"] .fd-admin-base-nav__icon {
+    background: var(--theme-color);
+    color: var(--secondary-color);
+  }
+
+  .fd-admin-base-nav__label {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.fd-admin-base-nav-on .fd-admin-main {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 400px) {
+  .fd-admin-base-nav {
+    padding: 4px 5px calc(4px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .fd-admin-base-nav__item {
+    min-height: 52px;
+    padding: 5px 1px;
+    border-radius: 14px;
+  }
+
+  .fd-admin-base-nav__label {
+    font-size: 11px;
+  }
+
+  .fd-admin-base-nav__icon {
+    width: 32px;
+    height: 24px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 991px) and (max-height: 500px) {
+  .fd-admin-base-nav {
+    padding: 3px 5px calc(3px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .fd-admin-base-nav__item {
+    min-height: 44px;
+    gap: 1px;
+    padding: 3px 2px;
+    border-radius: 13px;
+  }
+
+  .fd-admin-base-nav__label {
+    font-size: 10px;
+  }
+
+  .fd-admin-base-nav__icon {
+    width: 30px;
+    height: 22px;
+    font-size: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-admin-base-nav__item,
+  .fd-admin-base-nav__icon {
+    transition: none;
+  }
+}
+
+@media print {
+  .fd-admin-base-nav {
+    display: none !important;
+  }
+}

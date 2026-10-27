@@ -1,0 +1,191 @@
+/* ==========================================================================
+   O’TOOSIN Farms Admin — Product Categories page (admin-categories.html)
+   --------------------------------------------------------------------------
+   Also loaded by admin-inventory.html so product cards use the exact same
+   card design. Reuses the existing admin tokens (--white-color, --border-color,
+   --smoke-color, --title-color, --body-color, --secondary-color) so Light and
+   Dark themes keep working without page-specific colour values.
+   ========================================================================== */
+
+.fd-admin .fd-cat-toolbar .fd-shop-search {
+  flex: 1 1 260px;
+}
+
+.fd-admin .fd-cat-toolbar #fd-cat-group {
+  width: 190px;
+}
+
+.fd-admin .fd-cat-toolbar #fd-cat-clear {
+  flex: 0 0 auto;
+  min-width: 160px;
+  height: 50px;
+  min-height: 50px;
+  line-height: 21px;
+  padding: 8px 18px;
+  font-size: 14px;
+}
+
+.fd-admin .fd-cat-count {
+  margin: 0;
+}
+
+.fd-cat-grid {
+  list-style: none;
+  margin: 18px 0 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  min-width: 0;
+}
+
+.fd-admin .fd-cat-card[hidden] {
+  display: none;
+}
+
+.fd-cat-card {
+  background: var(--white-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fd-cat-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px 14px;
+  min-width: 0;
+}
+
+.fd-cat-thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 auto;
+  background: var(--smoke-color);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.fd-cat-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.fd-cat-id {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+
+.fd-cat-name {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.35;
+  color: var(--title-color);
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+.fd-cat-group {
+  margin: 2px 0 0 0;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body-color);
+}
+
+.fd-cat-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--body-color);
+  overflow-wrap: break-word;
+}
+
+.fd-cat-stats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fd-cat-stats li {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: var(--smoke-color);
+  border-radius: 9999px;
+  padding: 7px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.fd-cat-stat-label {
+  color: var(--body-color);
+}
+
+.fd-cat-stat-value {
+  font-family: var(--title-font);
+  font-weight: 700;
+  color: var(--title-color);
+}
+
+.fd-cat-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.fd-cat-actions .fd-prod-btn {
+  min-height: 44px;
+}
+
+/* Dark theme: the shared fd-theme.css remaps admin cards by class, so add
+   the categories card and its inner smoke chips to the same treatment. */
+html[data-theme="dark"] .fd-cat-card {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .fd-cat-thumb,
+html[data-theme="dark"] .fd-cat-stats li {
+  background: var(--fd-surface-2);
+}
+
+@media (min-width: 640px) {
+  .fd-cat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .fd-cat-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .fd-admin .fd-cat-toolbar .fd-shop-search,
+  .fd-admin .fd-cat-toolbar .fd-shop-select,
+  .fd-admin .fd-cat-toolbar #fd-cat-group,
+  .fd-admin .fd-cat-toolbar #fd-cat-clear {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .fd-admin .fd-cat-toolbar #fd-cat-clear {
+    min-width: 0;
+  }
+}

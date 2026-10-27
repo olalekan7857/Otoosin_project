@@ -1,0 +1,535 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Products | O’TOOSIN Farms Admin</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <!-- Admin is private: never index admin pages or expose product data. -->
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="description" content="Private O’TOOSIN Farms whole-farm product management area.">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+
+    <!--==============================
+	  Google Fonts (same as storefront)
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File (same stack + scoped admin foundation)
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="assets/css/harvest-castle.css">
+    <!-- Storefront foundation overrides -->
+    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
+    <!-- Admin foundation (shared shell + product list styles).
+         ?v= pin: keep the shared admin stylesheet fresh. -->
+    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
+    <!-- Theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
+    <link rel="stylesheet" href="assets/css/fd-theme.css">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+</head>
+
+<body class="fd-admin">
+
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to product list</a>
+
+    <!--==============================
+    Admin shell (shared admin layout).
+    Products sets aria-current="page" on its own nav item.
+    ============================== -->
+    <div class="fd-admin-shell" id="fd-admin-shell">
+
+        <!-- Sidebar navigation -->
+        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
+            <div class="fd-admin-brand">
+                <a href="index.html" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
+            </div>
+            <p class="fd-admin-role">Farm Admin</p>
+            <nav class="fd-admin-nav" aria-label="Management sections">
+                <ul>
+                    <li>
+                        <a href="admin-dashboard.html" class="fd-admin-nav-link">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-products.html" class="fd-admin-nav-link" aria-current="page">
+                            <i class="fas fa-box" aria-hidden="true"></i>Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-inventory.html" class="fd-admin-nav-link">
+                            <i class="fas fa-warehouse" aria-hidden="true"></i>Inventory
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-categories.html" class="fd-admin-nav-link">
+                            <i class="fas fa-layer-group" aria-hidden="true"></i>Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-orders.html" class="fd-admin-nav-link">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-settings.html" class="fd-admin-nav-link">
+                            <i class="fas fa-cog" aria-hidden="true"></i>Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="fd-admin-side-foot">
+                <a class="fd-admin-logout" href="admin-login.html">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Staff sign-in
+                </a>
+                <p class="fd-admin-logout-hint">Open the staff access page.</p>
+            </div>
+        </aside>
+
+        <!-- Drawer scrim (mobile only, shown via CSS when .nav-open) -->
+        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
+
+        <!-- Main column -->
+        <div class="fd-admin-main">
+            <header class="fd-admin-topbar">
+                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <h1 class="fd-admin-title">Products</h1>
+                <span class="fd-admin-context">Farm admin &middot; product management</span>
+                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                </button>
+            </header>
+
+            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
+                <div class="fd-dash-head">
+                    <p class="fd-dash-lead">Search, filter and review every product across the O’TOOSIN Farms catalogue.</p>
+                </div>
+
+                <!-- ------------------------------------------------------------------
+                     PRODUCT RECORDS
+                     The cards below hold the page's local demonstration catalogue.
+                     Prices are Naira and follow each product's selling unit. The same card markup can become
+                     a template loop when the store backend is connected.
+                     ------------------------------------------------------------------ -->
+
+                <!-- Catalogue overview -->
+                <section class="fd-dash-section fd-prod-overview" aria-labelledby="fd-prod-overview-title">
+                    <div class="fd-prod-head">
+                        <div class="fd-prod-head-text">
+                            <h2 id="fd-prod-overview-title">Catalogue overview</h2>
+                            <p class="fd-dash-lead">A quick read on products across all six farm categories.</p>
+                        </div>
+                        <a href="admin-product-edit.html" class="vs-btn fd-dash-btn">
+                            <i class="fas fa-plus" aria-hidden="true"></i>Add Product
+                        </a>
+                    </div>
+                    <ul class="fd-dash-grid fd-prod-summary" aria-label="Product catalogue totals">
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-box"></i></span>
+                            <span class="fd-dash-card-label">Total products</span>
+                            <span class="fd-dash-card-value" id="fd-sum-total">13</span>
+                            <span class="fd-dash-card-context">Products across all six categories.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-drumstick-bite"></i></span>
+                            <span class="fd-dash-card-label">Fresh</span>
+                            <span class="fd-dash-card-value" id="fd-sum-fresh">6</span>
+                            <span class="fd-dash-card-context">Fresh products across the catalogue.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-snowflake"></i></span>
+                            <span class="fd-dash-card-label">Frozen</span>
+                            <span class="fd-dash-card-value" id="fd-sum-frozen">5</span>
+                            <span class="fd-dash-card-context">Frozen products across the catalogue.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-fire"></i></span>
+                            <span class="fd-dash-card-label">Fried</span>
+                            <span class="fd-dash-card-value" id="fd-sum-fried">2</span>
+                            <span class="fd-dash-card-context">Ready-to-eat products.</span>
+                        </li>
+                        <li class="fd-dash-card">
+                            <span class="fd-dash-card-icon" aria-hidden="true"><i class="fas fa-paw"></i></span>
+                            <span class="fd-dash-card-label">Live</span>
+                            <span class="fd-dash-card-value" id="fd-sum-live">1</span>
+                            <span class="fd-dash-card-context">Live animals listed.</span>
+                        </li>
+                    </ul>
+                </section>
+
+                <!-- Product list -->
+                <section class="fd-dash-section" aria-labelledby="fd-prod-list-title">
+                    <div class="fd-prod-head">
+                        <div class="fd-prod-head-text">
+                            <h2 id="fd-prod-list-title">Product list</h2>
+                            <p class="fd-dash-count" id="fd-prod-count" role="status" aria-live="polite">Showing 17 of 17 products.</p>
+                        </div>
+                    </div>
+
+                    <div class="fd-prod-toolbar">
+                        <div class="fd-shop-search fd-prod-search">
+                            <i class="far fa-search" aria-hidden="true"></i>
+                            <label class="visually-hidden" for="fd-prod-search">Search products by name, category or state</label>
+                            <input id="fd-prod-search" class="form-control" type="search" placeholder="Search products…" autocomplete="off">
+                        </div>
+                        <label class="fd-shop-select" for="fd-prod-cat">Category
+                            <select id="fd-prod-cat" class="form-select">
+                                <option value="all">All products</option>
+                                <option value="Meats">Meats</option>
+                                <option value="Fish">Fish</option>
+                                <option value="Live Animals">Live Animals</option>
+                                <option value="Eggs">Eggs</option>
+                                <option value="Veggies">Veggies</option>
+                                <option value="Fruits">Fruits</option>
+                            </select>
+                        </label>
+                        <label class="fd-shop-select" for="fd-prod-state">State
+                            <select id="fd-prod-state" class="form-select">
+                                <option value="all">All states</option>
+                                <option value="Fresh">Fresh</option>
+                                <option value="Frozen">Frozen</option>
+                                <option value="Fried">Fried</option>
+                                <option value="Live">Live</option>
+                            </select>
+                        </label>
+                        <label class="fd-shop-select" for="fd-prod-sort">Sort by
+                            <select id="fd-prod-sort" class="form-select">
+                                <option value="default">Catalogue order</option>
+                                <option value="name-asc">Name: A–Z</option>
+                                <option value="name-desc">Name: Z–A</option>
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                            </select>
+                        </label>
+                        <button type="button" class="fd-ghost-btn fd-dash-btn" id="fd-prod-clear" disabled>
+                            <i class="far fa-times" aria-hidden="true"></i>Clear filters
+                        </button>
+                    </div>
+
+                    <div class="fd-prod-list-wrap" id="fd-prod-list-wrap">
+                        <ul class="fd-prod-list" id="fd-prod-list" aria-label="Product catalogue">
+                            <li class="fd-prod-card" data-product-id="demo-pork-chops" data-name="Pork Chops" data-category="Pork" data-category-group="Meats" data-state="Fresh" data-price="4800" data-order="1">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/pork-chops.svg" alt="Fresh pork chops" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Pork Chops</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Pork &middot; Red meat</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;4,800 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-pork-chops" target="_blank" rel="noopener" aria-label="View Pork Chops on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-pork-belly" data-name="Pork Belly" data-category="Pork" data-category-group="Meats" data-state="Frozen" data-price="4200" data-order="2">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/pork-belly.svg" alt="Frozen pork belly strips" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Pork Belly</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Pork &middot; Red meat</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Frozen</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;4,200 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-pork-belly" target="_blank" rel="noopener" aria-label="View Pork Belly on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-whole-chicken" data-name="Whole Chicken" data-category="Chicken" data-category-group="Meats" data-state="Fresh" data-price="3500" data-order="3">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/whole-chicken.svg" alt="Whole fresh chicken" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Whole Chicken</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Chicken &middot; Poultry</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;3,500 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-whole-chicken" target="_blank" rel="noopener" aria-label="View Whole Chicken on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-chicken-wings" data-name="Chicken Wings" data-category="Chicken" data-category-group="Meats" data-state="Frozen" data-price="4000" data-order="4">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/chicken-wings.svg" alt="Frozen chicken wings" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Chicken Wings</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Chicken &middot; Poultry</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Frozen</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;4,000 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-chicken-wings" target="_blank" rel="noopener" aria-label="View Chicken Wings on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-chicken-drumsticks" data-name="Chicken Drumsticks" data-category="Chicken" data-category-group="Meats" data-state="Frozen" data-price="3800" data-order="5">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/chicken-drumsticks.svg" alt="Frozen chicken drumsticks" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Chicken Drumsticks</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Chicken &middot; Poultry</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Frozen</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;3,800 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-chicken-drumsticks" target="_blank" rel="noopener" aria-label="View Chicken Drumsticks on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-turkey-breast" data-name="Turkey Breast" data-category="Turkey" data-category-group="Meats" data-state="Fresh" data-price="5200" data-order="6">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/turkey-breast.svg" alt="Fresh turkey breast with carved slices" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Turkey Breast</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Turkey &middot; Poultry</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;5,200 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-turkey-breast" target="_blank" rel="noopener" aria-label="View Turkey Breast on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-beef-steak" data-name="Beef Steak" data-category="Beef" data-category-group="Meats" data-state="Fresh" data-price="7500" data-order="7">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/beef-steak.svg" alt="Fresh marbled beef steak" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Beef Steak</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Beef &middot; Red meat</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;7,500 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-beef-steak" target="_blank" rel="noopener" aria-label="View Beef Steak on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-beef-brisket" data-name="Beef Brisket" data-category="Beef" data-category-group="Meats" data-state="Frozen" data-price="6800" data-order="8">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/beef-brisket.svg" alt="Frozen beef brisket joint" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Beef Brisket</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Beef &middot; Red meat</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Frozen</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;6,800 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-beef-brisket" target="_blank" rel="noopener" aria-label="View Beef Brisket on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-goat-meat" data-name="Goat Meat" data-category="Goat Meat" data-category-group="Meats" data-state="Fresh" data-price="6200" data-order="9">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/goat-meat.svg" alt="Fresh cubed goat meat" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Goat Meat</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Goat Meat &middot; Red meat</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;6,200 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-goat-meat" target="_blank" rel="noopener" aria-label="View Goat Meat on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-fried-goat-meat" data-name="Fried Goat Meat" data-category="Goat Meat" data-category-group="Meats" data-state="Fried" data-price="8000" data-order="10">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/goat-meat.svg" alt="Fried goat meat pieces" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Fried Goat Meat</h3>
+                                        <p class="fd-prod-cat">Meats &middot; Goat Meat &middot; Red meat</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fried</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;8,000 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-fried-goat-meat" target="_blank" rel="noopener" aria-label="View Fried Goat Meat on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-fresh-catfish" data-name="Fresh Catfish" data-category="Fish" data-category-group="Fish" data-state="Fresh" data-price="3200" data-order="11">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/catfish.svg" alt="Fresh whole catfish" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Fresh Catfish</h3>
+                                        <p class="fd-prod-cat">Fish &middot; Seafood</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;3,200 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-fresh-catfish" target="_blank" rel="noopener" aria-label="View Fresh Catfish on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-tilapia" data-name="Tilapia" data-category="Fish" data-category-group="Fish" data-state="Frozen" data-price="2900" data-order="12">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/tilapia.svg" alt="Frozen whole tilapia" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Tilapia</h3>
+                                        <p class="fd-prod-cat">Fish &middot; Seafood</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Frozen</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;2,900 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-tilapia" target="_blank" rel="noopener" aria-label="View Tilapia on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-fried-catfish" data-name="Fried Catfish" data-category="Fish" data-category-group="Fish" data-state="Fried" data-price="6500" data-order="13">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/meat/catfish.svg" alt="Fried catfish" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Fried Catfish</h3>
+                                        <p class="fd-prod-cat">Fish &middot; Seafood</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fried</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per kg: </span>&#8358;6,500 <span class="fd-prod-unit">/ kg</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-fried-catfish" target="_blank" rel="noopener" aria-label="View Fried Catfish on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-live-chicken" data-name="Live Chicken" data-category="Live Animals" data-category-group="Live Animals" data-state="Live" data-price="9500" data-order="14">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/families/live-animals-card.svg" alt="Live farm chickens" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Live Chicken</h3>
+                                        <p class="fd-prod-cat">Live Animals &middot; Live</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Live</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per chicken: </span>&#8358;9,500 <span class="fd-prod-unit">/ chicken</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-live-chicken" target="_blank" rel="noopener" aria-label="View Live Chicken on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-farm-eggs" data-name="Farm Eggs" data-category="Eggs" data-category-group="Eggs" data-state="Fresh" data-price="3800" data-order="15">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/families/eggs-card.svg" alt="A tray of fresh farm eggs" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Farm Eggs</h3>
+                                        <p class="fd-prod-cat">Eggs &middot; Fresh</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per crate: </span>&#8358;3,800 <span class="fd-prod-unit">/ crate</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-farm-eggs" target="_blank" rel="noopener" aria-label="View Farm Eggs on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-fresh-tomatoes" data-name="Fresh Tomatoes" data-category="Veggies" data-category-group="Veggies" data-state="Fresh" data-price="2500" data-order="16">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/families/vegetables-card.svg" alt="A basket of fresh vegetables" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Fresh Tomatoes</h3>
+                                        <p class="fd-prod-cat">Veggies &middot; Fresh</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per basket: </span>&#8358;2,500 <span class="fd-prod-unit">/ basket</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-fresh-tomatoes" target="_blank" rel="noopener" aria-label="View Fresh Tomatoes on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="fd-prod-card" data-product-id="demo-sweet-oranges" data-name="Sweet Oranges" data-category="Fruits" data-category-group="Fruits" data-state="Fresh" data-price="3000" data-order="17">
+                                <div class="fd-prod-card-top">
+                                    <span class="fd-prod-thumb"><img src="assets/img/families/fruits-card.svg" alt="A basket of fresh fruits" width="160" height="120" loading="lazy" decoding="async" onerror="this.hidden=true"></span>
+                                    <div class="fd-prod-id-block">
+                                        <h3 class="fd-prod-name">Sweet Oranges</h3>
+                                        <p class="fd-prod-cat">Fruits &middot; Fresh</p>
+                                    </div>
+                                    <span class="fd-dash-pill fd-prod-state">Fresh</span>
+                                </div>
+                                <div class="fd-prod-card-foot">
+                                    <p class="fd-prod-price"><span class="visually-hidden">Price per basket: </span>&#8358;3,000 <span class="fd-prod-unit">/ basket</span></p>
+                                    <div class="fd-prod-actions">
+                                        <a class="fd-prod-btn" href="product-details.html?id=demo-sweet-oranges" target="_blank" rel="noopener" aria-label="View Sweet Oranges on the storefront"><i class="far fa-eye" aria-hidden="true"></i>View</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="fd-dash-empty" id="fd-prod-empty" hidden>
+                        <i class="far fa-search" aria-hidden="true"></i>
+                        <h3>No matching products</h3>
+                        <p>No products match the current search and filters. Try different keywords or reset the filters below.</p>
+                        <div class="fd-dash-empty-actions">
+                            <button type="button" class="vs-btn fd-dash-btn" id="fd-prod-reset-empty">Clear search &amp; filters</button>
+                        </div>
+                    </div>
+
+                    <p class="fd-dash-hint">Prices follow each product’s selling unit. View opens the customer product page.</p>
+                </section>
+
+                <p class="fd-dash-foot-note">
+                    Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. Farm admin.
+                </p>
+            </main>
+        </div>
+    </div>
+
+    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
+         customer cart store can never leak into the admin. -->
+    <script src="assets/js/fd-admin.js?v=6.8"></script>
+    <script src="assets/js/fd-theme.js"></script>
+    <script src="assets/js/fd-admin-store.js"></script>
+    <script src="assets/js/fd-admin-products-sync.js"></script>
+    <script src="assets/js/fd-admin-products.js"></script>
+
+</body>
+
+</html>

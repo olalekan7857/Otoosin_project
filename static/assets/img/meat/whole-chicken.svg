@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of a whole fresh chicken on a serving plate">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6d59b"/><stop offset="1" stop-color="#dfa961"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="290" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <ellipse cx="240" cy="262" rx="180" ry="48" fill="#fffdf8"/>
+  <ellipse cx="240" cy="262" rx="160" ry="36" fill="none" stroke="#e3d6c3" stroke-width="2"/>
+  <ellipse cx="240" cy="200" rx="118" ry="86" fill="url(#skin)" stroke="#cb924f" stroke-width="4"/>
+  <ellipse cx="226" cy="190" rx="90" ry="62" fill="#f9e3b8" opacity=".65"/>
+  <path d="M160 150c-36 4-58 32-56 62 2 32 30 42 52 26" fill="url(#skin)" stroke="#cb924f" stroke-width="4"/>
+  <path d="M320 150c36 4 58 32 56 62-2 32-30 42-52 26" fill="url(#skin)" stroke="#cb924f" stroke-width="4"/>
+  <path d="M206 272c-12 18-10 34 8 38 14 4 22-8 26-24M274 272c12 18 10 34-8 38-14 4-22-8-26-24" fill="url(#skin)" stroke="#cb924f" stroke-width="4"/>
+  <path d="M198 268c8 12 16 18 24 18s16-6 24-18" fill="none" stroke="#e7d2a6" stroke-width="4"/>
+  <path d="M240 124v148M178 168c22 20 36 28 62 30M302 168c-22 20-36 28-62 30" fill="none" stroke="#d7b273" stroke-width="3" stroke-linecap="round" opacity=".75"/>
+  <path d="M240 168l-14 22 14 18 14-18Z" fill="none" stroke="#c9a25e" stroke-width="3"/>
+  <path d="M86 286c20-20 44-22 62-8M338 280c20-15 38-14 54-4" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="356" cy="294" r="8" fill="#8a3f3f"/><circle cx="374" cy="286" r="7" fill="#a24b46"/>
+</svg>

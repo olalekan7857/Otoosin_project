@@ -1,0 +1,430 @@
+/* ==========================================================================
+   Harvest Castle — Global Light/Dark theme layer (final, centralized)
+   --------------------------------------------------------------------------
+   Load order (every Harvest Castle page, storefront AND admin):
+     bootstrap -> fontawesome -> (template extras) -> style.css
+     -> fresh-direct.css -> [fd-admin.css on admin pages] -> fd-theme.css
+   fd-theme.css loads LAST and only ADDS:
+     (1) semantic --fd-* design tokens (Light defaults on :root),
+     (2) Dark remaps of the template's own variables under
+         html[data-theme="dark"] (no template file is edited),
+     (3) explicit dark surfaces for the places Light mode builds with
+         hardcoded white / #ececec hairlines,
+     (4) the shared theme-toggle button visuals.
+
+   Light mode is untouched: with no data-theme attribute every rule below
+   is inert and the approved Light appearance renders exactly as before.
+
+   Architecture:
+     Harvest Castle tokens (--fd-*)  ->  template vars remapped for Dark
+     ->  shared components  ->  storefront pages  ->  admin pages.
+   Components consume the remapped template vars wherever Light mode
+   already used them; only hardcoded Light values get explicit overrides.
+
+   Design notes (Dark is designed, not inverted):
+   - 3-level hierarchy: page --fd-bg / surfaces --fd-surface /
+     elevated --fd-surface-2. Borders do the separation work; shadows
+     stay minimal.
+   - Brand stays Harvest Castle: green #06411D / gold #DEAD39 fills are
+     unchanged. Only small dark-green TEXT usages get a luminous variant
+     (--fd-brand-green-text) so they stay readable on dark surfaces.
+   - Status semantics preserved: green=ok, red=error, amber=warning.
+     Only text-on-dark variants are retuned (--fd-error-text,
+     --fd-warn-text); fills and tinted pills keep their Light values.
+   - NEVER: filter/invert on images, logos, or photography. Product,
+     hero, farm and logo imagery render authentically in both themes.
+   - Django-ready: theme state is a single <html data-theme> attribute;
+     a backend can seed it server-side and fd-theme.js will adopt it.
+   ========================================================================== */
+
+/* ============ 1. Semantic tokens — Light defaults (source of truth) ==== */
+:root {
+  --fd-bg: #ffffff;
+  --fd-surface: #ffffff;
+  --fd-surface-2: #f1f5f4;
+  --fd-surface-3: #f8f9fa;
+  --fd-text: #000000;
+  --fd-text-2: #555555;
+  --fd-text-3: #767676;
+  --fd-border: #bfbfbf;
+  --fd-hairline: #ececec;
+  --fd-input-bg: #ffffff;
+  --fd-brand-green-text: #06411D;
+  --fd-warn-text: #8a6d00;
+  --fd-error-text: #dc3545;
+  --fd-focus: #06411D;
+  color-scheme: light;
+}
+
+/* ============ 2. Dark theme ============================================
+   Remap the template's own variables so every var-driven component
+   (typography, inputs, mobile menu, hero, icon buttons, smoke sections,
+   cart table, borders, placeholders) follows the Dark hierarchy.
+   Deliberately NOT remapped: --white-color (dual-used for white text on
+   brand fills AND white surfaces), brand fills, status fills. */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --fd-bg: #0d120f;
+  --fd-surface: #151c17;
+  --fd-surface-2: #1b241e;
+  --fd-surface-3: #232f27;
+  --fd-text: #edf2eb;
+  --fd-text-2: #b7c2b6;
+  --fd-text-3: #8e9a8d;
+  --fd-border: #2b362d;
+  --fd-hairline: #263027;
+  --fd-input-bg: #101613;
+  --fd-brand-green-text: #35b263;
+  --fd-warn-text: #e3c26a;
+  --fd-error-text: #f07585;
+  --fd-focus: #35b263;
+
+  --body-bg: var(--fd-bg);
+  --body-color: var(--fd-text-2);
+  --title-color: var(--fd-text);
+  --smoke-color: var(--fd-surface);
+  --light-color: var(--fd-surface-2);
+  --border-color: var(--fd-border);
+}
+
+/* Dark page canvas (Light keeps the template body rule untouched). */
+html[data-theme="dark"] body {
+  background-color: var(--fd-bg);
+  color: var(--fd-text-2);
+}
+
+/* Inputs follow the Dark canvas; borders come from --border-color. */
+html[data-theme="dark"] select,
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] input {
+  background-color: var(--fd-input-bg);
+  color: var(--fd-text);
+}
+html[data-theme="dark"] select:focus,
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] input:focus {
+  background-color: var(--fd-input-bg);
+}
+/* The template's select chevron is dark-on-transparent; redraw it light. */
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23b7c2b6' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+}
+/* Focus must stay clearly visible on dark surfaces. */
+html[data-theme="dark"] a:focus-visible,
+html[data-theme="dark"] button:focus-visible,
+html[data-theme="dark"] input:focus-visible,
+html[data-theme="dark"] select:focus-visible,
+html[data-theme="dark"] textarea:focus-visible,
+html[data-theme="dark"] [tabindex]:focus-visible {
+  outline-color: var(--fd-focus);
+}
+
+/* ============ 3. Theme toggle button ===================================
+   Built on the template .icon-btn so sizing matches the cart/menu
+   buttons in both headers. Icons swap per theme; JS also toggles the
+   hidden attribute and the accessible label. */
+.fd-theme-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+html[data-theme="dark"] .fd-theme-toggle [data-theme-icon="moon"],
+.fd-theme-toggle [data-theme-icon="sun"] {
+  display: none;
+}
+html[data-theme="dark"] .fd-theme-toggle [data-theme-icon="sun"] {
+  display: inline-block;
+}
+
+/* ============ 4. Storefront: template shared surfaces ================== */
+/* Header canvas (Light: white). */
+html[data-theme="dark"] .header-layout1 .menu-area,
+html[data-theme="dark"] .will-sticky .sticky-active {
+  background-color: var(--fd-surface);
+  border-bottom: 1px solid var(--fd-hairline);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+}
+/* Product cards. */
+html[data-theme="dark"] .product-style1 {
+  background-color: var(--fd-surface);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+/* Grid/list toggle buttons. */
+html[data-theme="dark"] .vs-sort-bar .icon-btn {
+  background-color: var(--fd-surface-2);
+}
+/* FAQ / accordions. */
+html[data-theme="dark"] .accordion-style1 .accordion-item {
+  background-color: var(--fd-surface);
+}
+html[data-theme="dark"] .accordion-style1 .accordion-button {
+  color: var(--fd-text);
+}
+html[data-theme="dark"] .accordion-style1 .accordion-button:not(.collapsed) {
+  color: var(--fd-text);
+  background-color: var(--fd-surface-2);
+}
+html[data-theme="dark"] .accordion-style1 .accordion-button:focus {
+  border-color: var(--fd-border);
+  box-shadow: 0 0 0 3px rgba(53, 178, 99, 0.35);
+}
+/* Contact form shell. */
+html[data-theme="dark"] .contact-layout1 .vs-comment-form,
+html[data-theme="dark"] .contact-layout1 .vs-comment-form .comment-respond {
+  background-color: var(--fd-surface);
+}
+/* Side-cart drawer panel. */
+html[data-theme="dark"] .offcanvas-wrapper .sidemenu-content {
+  background-color: var(--fd-surface);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.45);
+}
+/* Footer count badges inside category widgets. */
+html[data-theme="dark"] .widget_categories li > span {
+  background-color: var(--fd-surface-2);
+  color: inherit;
+}
+/* Image lightbox (magnific): keep the scrim, theme the chrome. */
+html[data-theme="dark"] .mfp-figure {
+  background: var(--fd-surface);
+}
+html[data-theme="dark"] .mfp-title,
+html[data-theme="dark"] .mfp-counter {
+  color: var(--fd-text-2);
+}
+
+/* ============ 5. Storefront: Harvest Castle card system ===================
+   Every white card becomes --fd-surface; every #ececec hairline becomes
+   --fd-hairline. Layout, spacing, radius and behavior are untouched. */
+html[data-theme="dark"] .fd-trust,
+html[data-theme="dark"] .fd-step,
+html[data-theme="dark"] .fd-location-card,
+html[data-theme="dark"] .fd-shop-intro,
+html[data-theme="dark"] .fd-shop-toolbar,
+html[data-theme="dark"] .fd-cat-pill,
+html[data-theme="dark"] .fd-shop-state,
+html[data-theme="dark"] .fd-pdp-thumb,
+html[data-theme="dark"] .fd-variant-btn,
+html[data-theme="dark"] .fd-pdp-qty,
+html[data-theme="dark"] .fd-pdp-facts,
+html[data-theme="dark"] .fd-cartpage-item,
+html[data-theme="dark"] .fd-cart-summary,
+html[data-theme="dark"] .fd-checkout-card,
+html[data-theme="dark"] .fd-confirm-card {
+  background: var(--fd-surface);
+}
+html[data-theme="dark"] .fd-trust,
+html[data-theme="dark"] .fd-step,
+html[data-theme="dark"] .fd-location-card,
+html[data-theme="dark"] .fd-shop-intro,
+html[data-theme="dark"] .fd-shop-toolbar,
+html[data-theme="dark"] .fd-cart-item,
+html[data-theme="dark"] .fd-cart-total,
+html[data-theme="dark"] .fd-pdp-facts,
+html[data-theme="dark"] .fd-cartpage-item,
+html[data-theme="dark"] .fd-cart-summary,
+html[data-theme="dark"] .fd-cart-summary-row.is-total,
+html[data-theme="dark"] .fd-checkout-card,
+html[data-theme="dark"] .fd-checkout-lines,
+html[data-theme="dark"] .fd-confirm-card {
+  border-color: var(--fd-hairline);
+}
+/* Card hover lift stays subtle on dark surfaces. */
+html[data-theme="dark"] .fd-step:hover {
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* Brand-green small text turns luminous so it stays readable on dark
+   (fills keep the original brand greens). */
+html[data-theme="dark"] .fd-logo,
+html[data-theme="dark"] .sec-subtitle,
+html[data-theme="dark"] .fd-breadcrumb a,
+html[data-theme="dark"] .main-menu a[aria-current="page"] {
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .vs-mobile-menu ul li a[aria-current="page"] {
+  color: var(--fd-brand-green-text) !important;
+}
+html[data-theme="dark"] .footer-wrapper .fd-logo {
+  color: var(--white-color);
+}
+html[data-theme="dark"] .fd-hero-tag,
+html[data-theme="dark"] .fd-product-cat,
+html[data-theme="dark"] .fd-pdp-stock.is-in,
+html[data-theme="dark"] .fd-pdp-note i,
+html[data-theme="dark"] .fd-confirm-icon:not(.is-bad):not(.is-pending) {
+  color: var(--fd-brand-green-text);
+}
+/* Amber warning text (was #8a6d00 for light surfaces). */
+html[data-theme="dark"] .fd-pdp-stock.is-low,
+html[data-theme="dark"] .fd-confirm-icon.is-pending {
+  color: var(--fd-warn-text);
+}
+/* Red error text (tints keep their Light rgba values). */
+html[data-theme="dark"] .fd-field-error,
+html[data-theme="dark"] .fd-pdp-stock.is-out,
+html[data-theme="dark"] .fd-confirm-icon.is-bad,
+html[data-theme="dark"] .fd-contact-status.is-error {
+  color: var(--fd-error-text);
+}
+/* Amber pills keep their yellow fill in both themes; pin dark text. */
+html[data-theme="dark"] .fd-badge.is-low {
+  color: #231a02;
+}
+
+/* ============ 6. Admin: shell, sidebar, topbar ========================= */
+html[data-theme="dark"] .fd-admin {
+  background: var(--fd-bg);
+}
+html[data-theme="dark"] .fd-admin-sidebar {
+  background: var(--fd-surface);
+  border-right-color: var(--fd-hairline);
+}
+html[data-theme="dark"] .fd-admin-brand .fd-logo {
+  color: var(--fd-brand-green-text);
+}
+html[data-theme="dark"] .fd-admin-nav-link:not([aria-disabled="true"]):hover,
+html[data-theme="dark"] .fd-admin-nav-link[aria-current="page"] {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-hairline);
+}
+html[data-theme="dark"] .fd-admin-nav-link i {
+  color: var(--fd-brand-green-text);
+}
+html[data-theme="dark"] .fd-admin-nav-link[aria-disabled="true"] i {
+  color: inherit;
+}
+html[data-theme="dark"] .fd-admin-side-foot {
+  border-top-color: var(--fd-hairline);
+}
+html[data-theme="dark"] .fd-admin-topbar {
+  background: var(--fd-surface);
+  border-bottom-color: var(--fd-hairline);
+}
+/* Theme toggle sits at the end of the topbar without crowding it.
+   Unscoped: the button must look correct in Light mode too. */
+.fd-admin-topbar .fd-theme-toggle {
+  margin-left: auto;
+}
+.fd-admin-topbar .fd-admin-context {
+  margin-left: 0;
+}
+
+/* ============ 7. Admin: cards, tables, forms, states =================== */
+html[data-theme="dark"] .fd-admin-card,
+html[data-theme="dark"] .fd-dash-section,
+html[data-theme="dark"] .fd-dash-card,
+html[data-theme="dark"] .fd-dash-empty,
+html[data-theme="dark"] .fd-prod-card,
+html[data-theme="dark"] .fd-admin .fd-edit-variant,
+html[data-theme="dark"] .fd-admin .fd-edit-result-card,
+html[data-theme="dark"] .fd-admin .fd-set-delivery-card {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
+html[data-theme="dark"] .fd-prod-btn {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-hairline);
+}
+/* All admin hairline dividers/rows. */
+html[data-theme="dark"] .fd-admin-card,
+html[data-theme="dark"] .fd-dash-section,
+html[data-theme="dark"] .fd-dash-card,
+html[data-theme="dark"] .fd-dash-table-scroll,
+html[data-theme="dark"] .fd-dash-table td,
+html[data-theme="dark"] .fd-dash-products li,
+html[data-theme="dark"] .fd-dash-attention li,
+html[data-theme="dark"] .fd-admin .fd-edit-radio,
+html[data-theme="dark"] .fd-admin .fd-order-facts li,
+html[data-theme="dark"] .fd-admin .fd-set-delivery-card {
+  border-color: var(--fd-hairline);
+}
+/* Admin status pills share the storefront status language. */
+html[data-theme="dark"] .fd-dash-pill.is-ok {
+  color: var(--fd-brand-green-text);
+  border-color: rgba(53, 178, 99, 0.4);
+}
+html[data-theme="dark"] .fd-dash-pill.is-warn {
+  color: #231a02;
+}
+html[data-theme="dark"] .fd-dash-pill.is-bad {
+  color: var(--fd-error-text);
+}
+html[data-theme="dark"] .fd-admin-notice.is-dev {
+  background: var(--fd-surface-2);
+}
+html[data-theme="dark"] .fd-admin-notice.is-error,
+html[data-theme="dark"] .fd-admin .fd-order-status-note.is-error {
+  color: var(--fd-error-text);
+}
+html[data-theme="dark"] .fd-admin .fd-edit-back a,
+html[data-theme="dark"] .fd-admin-back-link,
+html[data-theme="dark"] .fd-admin a.fd-orders-ref,
+html[data-theme="dark"] .fd-admin-forgot {
+  color: var(--fd-brand-green-text);
+}
+html[data-theme="dark"] .fd-settings-eyebrow,
+html[data-theme="dark"] .fd-settings-index,
+html[data-theme="dark"] .fd-settings-preview-label {
+  color: var(--fd-brand-green-text);
+}
+
+/* Gold fills keep dark ink in both themes, including elements whose text
+   uses the remapped title token. */
+html[data-theme="dark"] .fd-step-num,
+html[data-theme="dark"] .oto-payment-icon,
+html[data-theme="dark"] .oto-feature-icon:hover {
+  color: #231a02;
+}
+
+/* ============ 8. Hardcoded black text that must lift in Dark ===========
+   The template pins these to var(--black-color) (or #4E4E4E), so the
+   section-2 variable remap cannot reach them. Each selector below was
+   verified to render on themed Harvest Castle pages (category titles,
+   product-card names/prices incl. JS-rendered cards, side-cart amounts,
+   cart remove hover, FAQ chevrons). Text sitting on unchanged brand
+   fills (cart badge, burger icon, yellow pills) is intentionally left
+   dark. No images, logos or photography are touched. */
+html[data-theme="dark"] .categorie-style1 .categorie-content .categorie-title a,
+html[data-theme="dark"] .product-about .product-title a,
+html[data-theme="dark"] .price,
+html[data-theme="dark"] .widget_shopping_cart .amount,
+html[data-theme="dark"] .widget_shopping_cart .total .amount,
+html[data-theme="dark"] .cart_table .remove:hover,
+html[data-theme="dark"] .accordion-style1 .accordion-button:not(.collapsed):after {
+  color: var(--fd-text);
+}
+html[data-theme="dark"] .accordion-style1 .accordion-button:after {
+  color: var(--fd-text-3);
+}
+
+/* Footer media items sit on dark imagery in both themes, but the template
+   colors them with var(--body-bg)/var(--smoke-color) — which this layer
+   remaps dark. Pin them back to light so footer text stays readable. */
+html[data-theme="dark"] .footer-wrapper .media-style1 .media-body .media-title {
+  color: #ffffff;
+}
+html[data-theme="dark"] .footer-wrapper .media-style1 .media-body .media-info {
+  color: #f1f5f4;
+}
+
+/* Logo hover lock (both themes, header + mobile + admin + footer).
+   The template's global a:hover recolors every link to title-color
+   (black in Light), which made "Fresh" flash black on hover. The wordmark
+   keeps its brand color instead. Unscoped so Light mode is covered too;
+   the Dark header/mobile rule above still wins while dark (higher
+   specificity), and the footer guard keeps the footer logo white. */
+.fd-logo:hover {
+  color: var(--secondary-color);
+}
+.footer-wrapper .fd-logo:hover {
+  color: var(--white-color);
+}

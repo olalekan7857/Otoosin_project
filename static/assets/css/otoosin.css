@@ -1,0 +1,1439 @@
+/* The homepage reads tighter than the reference pages: halve the standard
+   section rhythm (36px desktop / 26px mobile). Scoped to this page only. */
+.otoosin-home {
+  --fd-section-pad: 36px;
+  --fd-section-pad-mobile: 26px;
+}
+
+.otoosin-home .oto-announcement {
+  background: var(--theme-color);
+  border-bottom: 0;
+  padding: 15px 0;
+  color: var(--title-color);
+}
+
+.oto-announcement-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.oto-announcement-inner p {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.oto-announcement-inner a {
+  color: var(--title-color);
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.oto-announcement-inner a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.otoosin-home .main-menu ul li.oto-has-dropdown {
+  display: inline-flex;
+  align-items: center;
+}
+
+.otoosin-home .oto-dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-left: 5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--secondary-color);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.otoosin-home .oto-dropdown-toggle:hover,
+.otoosin-home .oto-dropdown-toggle:focus-visible {
+  background: rgba(6, 65, 29, 0.08);
+  color: var(--title-color);
+}
+
+.otoosin-home .oto-dropdown-toggle .oto-caret {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.25s ease;
+}
+
+.otoosin-home .oto-has-dropdown.oto-dropdown-open > .oto-dropdown-toggle {
+  color: var(--title-color);
+}
+
+.otoosin-home .oto-has-dropdown.oto-dropdown-open > .oto-dropdown-toggle .oto-caret {
+  transform: rotate(180deg);
+}
+
+.otoosin-home .main-menu ul li.oto-has-dropdown.oto-dropdown-open > ul.sub-menu {
+  visibility: visible;
+  opacity: 1;
+  margin-top: 0;
+  z-index: 9;
+}
+
+.otoosin-home .fd-logo.oto-logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The logo image is the whole brand mark. Desktop height is 58px; smaller
+   breakpoints follow the shared responsive logo sizing in fresh-direct.css. */
+@media (min-width: 992px) {
+  .fd-logo img.oto-logo-img {
+    display: block;
+    width: auto;
+    height: 58px;
+    max-width: none;
+    margin-right: 0;
+  }
+}
+
+/* Keep every desktop nav link on a single row. The homepage keeps the exact
+   shop-page type sizes (so the header height never changes); only the link
+   gutters and caret width step down as the viewport narrows, so the row
+   never breaks. */
+@media (min-width: 992px) {
+  .otoosin-home .header-layout1 .main-menu > ul {
+    white-space: nowrap;
+  }
+
+  .otoosin-home .header-layout1 .main-menu > ul > li {
+    margin: 0 12px;
+  }
+
+  .otoosin-home .header-layout1 .main-menu > ul > li:first-child {
+    margin-left: 0;
+  }
+
+  .otoosin-home .header-layout1 .main-menu > ul > li:last-child {
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .otoosin-home .header-layout1 .main-menu > ul > li {
+    margin: 0 9px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .otoosin-home .header-layout1 .main-menu > ul > li {
+    margin: 0;
+  }
+
+  .otoosin-home .header-layout1 .main-menu a {
+    font-size: 15px;
+  }
+
+  .otoosin-home .header-layout1 .oto-dropdown-toggle {
+    width: 16px;
+    height: 16px;
+    margin-left: 2px;
+  }
+
+  .otoosin-home .header-layout1 .fd-logo {
+    font-size: 21px;
+  }
+}
+
+.oto-hero {
+  background: var(--smoke-color);
+  padding: 68px 0 80px;
+  overflow: hidden;
+}
+
+.oto-hero-content .hero-title {
+  max-width: 640px;
+  font-size: clamp(34px, 3.7vw, 48px);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin-bottom: 20px;
+}
+
+.oto-hero-tag {
+  max-width: 560px;
+  padding: 9px 16px;
+  border-radius: 16px;
+  line-height: 1.5;
+  white-space: normal;
+  text-align: center;
+}
+
+.oto-hero-content .hero-text {
+  max-width: 590px;
+  font-size: 19px;
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+.oto-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+
+.oto-hero-actions .vs-btn,
+.oto-hero-actions .fd-ghost-btn {
+  min-height: 54px;
+}
+
+.oto-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 590px;
+  padding: 6px 6px 6px 20px;
+  background: var(--white-color);
+  border: 1px solid rgba(6, 65, 29, 0.12);
+  border-radius: 9999px;
+  box-shadow: 0 12px 30px rgba(6, 65, 29, 0.07);
+}
+
+.oto-search > i {
+  color: var(--secondary-color);
+  font-size: 17px;
+  flex: 0 0 auto;
+}
+
+.oto-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 46px;
+  padding: 0 10px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--title-color);
+  font-size: 15px;
+}
+
+.oto-search input::placeholder {
+  color: #8b918d;
+}
+
+.oto-search .vs-btn {
+  flex: 0 0 auto;
+  padding: 15px 24px;
+  border-color: var(--secondary-color);
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.oto-search .vs-btn:hover {
+  border-color: var(--theme-color);
+  background: var(--theme-color);
+  color: var(--title-color);
+}
+
+.oto-hero-media {
+  position: relative;
+  isolation: isolate;
+}
+
+.oto-hero-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 28px 28px 28px 12px;
+  box-shadow: 0 30px 60px rgba(6, 65, 29, 0.22);
+  background: #e9e4d8;
+}
+
+.oto-hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 28px 28px 28px 12px;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  pointer-events: none;
+}
+
+/* Keep the hero photo proportionate on desktop: a smaller, balanced image
+   instead of a full half-width block. */
+@media (min-width: 992px) {
+  .oto-hero {
+    padding: 56px 0 66px;
+  }
+
+  .oto-hero-media {
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .oto-hero-photo {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.oto-service-strip {
+  background: var(--white-color);
+  border-bottom: 1px solid #ececec;
+}
+
+.oto-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.oto-service-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 28px 24px;
+}
+
+.oto-service-item + .oto-service-item {
+  border-left: 1px solid #ececec;
+}
+
+.oto-service-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 19px;
+}
+
+.oto-service-title {
+  margin: 0 0 4px;
+  font-family: var(--title-font);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--title-color);
+}
+
+.oto-service-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #69716c;
+}
+
+.oto-section-lead {
+  max-width: 660px;
+  margin: 14px auto 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: #69716c;
+}
+
+.oto-cat-grid {
+  gap: 28px 18px;
+}
+
+#categories {
+  padding-bottom: 44px;
+}
+
+#categories,
+#discover,
+#delivery-pickup,
+[id^="popular-"] {
+  scroll-margin-top: 100px;
+}
+
+.oto-cat-grid .fd-cat-cell {
+  flex: 0 0 calc((100% - 36px) / 3);
+  max-width: calc((100% - 36px) / 3);
+}
+
+.oto-cat-card .categorie-img {
+  width: 100%;
+  max-width: 210px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0 auto 18px;
+  border-radius: 24px;
+  background-color: #fff6cf;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: var(--secondary-color);
+  transition: all 0.4s ease;
+}
+
+@media (min-width: 992px) {
+  .oto-cat-card .categorie-img {
+    margin-bottom: 23px;
+  }
+}
+
+.oto-cat-card .categorie-img.cat-meats {
+  background-image: url("../img/hero/oto-hero-meat.jpg");
+}
+
+.oto-cat-card .categorie-img.cat-fish {
+  background-image: url("../img/categorie/fish-meat.png");
+}
+
+.oto-cat-card .categorie-img.cat-live {
+  background-image: url("../img/categorie/otoosin-live-animals.png");
+}
+
+.oto-cat-card .categorie-img.cat-eggs {
+  background-image: url("../img/categorie/otoosin-eggs.png");
+}
+
+.oto-cat-card .categorie-img.cat-veggies {
+  background-image: url("../img/categorie/otoosin-veggies.png");
+}
+
+.oto-cat-card .categorie-img.cat-fruits {
+  background-image: url("../img/categorie/otoosin-fruits.png");
+}
+
+.oto-cat-card:hover .categorie-img {
+  color: var(--title-color);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 26px rgba(6, 65, 29, 0.16);
+}
+
+.oto-cat-card .categorie-title {
+  font-size: 22px;
+  margin-bottom: 4px;
+  color: var(--title-color);
+}
+
+.oto-cat-card .categorie-title a {
+  color: var(--title-color);
+}
+
+.oto-cat-card .categorie-text {
+  margin: 0 auto;
+  max-width: 290px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #69716c;
+}
+
+.oto-cat-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  color: var(--secondary-color);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.oto-cat-cta i {
+  font-size: 11px;
+  transition: transform 0.3s ease;
+}
+
+.oto-cat-card:hover .oto-cat-cta {
+  color: var(--title-color);
+}
+
+.oto-cat-card:hover .oto-cat-cta i {
+  transform: translateX(4px);
+}
+
+.oto-state-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.oto-state-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 130px;
+  padding: 26px;
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  transition: all 0.35s ease;
+}
+
+.oto-state-card:hover {
+  border-color: rgba(222, 173, 57, 0.75);
+  box-shadow: 0 14px 30px rgba(6, 65, 29, 0.08);
+  transform: translateY(-3px);
+}
+
+.oto-state-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 23px;
+}
+
+.oto-state-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.oto-state-title {
+  font-family: var(--title-font);
+  font-size: 21px;
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.oto-state-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: #69716c;
+}
+
+.oto-state-arrow {
+  margin-left: auto;
+  color: var(--secondary-color);
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.oto-state-card:hover .oto-state-arrow {
+  transform: translateX(4px);
+}
+
+.oto-discovery {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: 40px;
+  align-items: center;
+  padding: 52px;
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: 30px;
+  box-shadow: 0 18px 50px rgba(6, 65, 29, 0.06);
+}
+
+.oto-discovery-copy h2 {
+  font-size: clamp(32px, 4vw, 46px);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.oto-discovery-copy p {
+  max-width: 560px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: #69716c;
+}
+
+.oto-discovery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.oto-discovery-panel {
+  padding: 28px;
+  background: var(--smoke-color);
+  border-radius: 22px;
+}
+
+.oto-discovery-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(6, 65, 29, 0.12);
+  font-family: var(--title-font);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--title-color);
+}
+
+.oto-discovery-head-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-size: 16px;
+}
+
+.oto-discovery-head-icon svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.oto-discovery-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.oto-discovery-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #5f6762;
+}
+
+.oto-discovery-list li + li {
+  margin-top: 12px;
+}
+
+.oto-discovery-list i {
+  color: var(--secondary-color);
+  margin-top: 4px;
+}
+
+.oto-discovery-list strong {
+  color: var(--title-color);
+}
+
+/* Homepage product discovery — populated static demo cards. */
+.oto-discovery-head-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 30px;
+}
+
+.oto-discovery-head-row .oto-discovery-copy p {
+  margin-bottom: 0;
+}
+
+.oto-discovery-head-row .oto-discovery-actions {
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+
+.oto-discovery-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.oto-payment-section {
+  padding: 0;
+}
+
+.oto-payment-band {
+  padding: 50px 48px 42px;
+}
+
+.oto-band-kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: var(--theme-color);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.oto-payment-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.oto-payment-option {
+  height: 100%;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+}
+
+.oto-payment-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  color: var(--title-color);
+  font-size: 18px;
+}
+
+.oto-payment-option h3 {
+  margin-bottom: 7px;
+  color: var(--white-color);
+  font-size: 20px;
+}
+
+.oto-payment-option p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.oto-fulfil-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.oto-fulfil-option {
+  height: 100%;
+  padding: 22px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+}
+
+.oto-fulfil-option h3 {
+  margin-bottom: 7px;
+  color: var(--white-color);
+  font-size: 19px;
+}
+
+.oto-fulfil-option p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.oto-pickup-panel {
+  margin-top: 24px;
+  padding: 24px 26px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+}
+
+.oto-pickup-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.oto-pickup-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--theme-color);
+  color: var(--title-color);
+  font-size: 17px;
+}
+
+.oto-pickup-head h3 {
+  margin: 0 0 4px;
+  color: var(--white-color);
+  font-size: 19px;
+}
+
+.oto-pickup-head p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.oto-pickup-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.oto-pickup-location {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+}
+
+.oto-pickup-name {
+  color: var(--white-color);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.oto-pickup-address,
+.oto-pickup-hours {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.oto-payment-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 26px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.oto-payment-note i {
+  margin-top: 3px;
+  color: var(--theme-color);
+}
+
+.oto-feature-card {
+  padding: 30px 26px;
+}
+
+.oto-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 18px;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 22px;
+  transition: all 0.35s ease;
+}
+
+.oto-feature-card:hover .oto-feature-icon {
+  background: var(--theme-color);
+  color: var(--title-color);
+}
+
+.oto-feature-card h3 {
+  font-size: 19px;
+  line-height: 1.3;
+  margin-bottom: 9px;
+}
+
+.oto-feature-card p {
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.oto-how {
+  padding-top: 19px;
+  padding-bottom: 0;
+}
+
+/* Split the section gap across the two bands. */
+.otoosin-home #why-otoosin.space {
+  padding-bottom: 17px;
+}
+
+@media (max-width: 991px) {
+  .oto-how {
+    padding-top: 14px;
+  }
+
+  .otoosin-home #why-otoosin.space {
+    padding-bottom: 12px;
+  }
+}
+
+/* Unify the homepage section rhythm with the rest of the site. */
+#fd-main .space-top {
+  padding-top: var(--fd-section-pad);
+}
+
+@media (max-width: 991px) {
+  #fd-main .space-top {
+    padding-top: var(--fd-section-pad-mobile);
+  }
+}
+
+.oto-policy-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 42px;
+  margin-bottom: 24px;
+  padding: 20px 24px;
+  background: #fff6cf;
+  border-radius: 14px;
+  color: #4e430d;
+}
+
+.oto-policy-note i {
+  margin-top: 3px;
+  color: #8a6d00;
+}
+
+.oto-policy-note p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+html[data-theme="dark"] .oto-policy-note {
+  background: var(--fd-surface-2);
+  border: 1px solid var(--fd-hairline);
+  color: var(--fd-text-2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .oto-policy-note i {
+  color: var(--fd-warn-text);
+}
+
+html[data-theme="dark"] .oto-policy-note strong {
+  color: var(--fd-text);
+}
+
+/* Homepage surfaces built on the untouched --white-color token. */
+html[data-theme="dark"] .oto-service-strip {
+  background: var(--fd-surface);
+  border-bottom-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-service-item + .oto-service-item {
+  border-left-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-service-icon,
+html[data-theme="dark"] .oto-state-icon,
+html[data-theme="dark"] .oto-feature-icon {
+  background: var(--fd-surface-2);
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .oto-faq .accordion-item {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-search {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .oto-search input::placeholder {
+  color: var(--fd-text-3);
+}
+
+html[data-theme="dark"] .oto-state-card {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-state-card:hover {
+  border-color: rgba(222, 173, 57, 0.55);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .oto-hero-photo {
+  background-color: var(--fd-surface-2);
+}
+
+html[data-theme="dark"] .oto-cat-cta {
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .oto-cat-card:hover .oto-cat-cta {
+  color: var(--theme-color);
+}
+
+/* Hardcoded light-mode body copy on the homepage. */
+html[data-theme="dark"] .oto-service-text,
+html[data-theme="dark"] .oto-section-lead,
+html[data-theme="dark"] .oto-cat-card .categorie-text,
+html[data-theme="dark"] .oto-state-text,
+html[data-theme="dark"] .oto-discovery-copy p,
+html[data-theme="dark"] .oto-discovery-list li,
+html[data-theme="dark"] .oto-faq-intro p {
+  color: var(--fd-text-2);
+}
+
+.oto-faq-intro p {
+  margin: 14px 0 24px;
+  color: #69716c;
+  line-height: 1.7;
+}
+
+.oto-faq .accordion-item {
+  border: 1px solid #ececec;
+}
+
+.oto-faq .accordion-button {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-right: 84px;
+  font-size: 19px;
+}
+
+.oto-contact-band .vs-btn {
+  border-color: var(--theme-color);
+  background: var(--theme-color);
+  color: var(--title-color);
+}
+
+.oto-contact-band .vs-btn:hover {
+  border-color: var(--white-color);
+  background: var(--white-color);
+  color: var(--secondary-color);
+}
+
+.oto-footer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #06411d 0%, #05361a 58%, #032512 100%);
+}
+
+.oto-footer::before {
+  content: "";
+  position: absolute;
+  top: -140px;
+  right: -120px;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(222, 173, 57, 0.2) 0%, rgba(222, 173, 57, 0) 70%);
+  pointer-events: none;
+}
+
+.oto-footer .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Tighter footer top: the template stacks 70px + 80px before the first
+   footer text; halve that head-room to keep the page rhythm compact. */
+.oto-footer.footer-layout1 {
+  padding-top: 38px;
+}
+
+.oto-footer .widget-area {
+  padding-top: 38px;
+  padding-bottom: 48px;
+}
+
+.oto-footer .widget_title {
+  margin-bottom: 24px;
+  color: var(--white-color);
+  font-size: 20px;
+}
+
+.oto-footer .widget_categories {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.oto-footer .widget_categories li {
+  margin-bottom: 10px;
+}
+
+.oto-footer .widget_categories a {
+  display: inline-block;
+  width: auto;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  transition: color 0.3s ease;
+}
+
+.oto-footer .widget_categories a:hover {
+  background: transparent;
+  color: var(--theme-color);
+}
+
+.oto-footer-logo {
+  margin-bottom: 18px;
+  font-size: 28px;
+}
+
+.oto-footer-text {
+  max-width: 340px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.oto-copyright {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 8px;
+  padding: 24px 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  text-align: left;
+}
+
+.oto-copyright .copyright-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.oto-copyright .copyright-text a {
+  color: var(--white-color);
+}
+
+.oto-copyright .copyright-text a:hover {
+  color: var(--theme-color);
+}
+
+.oto-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.oto-legal-links a {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 13px;
+}
+
+.oto-legal-links a:hover {
+  color: var(--theme-color);
+}
+
+.oto-mobile-search {
+  position: relative;
+  display: flex;
+  max-width: 340px;
+  margin: 22px auto 0;
+}
+
+.oto-mobile-search input {
+  width: 100%;
+  height: 50px;
+  padding: 0 52px 0 18px;
+  border: 1px solid #e4e8e5;
+  border-radius: 9999px;
+  background: var(--white-color);
+  color: var(--title-color);
+  font-size: 14px;
+}
+
+.oto-mobile-search button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+@media (max-width: 1199px) {
+  .otoosin-home .menu-style1 > ul > li > a {
+    padding-left: 9px;
+    padding-right: 9px;
+    font-size: 15px;
+  }
+
+  .oto-hero-content .hero-title {
+    font-size: 44px;
+  }
+
+  .oto-discovery {
+    padding: 42px;
+    gap: 30px;
+  }
+
+  .oto-payment-band {
+    padding: 44px 38px 36px;
+  }
+}
+
+@media (max-width: 991px) {
+  .oto-hero {
+    padding: 56px 0 64px;
+  }
+
+  .oto-hero-media {
+    margin-top: 8px;
+  }
+
+  .oto-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .oto-service-item {
+    padding: 20px 4px;
+  }
+
+  .oto-service-item + .oto-service-item {
+    border-left: 0;
+    border-top: 1px solid #ececec;
+  }
+
+  .oto-state-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .oto-discovery {
+    grid-template-columns: 1fr;
+  }
+
+  .oto-discovery-head-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .oto-payment-options,
+  .oto-fulfil-options {
+    gap: 12px;
+  }
+
+  .oto-fulfil-options {
+    grid-template-columns: 1fr;
+  }
+
+  .oto-pickup-panel {
+    padding: 20px;
+  }
+
+  .oto-faq-intro {
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .oto-announcement-inner {
+    justify-content: center;
+    text-align: center;
+    font-size: 12px;
+  }
+
+  .oto-announcement-inner a {
+    display: none;
+  }
+
+  .oto-hero-content .hero-title {
+    font-size: 34px;
+  }
+
+  .oto-hero-content .hero-text {
+    font-size: 17px;
+  }
+
+  .oto-hero-actions .vs-btn,
+  .oto-hero-actions .fd-ghost-btn {
+    width: 100%;
+    min-height: 50px;
+  }
+
+  .oto-search {
+    padding-left: 14px;
+  }
+
+  .oto-search .vs-btn {
+    padding: 14px 17px;
+  }
+
+  .oto-hero-media {
+    margin-top: 4px;
+  }
+
+  .oto-hero-photo {
+    aspect-ratio: 16 / 11;
+  }
+
+  .oto-section-lead {
+    font-size: 15px;
+  }
+
+  .oto-cat-grid {
+    gap: 26px 14px;
+    justify-content: center;
+  }
+
+  .oto-cat-grid .fd-cat-cell {
+    flex: 0 0 calc((100% - 14px) / 2);
+    max-width: calc((100% - 14px) / 2);
+  }
+
+  #categories {
+    padding-bottom: 34px;
+  }
+
+  .oto-cat-card .categorie-img {
+    max-width: 100%;
+    padding: 15%;
+    margin-bottom: 14px;
+    border-radius: 20px;
+  }
+
+  .oto-cat-card .categorie-img i {
+    font-size: clamp(46px, 9vw, 64px);
+  }
+
+  .oto-cat-card .categorie-title {
+    font-size: 19px;
+  }
+
+  .oto-discovery {
+    padding: 28px 22px;
+    border-radius: 24px;
+  }
+
+  .oto-discovery-copy h2 {
+    font-size: 32px;
+  }
+
+  .oto-discovery-head-row .oto-discovery-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .oto-discovery-actions .vs-btn,
+  .oto-discovery-actions .fd-ghost-btn {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .oto-discovery-panel {
+    padding: 22px;
+  }
+
+  .oto-payment-band {
+    padding: 32px 22px 26px;
+  }
+
+  .oto-payment-options {
+    grid-template-columns: 1fr;
+  }
+
+  .oto-payment-option {
+    padding: 20px;
+  }
+
+  .oto-feature-card {
+    padding: 24px 22px;
+  }
+
+  .oto-policy-note {
+    padding: 16px 18px;
+  }
+
+  .oto-faq .accordion-button {
+    padding-right: 50px;
+  }
+
+  .oto-copyright {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .oto-footer .widget-area {
+    padding-bottom: 34px;
+  }
+}
+
+@media (max-width: 575px) {
+  .oto-hero-content .hero-title {
+    font-size: 29px;
+  }
+
+  .oto-hero-photo {
+    aspect-ratio: 3 / 2;
+    border-radius: 20px 20px 20px 10px;
+  }
+
+  .oto-hero-media::after {
+    border-radius: 20px 20px 20px 10px;
+  }
+
+  .oto-search {
+    flex-wrap: wrap;
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .oto-search > i {
+    display: none;
+  }
+
+  .oto-search input {
+    flex-basis: 100%;
+    height: 44px;
+    padding: 0 8px;
+  }
+
+  .oto-search .vs-btn {
+    width: 100%;
+    min-height: 46px;
+  }
+
+  .oto-cat-card .categorie-title {
+    font-size: 18px;
+  }
+
+  .oto-cat-card .categorie-text {
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,154 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Admin Sign In | O’TOOSIN Farms</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <meta name="description" content="Private O’TOOSIN Farms administration sign-in.">
+    <!-- Admin is private: never index admin pages. -->
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+
+    <!--==============================
+	  Google Fonts (same as storefront)
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File (same stack + scoped admin foundation)
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="assets/css/harvest-castle.css">
+    <!-- O’TOOSIN Farms foundation overrides -->
+    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
+    <!-- O’TOOSIN Farms admin foundation (scoped under .fd-admin) -->
+    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
+    <!-- Admin theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
+    <link rel="stylesheet" href="assets/css/fd-theme.css">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+</head>
+
+<body class="fd-admin fd-admin-login">
+
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to admin sign-in</a>
+
+    <div class="fd-admin-shell fd-admin-shell--login" id="fd-admin-shell">
+
+        <!-- Standalone sign-in: theme toggle floats top-right on every screen. -->
+        <div class="fd-admin-login-theme">
+            <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+            </button>
+        </div>
+
+        <div class="fd-admin-main">
+            <main class="fd-admin-content fd-admin-login-content" id="fd-admin-main" tabindex="-1">
+                <div class="fd-admin-login-wrap">
+                    <section class="fd-admin-login-shell" aria-labelledby="fd-admin-login-title">
+
+                        <!-- Brand context: visible on desktop, replaced by the
+                             compact mobile wordmark inside the form panel. -->
+                        <aside class="fd-admin-login-brand" aria-label="O’TOOSIN Farms administration">
+                            <a class="fd-logo fd-admin-login-brand-logo" href="index.html" aria-label="O’TOOSIN Farms storefront">
+                                <img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50">
+                            </a>
+                            <div class="fd-admin-login-brand-copy">
+                                <p class="fd-admin-login-brand-eyebrow">Farm administration</p>
+                                <h2>Run the farm store from one place.</h2>
+                                <p>Review orders, keep the catalogue current and stay on top of stock.</p>
+                            </div>
+                            <ul class="fd-admin-login-brand-list">
+                                <li><i class="fas fa-receipt" aria-hidden="true"></i><span>Orders and customer details</span></li>
+                                <li><i class="fas fa-box" aria-hidden="true"></i><span>Products, categories and pricing</span></li>
+                                <li><i class="fas fa-warehouse" aria-hidden="true"></i><span>Inventory, delivery and farm settings</span></li>
+                            </ul>
+                            <p class="fd-admin-login-brand-foot"><i class="fas fa-user-check" aria-hidden="true"></i>Staff access is managed by the farm owner</p>
+                        </aside>
+
+                        <div class="fd-admin-login-form-panel">
+                            <a class="fd-logo fd-admin-login-mobile-brand" href="index.html" aria-label="O’TOOSIN Farms storefront">
+                                <img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50">
+                            </a>
+
+                            <div class="fd-admin-card fd-admin-login-card">
+                                <div class="fd-admin-card-head">
+                                    <p class="fd-admin-login-eyebrow">Staff access</p>
+                                    <h1 id="fd-admin-login-title">Admin sign-in</h1>
+                                    <p>Use your staff credentials to manage the O’TOOSIN Farms storefront.</p>
+                                </div>
+
+                                <div class="fd-admin-notice" id="fd-admin-status" role="status" aria-live="polite" hidden></div>
+
+                                <form id="fd-admin-login-form" novalidate>
+                                    <div class="fd-field">
+                                        <label for="fd-admin-email">Email address</label>
+                                        <input class="form-control" type="email" id="fd-admin-email" name="email" autocomplete="username" inputmode="email" placeholder="you@example.com" required aria-describedby="fd-admin-email-error">
+                                        <span class="fd-field-error" id="fd-admin-email-error" hidden></span>
+                                    </div>
+                                    <div class="fd-field">
+                                        <label for="fd-admin-password">Password</label>
+                                        <div class="fd-admin-pass-wrap">
+                                            <input class="form-control" type="password" id="fd-admin-password" name="password" autocomplete="current-password" placeholder="Enter your password" required aria-describedby="fd-admin-password-error">
+                                            <button type="button" class="fd-admin-pass-toggle" id="fd-admin-pass-toggle" aria-label="Show password" aria-pressed="false">
+                                                <i class="far fa-eye" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        <span class="fd-field-error" id="fd-admin-password-error" hidden></span>
+                                    </div>
+
+                                    <div class="fd-admin-check-row">
+                                        <label class="fd-admin-remember" for="fd-admin-remember">
+                                            <input type="checkbox" id="fd-admin-remember" name="remember">Remember me
+                                        </label>
+                                        <button type="button" class="fd-admin-forgot" id="fd-admin-forgot" aria-expanded="false" aria-controls="fd-admin-forgot-panel">Forgot password?</button>
+                                    </div>
+
+                                    <button type="submit" class="vs-btn" id="fd-admin-submit">
+                                        <i class="fas fa-sign-in-alt" aria-hidden="true"></i><span id="fd-admin-submit-label">Sign in</span>
+                                    </button>
+                                </form>
+
+                                <!-- Password help: the farm owner manages staff credentials. -->
+                                <div class="fd-admin-forgot-panel" id="fd-admin-forgot-panel" hidden>
+                                    <p><strong>Password help</strong></p>
+                                    <p>Staff passwords are managed by the farm owner. Contact the owner if you need access or a password change.</p>
+                                </div>
+
+                                <a class="fd-admin-back-link fd-admin-login-back" href="index.html"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to storefront</a>
+                            </div>
+
+                            <p class="fd-admin-login-copyright">
+                                Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
+         customer cart store can never leak into the admin. -->
+    <script src="assets/js/fd-admin.js?v=6.8"></script>
+    <script src="assets/js/fd-theme.js"></script>
+
+</body>
+
+</html>

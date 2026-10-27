@@ -1,0 +1,3961 @@
+/* ==========================================================================
+   Harvest Castle — Stage 1 foundation overrides
+   Layers on top of assets/css/harvest-castle.css. Keeps the Farmix visual language
+   (Fredoka + DM Sans, pill buttons, light borders) and fixes/adapts it
+   for the single-store Harvest Castle experience.
+   Future Django work: values here mirror settings (e.g. WHATSAPP_NUMBER
+   lives in assets/js/fresh-direct.js -> FRESH_DIRECT.whatsappNumber).
+   ========================================================================== */
+
+/* ---------- Base guards ----------
+   overflow-x:clip on BOTH html and body so no in-flow element can ever
+   create a horizontal scrollbar. clip (not hidden) is used deliberately:
+   it does not create a scroll container, so position:sticky and all
+   existing fixed/off-canvas behavior keep working. */
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---------- Accessibility: skip link + visible focus ----------
+   The template removes outlines globally; restore a clear,
+   on-brand focus indicator for keyboard users. */
+.fd-skip-link {
+  position: absolute;
+  left: 16px;
+  top: -60px;
+  z-index: 9999;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-family: var(--title-font);
+  padding: 12px 20px;
+  border-radius: 9999px;
+  transition: top 0.2s ease;
+}
+
+.fd-skip-link:focus {
+  top: 12px;
+  color: var(--white-color);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+/* ---------- Brand: text logo (no Farmix image logo) ---------- */
+.fd-logo {
+  display: inline-flex;
+  align-items: center;
+  /* gap:0 is deliberate — the wordmark is a bare text node + span, and any
+     flex gap would render as a visible space inside "Harvest Castle". */
+  gap: 0;
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1;
+  /* color: var(--title-color); */
+  color: var(--secondary-color);
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.fd-logo i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-size: 20px;
+  flex: 0 0 auto;
+  margin-right: 10px;
+}
+
+/* Image logo: the mark is wider than tall, so the container keeps its natural
+   aspect instead of cropping it into a circle. Height-locked to the same
+   42px footprint as the old icon; width follows the artwork, capped so the
+   navbar layout is never pushed. */
+.fd-logo img.fd-logo-img {
+  height: 50px;
+  width: auto;
+  max-width: 130px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  margin-right: 0;
+}
+
+/* Slightly wider mark without changing the approved logo height. The gentle
+   horizontal scale keeps the artwork proportional and avoids re-cropping. */
+img.fd-logo-img {
+  transform: scaleX(1.1);
+  transform-origin: center center;
+}
+
+.fd-logo span {
+  color: var(--theme-color);
+}
+
+.footer-wrapper .fd-logo {
+  color: var(--white-color);
+}
+
+/* ---------- Header ---------- */
+.fd-top-note {
+  font-size: 14px;
+}
+
+.fd-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fd-whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
+  color: var(--white-color) !important;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 22px;
+  border-radius: 9999px;
+  transition: all ease 0.4s;
+  white-space: nowrap;
+}
+
+.fd-whatsapp-btn:hover {
+  background: transparent;
+  color: var(--title-color) !important;
+  border-color: var(--theme-color);
+}
+
+/* Secondary outline action (same pill language, no WhatsApp branding) */
+.fd-ghost-btn,
+.fd-view-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 2px solid var(--theme-color);
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 22px;
+  border-radius: 9999px;
+  transition: all ease 0.4s;
+  white-space: nowrap;
+}
+
+.fd-ghost-btn:hover,
+.fd-view-cart-btn:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/* Keep tap targets comfortable */
+.header-icons .icon-btn,
+.fd-mobile-btn {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vs-menu-toggle {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ---------- Hero (keeps hero-layout2 structure) ---------- */
+.hero-layout2 .hero-title {
+  text-transform: none;
+}
+
+.hero-layout2 .hero-bottom {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.hero-layout2 .hero-img img {
+  width: 100%;
+  height: auto;
+}
+
+.fd-hero-tag {
+  display: inline-block;
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 15px;
+  color: var(--secondary-color);
+  background: rgba(6, 65, 29, 0.1);
+  border: 1px solid rgba(6, 65, 29, 0.25);
+  padding: 8px 18px;
+  border-radius: 9999px;
+  margin-bottom: 18px;
+}
+
+/* ---------- Trust strip ---------- */
+.fd-trust {
+  border-bottom: 1px solid #ececec;
+  background: var(--white-color);
+}
+
+.fd-trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 0;
+}
+
+.fd-trust-item i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 20px;
+}
+
+.fd-trust-item h3 {
+  font-size: 18px;
+  margin-bottom: 4px;
+}
+
+.fd-trust-item p {
+  font-size: 14px;
+  margin-bottom: 0;
+  line-height: 1.6;
+}
+
+/* ---------- Categories (reuses categorie-style1) ---------- */
+.fd-categorie-link {
+  display: block;
+}
+
+/* ---------- Products (reuses product-style1, ecommerce actions) ---------- */
+.product-style1 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.product-style1 .product-about {
+  flex: 1 1 auto;
+}
+
+.fd-product-cat {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--secondary-color);
+  margin-bottom: 6px;
+}
+
+.fd-product-unit {
+  font-size: 14px;
+  color: var(--body-color);
+  margin-bottom: 8px;
+}
+
+/* Buy row: price and primary action share one compact row instead of a
+   tall vertical stack. Secondary links sit in a slim second row. */
+.fd-buy-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.fd-buy-row .price {
+  margin: 0;
+}
+
+.fd-add-btn {
+  flex: 0 0 auto;
+  text-align: center;
+  padding: 11px 20px;
+  font-size: 14px;
+}
+
+.fd-secondary-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.fd-secondary-row .fd-view-link:only-child {
+  flex: 1 1 100%;
+}
+
+.fd-view-link,
+.fd-wa-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 13px;
+  padding: 6px 6px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  color: var(--title-color);
+  transition: all ease 0.4s;
+  min-height: 34px;
+}
+
+/* View product carries longer text, so it takes a touch more room. */
+.fd-view-link {
+  flex: 1.2 1 60px;
+}
+
+.fd-wa-link {
+  flex: 1 1 52px;
+}
+
+.fd-view-link:hover,
+.fd-wa-link:hover {
+  border-color: var(--secondary-color);
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.fd-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  font-family: var(--title-font);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  border-radius: 9999px;
+  padding: 3px 11px;
+}
+
+.fd-badge.is-low {
+  background: var(--yellow-color);
+  color: var(--title-color);
+}
+
+.fd-mock-note {
+  font-size: 13px;
+  color: var(--body-color);
+}
+
+/* ---------- Steps (How it works) ---------- */
+.fd-step {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  padding: 30px 26px;
+  height: 100%;
+  transition: all ease 0.4s;
+}
+
+.fd-step:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.fd-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--theme-color);
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.fd-step h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.fd-step p {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+/* ---------- Location + WhatsApp band ---------- */
+.fd-location-card {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  padding: 34px 30px;
+  height: 100%;
+}
+
+.fd-location-card address {
+  font-style: normal;
+  font-size: 17px;
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.fd-cta-band {
+  background: var(--secondary-color);
+  border-radius: 24px;
+  padding: 48px 40px;
+  color: var(--white-color);
+  position: relative;
+  overflow: hidden;
+}
+
+.fd-cta-band h2 {
+  color: var(--white-color);
+  margin-bottom: 12px;
+}
+
+.fd-cta-band p {
+  color: rgba(255, 255, 255, 0.88);
+  margin-bottom: 24px;
+  max-width: 640px;
+}
+
+.fd-cta-band .vs-btn {
+  border-color: var(--theme-color);
+  color: var(--white-color);
+}
+
+.fd-cta-band .vs-btn:hover {
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  color: var(--title-color);
+}
+
+.fd-cta-band .fd-whatsapp-btn {
+  background: var(--theme-color);
+  border-color: var(--theme-color);
+  color: var(--title-color) !important;
+}
+
+.fd-cta-band .fd-whatsapp-btn:hover {
+  background: transparent;
+  color: var(--white-color) !important;
+  border-color: var(--white-color);
+}
+
+/* CTA band buttons span full width on phones: keep icon + label centered. */
+@media (max-width: 767px) {
+  .fd-cta-band .fd-whatsapp-btn {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ---------- Footer ---------- */
+.footer-wrapper .footer-text {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.fd-footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.fd-footer-contact li {
+  display: flex;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.fd-footer-contact i {
+  color: var(--theme-color);
+  margin-top: 4px;
+}
+
+/* ---------- Side cart usable on all screens ---------- */
+.sideCart-wrapper .sidemenu-content {
+  max-width: 420px;
+}
+
+.fd-cart-empty {
+  text-align: center;
+  padding: 30px 10px;
+}
+
+.fd-cart-empty i {
+  font-size: 44px;
+  color: var(--border-color);
+  margin-bottom: 14px;
+}
+
+/* ---------- Slick touch targets ---------- */
+.vs-carousel .slick-arrow {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+  .fd-logo {
+    font-size: 22px;
+  }
+
+  .fd-logo i {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+
+  .fd-logo img.fd-logo-img {
+    height: 44px;
+    width: auto;
+    max-width: 115px;
+  }
+
+  .hero-layout2 .hero-img {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .fd-cta-band {
+    padding: 36px 26px;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-layout2 .hero-title {
+    font-size: 34px;
+  }
+
+  .hero-layout2 .hero-bottom .vs-btn,
+  .hero-layout2 .hero-bottom .fd-whatsapp-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-layout2 .hero-img {
+    max-width: 380px;
+  }
+
+  .fd-header-actions .fd-whatsapp-btn span {
+    display: none;
+  }
+
+  .fd-header-actions .fd-whatsapp-btn {
+    padding: 12px 14px;
+  }
+
+  .sideCart-wrapper .sidemenu-content {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   REVISION PASS — compact grids, radius system, spacing rhythm
+   Scoped to the home page (#fd-main / #categories / #featured) so the
+   template's other pages and components are unaffected.
+   Central tokens: change --fd-radius / section rhythm here and the whole
+   home page follows (final brand palette slots into style.css variables).
+   ========================================================================== */
+:root {
+  --fd-radius: 18px;
+  --fd-radius-img: 12px;
+  --fd-section-pad: 72px;
+  --fd-section-pad-mobile: 52px;
+}
+
+/* ---------- Hero refinements ----------
+   The template puts margin-right/bottom on hero buttons; the flex gap
+   owns spacing now so stacked mobile buttons can't overflow. */
+.hero-layout2 .hero-bottom .vs-btn,
+.hero-layout2 .hero-bottom .fd-whatsapp-btn,
+.hero-layout2 .hero-bottom .fd-ghost-btn {
+  margin: 0;
+}
+
+/* The floating outline illustration is purely decorative: it must never
+   intercept clicks (it sits over the left CTA on desktop) and it is nudged
+   slightly down-left so its lines clear the button text. */
+.hero-layout2 .hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-layout2 .shape-mockup {
+  pointer-events: none;
+}
+
+.hero-layout2 .shape-mockup img {
+  pointer-events: none;
+}
+
+/* Desktop dots are pulled up over the slide by the template
+   (translateY(-80px)), which lets the invisible dots strip swallow clicks
+   meant for the left CTA. Clicks pass through except on real dots. */
+.hero-layout2 .slick-dots {
+  pointer-events: none;
+}
+
+.hero-layout2 .slick-dots button {
+  pointer-events: auto;
+}
+
+.hero-layout2 .hero-bottom {
+  position: relative;
+  z-index: 10;
+}
+
+/* Text logo must never be squeezed by the template's image-logo cap. */
+.vs-header .header-logo {
+  max-width: none;
+}
+
+/* ---------- Section rhythm ---------- */
+#fd-main .space {
+  padding-top: var(--fd-section-pad);
+  padding-bottom: var(--fd-section-pad);
+}
+
+#fd-main .space-bottom {
+  padding-bottom: var(--fd-section-pad);
+}
+
+#fd-main .title-area {
+  margin-bottom: 36px;
+}
+
+#fd-main .title-area .sec-title {
+  margin-bottom: 12px;
+}
+
+#fd-main .title-area p {
+  margin: 12px auto 0 auto;
+  max-width: 640px;
+}
+
+#fd-main .title-area p:last-child {
+  margin-bottom: 0;
+}
+
+/* Trust strip sits directly under the hero: keep it slim. */
+#fd-main .fd-trust.space-bottom {
+  padding-top: 36px;
+  padding-bottom: 36px;
+}
+
+/* Categories follows the slim trust strip (not a full padded band), so it
+   carries its own top padding to match the 72px section rhythm exactly
+   like every other section heading. */
+#fd-main #categories.space-bottom {
+  padding-top: 36px;
+}
+#fd-main #featured.space {
+  padding-bottom: 56px;
+}
+
+#fd-main #how-it-works.space {
+  padding-top: 48px;
+}
+
+/* ---------- Category grid: compact, fixed-character cards ----------
+   Keeps the index-2 categorie-style1 look (round image well + centered
+   text) but caps card size so cards never stretch with viewport width.
+   Flex + wrap + center keeps every breakpoint balanced with no overflow. */
+.fd-cat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px 24px;
+}
+
+.fd-cat-cell {
+  /* Fixed size — every square is identical at a given breakpoint.
+     The grid centers and wraps; cells never stretch or shrink. */
+  flex: 0 0 172px;
+  max-width: 172px;
+  min-width: 0;
+}
+
+#categories .categorie-style1 .categorie-img {
+  width: 100%;
+  max-width: 172px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--fd-radius);
+  line-height: 1;
+  padding: 17%;
+  margin: 0 auto 16px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#categories .categorie-style1 .categorie-img img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+#categories .categorie-style1 .categorie-title {
+  font-size: 17px;
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+#categories .categorie-style1 .categorie-text {
+  font-size: 13px;
+}
+
+.fd-cat-extra[hidden] {
+  display: none;
+}
+
+.fd-cat-extra.fd-reveal {
+  animation: fdFadeIn 0.45s ease both;
+}
+
+@keyframes fdFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fd-more-wrap {
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* ==========================================================================
+   LOCKED — SHARED PRODUCT CARD SYSTEM (Stage 3D).
+   #featured (Home) + #fd-shop-grid (Shop) + #fd-pdp-related (PDP details)
+   share the declarations grouped below: ONE card design, three contexts.
+   Keep grouped selectors in sync — never restyle one context alone.
+   Deliberate approved divergences (do NOT "fix" without instruction):
+   - Shop/PDP-related cards stretch to equal row height; Home keeps the
+     approved natural heights.
+   - A few mobile type sizes differ per approved page (see media queries).
+   - View toggle exists ONLY on Shop (.fd-view-toggle — canonical).
+   ========================================================================== */
+#featured .product-style1,
+#fd-shop-grid .product-style1,
+#fd-home-grid .product-style1,
+#fd-pdp-related .product-style1 {
+  position: relative;
+  border-radius: var(--fd-radius);
+  overflow: hidden;
+  padding: 16px 14px 18px;
+}
+
+#featured .product-style1 .price {
+  display: inline-block;
+  font-size: 19px;
+}
+
+/* ---------- Cart control: icon + separate count ---------- */
+.fd-cart-btn {
+  position: relative;
+}
+
+.fd-cart-btn .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ---------- Side-cart actions: stacked with deliberate gaps ---------- */
+.sideCart-wrapper .widget_shopping_cart .buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.sideCart-wrapper .widget_shopping_cart .buttons .vs-btn,
+.sideCart-wrapper .widget_shopping_cart .buttons .fd-whatsapp-btn,
+.sideCart-wrapper .widget_shopping_cart .buttons .fd-view-cart-btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+.fd-cart-empty p {
+  margin-bottom: 8px;
+}
+
+.fd-cart-empty p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* ---------- Responsive: tablet ---------- */
+@media (max-width: 991px) {
+  .fd-cat-grid {
+    gap: 28px 20px;
+  }
+
+  .fd-cat-cell {
+    flex-basis: 160px;
+    max-width: 160px;
+  }
+
+  /* Compact but comfortable mobile navbar. */
+  .header-layout1 .menu-area {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  /* Keep logo + actions on ONE row: the empty middle column collapses
+     instead of wrapping or pushing content past the viewport. */
+  .vs-header .menu-area > .container > .row {
+    flex-wrap: nowrap;
+  }
+
+  .vs-header .menu-area .col {
+    min-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .vs-header .vs-menu-toggle {
+    font-size: 19px;
+  }
+
+  .fd-header-actions {
+    gap: 14px;
+  }
+
+  .fd-header-actions .icon-btn {
+    --icon-size: 44px;
+  }
+}
+
+/* ---------- Responsive: mobile ---------- */
+@media (max-width: 767px) {
+  #fd-main .space {
+    padding-top: var(--fd-section-pad-mobile);
+    padding-bottom: var(--fd-section-pad-mobile);
+  }
+
+  #fd-main .space-bottom {
+    padding-bottom: var(--fd-section-pad-mobile);
+  }
+
+  #fd-main .title-area {
+    margin-bottom: 28px;
+  }
+
+  #fd-main .fd-trust.space-bottom {
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+
+  #fd-main #featured.space {
+    padding-bottom: 40px;
+  }
+
+  #fd-main #categories.space-bottom {
+    padding-top: 26px;
+  }
+
+  #fd-main #how-it-works.space {
+    padding-top: 36px;
+  }
+
+  .hero-layout2 .hero-content {
+    text-align: center;
+  }
+
+  .hero-layout2 .hero-bottom {
+    justify-content: center;
+  }
+
+  .hero-layout2 .hero-content .hero-text {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .hero-layout2 .hero-slide {
+    padding: 64px 0 10px;
+  }
+
+  .hero-layout2 .slick-dots {
+    text-align: center;
+    transform: none;
+    margin-top: 8px;
+  }
+
+  .hero-layout2 .hero-bottom .fd-ghost-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  #fd-cat-toggle {
+    padding: 12px 26px;
+    font-size: 14px;
+  }
+
+  /* Shorter mobile footer: tighter bands, calmer link lists. */
+  #contact.footer-wrapper.footer-layout1 {
+    padding: 44px 0 36px;
+  }
+
+  #contact .widget-area {
+    padding-top: 36px;
+    padding-bottom: 8px;
+  }
+
+  #contact .footer-top .row {
+    --bs-gutter-y: 1.25rem;
+  }
+
+  #contact .media-style1 {
+    padding-bottom: 20px;
+  }
+
+  #contact .widget_categories a {
+    margin-bottom: 12px;
+  }
+
+  .fd-cat-grid {
+    gap: 24px 14px;
+  }
+
+  .fd-cat-cell {
+    flex-basis: 160px;
+    max-width: 160px;
+  }
+
+  .fd-more-wrap {
+    margin-top: 32px;
+  }
+
+  /* Compact 2-column product cards */
+  #featured .product-style1 {
+    padding: 12px 10px 14px;
+  }
+
+  #featured .product-style1 .product-img {
+    margin-bottom: 10px;
+  }
+
+  #featured .product-style1 .product-img img {
+    max-height: 120px;
+  }
+
+  #featured .product-style1 .product-title {
+    font-size: 14.5px;
+  }
+
+  #featured .fd-product-cat {
+    font-size: 11px;
+  }
+
+  #featured .fd-product-unit {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  #featured .fd-buy-row {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  #featured .fd-buy-row .price {
+    font-size: 16px;
+  }
+
+  #featured .fd-add-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  #featured .fd-secondary-row {
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  #featured .fd-view-link,
+  #featured .fd-wa-link {
+    font-size: 12px;
+    padding: 5px 4px;
+    min-height: 34px;
+    /* Mobile cards are ~60px per button: the desktop 9999px pill turns
+       these into ovals, so they take a softened rectangle radius instead.
+       Tight leading keeps a wrapped "View / product" reading as one label. */
+    border-radius: 14px;
+    line-height: 1.3;
+  }
+
+  #featured .fd-badge {
+    font-size: 10.5px;
+    padding: 2px 9px;
+  }
+}
+
+/* ---------- Very narrow screens: keep 2 columns usable ---------- */
+@media (max-width: 575px) {
+  /* Scale the wordmark down so logo + cart + burger fit 320px rows. */
+  .fd-logo {
+    font-size: 20px;
+  }
+
+  .fd-logo i {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+
+  .fd-logo img.fd-logo-img {
+    height: 40px;
+    width: auto;
+    max-width: 105px;
+  }
+}
+
+@media (max-width: 360px) {
+  .fd-cat-cell {
+    flex-basis: 140px;
+    max-width: 140px;
+  }
+
+  #categories .categorie-style1 .categorie-title {
+    font-size: 15px;
+  }
+
+  #featured .product-style1 {
+    padding: 12px 10px 14px;
+  }
+
+  #featured .product-style1 .product-title {
+    font-size: 14px;
+  }
+
+  #featured .product-style1 .price {
+    font-size: 15px;
+  }
+
+  .fd-logo {
+    font-size: 20px;
+  }
+}
+
+/* ==========================================================================
+   STAGE 2 — SHOP
+   New classes only (.fd-shop-*, .fd-cart-items, .fd-toast, .is-out).
+   Nothing here alters Home rendering: all selectors are new or scoped to
+   #fd-shop-grid / #fd-shop-toolbar / .sideCart-wrapper internals that Home
+   does not style today.
+   ========================================================================== */
+
+/* ---------- Shop intro band ---------- */
+.fd-shop-intro {
+  background: var(--white-color);
+  border-bottom: 1px solid #ececec;
+  /* Top padding clears the header menu's -45px overlap plus breathing room,
+     so the breadcrumb starts below the menu bar (measured, not arbitrary). */
+  padding: 60px 0 32px;
+}
+
+.fd-breadcrumb {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 0 14px 0;
+  padding: 0;
+  font-size: 14px;
+}
+
+.fd-breadcrumb li + li::before {
+  content: "/";
+  margin-right: 12px;
+  color: var(--border-color);
+}
+
+.fd-breadcrumb a {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.fd-breadcrumb [aria-current="page"] {
+  color: var(--body-color);
+}
+
+.fd-shop-intro .sec-title {
+  margin-bottom: 10px;
+}
+
+.fd-shop-intro p:last-child {
+  margin-bottom: 0;
+  max-width: 640px;
+}
+
+/* ---------- Shop toolbar: search + pills + selects ---------- */
+.fd-shop-toolbar {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius);
+  padding: 18px;
+  margin-bottom: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fd-shop-search {
+  position: relative;
+}
+
+.fd-shop-search i {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary-color);
+  pointer-events: none;
+}
+
+.fd-shop-search .form-control {
+  padding-left: 46px;
+  border-radius: 9999px;
+  margin-bottom: 0;
+}
+
+.fd-cat-pills {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.fd-cat-pill {
+  flex: 0 0 auto;
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 14px;
+  padding: 9px 18px;
+  min-height: 40px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--white-color);
+  color: var(--title-color);
+  transition: all ease 0.4s;
+}
+
+/* Pills are links to product-category.html (Django filters server-side),
+   so anchors reuse the same pill look without link underlines. */
+a.fd-cat-pill {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.fd-cat-pill:hover {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.fd-cat-pill[aria-pressed="true"] {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.fd-shop-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.fd-result-count {
+  margin: 0;
+  margin-right: auto;
+  font-size: 14px;
+  color: var(--body-color);
+}
+
+.fd-shop-select {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fd-shop-select .form-select {
+  width: auto;
+  min-height: 44px;
+  border-radius: 9999px;
+  font-size: 14px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 0;
+}
+
+/* ---------- Shop grid reuses the Home card system ---------- */
+#fd-shop-grid .product-style1,
+#fd-home-grid .product-style1,
+#fd-pdp-related .product-style1 {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#fd-shop-grid .product-style1 .product-about,
+#fd-home-grid .product-style1 .product-about,
+#fd-pdp-related .product-style1 .product-about {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+#featured .product-style1 .product-img,
+#fd-shop-grid .product-style1 .product-img,
+#fd-home-grid .product-style1 .product-img,
+#fd-pdp-related .product-style1 .product-img {
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+#featured .product-style1 .product-img img,
+#fd-shop-grid .product-style1 .product-img img,
+#fd-home-grid .product-style1 .product-img img,
+#fd-pdp-related .product-style1 .product-img img {
+  border-radius: var(--fd-radius-img);
+  max-height: 150px;
+  width: auto;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+#featured .product-style1 .product-title,
+#fd-shop-grid .product-style1 .product-title,
+#fd-home-grid .product-style1 .product-title,
+#fd-pdp-related .product-style1 .product-title {
+  font-size: 18px;
+  line-height: 1.35;
+  margin: 4px 0 2px 0;
+}
+
+#fd-shop-grid .fd-buy-row .price,
+#fd-home-grid .fd-buy-row .price,
+#fd-pdp-related .fd-buy-row .price {
+  font-size: 19px;
+}
+
+/* ---------- Stock states ---------- */
+.fd-badge.is-out {
+  background: #6c757d;
+  color: var(--white-color);
+}
+
+.fd-add-btn:disabled,
+.fd-add-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.product-style1.is-out .product-img img {
+  filter: grayscale(35%);
+  opacity: 0.85;
+}
+
+/* ---------- Shop inline states ---------- */
+.fd-shop-state {
+  text-align: center;
+  padding: 56px 20px;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--fd-radius);
+  background: var(--white-color);
+}
+
+.fd-shop-state i {
+  font-size: 44px;
+  color: var(--border-color);
+  margin-bottom: 14px;
+}
+
+.fd-shop-state h2 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.fd-shop-state p {
+  max-width: 440px;
+  margin: 0 auto 20px auto;
+}
+
+/* ---------- Side-cart line items (shared Home + Shop) ---------- */
+.fd-cart-items {
+  list-style: none;
+  margin: 0 0 6px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Preview list scrolls on its own so the subtotal + buttons stay in view.
+   A thin always-visible scrollbar signals that more items are below. */
+.sideCart-wrapper .fd-cart-items {
+  max-height: min(38vh, 320px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary-color) transparent;
+  padding-right: 4px;
+}
+
+.sideCart-wrapper .fd-cart-items::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sideCart-wrapper .fd-cart-items::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sideCart-wrapper .fd-cart-items::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: 9999px;
+}
+
+.fd-cart-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border: 1px solid #ececec;
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.fd-cart-item > img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: var(--smoke-color);
+  flex: 0 0 auto;
+}
+
+.fd-cart-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.fd-cart-info strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.fd-cart-info > span {
+  display: block;
+  font-size: 13px;
+  color: var(--body-color);
+  margin: 2px 0 8px 0;
+}
+
+.fd-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 2px;
+}
+
+.fd-qty button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--title-color);
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all ease 0.4s;
+}
+
+.fd-qty button:hover {
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.fd-qty > span:not(.fd-qty-entry) {
+  min-width: 26px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Editable KG quantity: same pill, same slot — input holds the number,
+   the static "kg" suffix keeps the existing "3.3 kg" reading. */
+.fd-cart-qty-input {
+  width: 48px;
+  max-width: 52px;
+  height: 30px;
+  min-height: 30px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 5px 2px;
+}
+
+.fd-qty-unit {
+  padding-right: 4px;
+}
+
+/* Side-cart items sit inside .widget, whose generic input styling
+   (60px tall, grey pill) must not leak into the inline KG field. */
+.widget .fd-cart-qty-input {
+  height: 30px;
+  min-height: 30px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Typing affordance shared by every KG stepper: the number and "kg" sit
+   on one line with a quiet caption underneath. The caption only appears
+   when the editable input exists, so it never promises typing on a
+   read-only or non-KG control. */
+.fd-qty-entry {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.fd-qty-entry-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.fd-kg-hint {
+  display: none;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--body-color);
+  opacity: 0.85;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fd-qty-entry.has-kg-input .fd-kg-hint {
+  display: block;
+}
+
+.fd-qty-entry.is-each .fd-kg-hint {
+  display: none;
+}
+
+/* The inner field must never draw its own heavy focus rectangle: the
+   whole pill gets a quiet brand ring instead, so typing feels part of
+   the control rather than a box inside a box. */
+.fd-cart-qty-input:focus,
+.fd-cart-qty-input:focus-visible,
+.fd-pdp-qty-input:focus,
+.fd-pdp-qty-input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.fd-qty:has(.fd-cart-qty-input:focus),
+.fd-pdp-qty:has(.fd-pdp-qty-input:focus) {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(6, 65, 29, 0.12);
+}
+
+html[data-theme="dark"] .fd-qty:has(.fd-cart-qty-input:focus),
+html[data-theme="dark"] .fd-pdp-qty:has(.fd-pdp-qty-input:focus) {
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 3px rgba(222, 173, 57, 0.18);
+}
+
+.fd-cart-line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.fd-cart-line strong {
+  font-size: 15px;
+}
+
+.fd-cart-remove {
+  border: none;
+  background: transparent;
+  color: var(--body-color);
+  font-size: 14px;
+  padding: 6px;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 8px;
+}
+
+.fd-cart-remove:hover {
+  color: var(--error-color);
+}
+
+.fd-cart-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ececec;
+  margin-top: 6px;
+  padding: 14px 2px 0 2px;
+  font-family: var(--title-font);
+  font-size: 17px;
+}
+
+/* ---------- Toasts (shared) ---------- */
+#fd-toast-region {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 24px;
+  z-index: 1000000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+}
+
+.fd-toast {
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-family: var(--title-font);
+  font-weight: 500;
+  font-size: 15px;
+  padding: 13px 24px;
+  border-radius: 9999px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  animation: fdToastIn 0.3s ease both;
+}
+
+.fd-toast i {
+  color: var(--theme-color);
+}
+
+.fd-toast.is-leaving {
+  animation: fdToastOut 0.3s ease both;
+}
+
+@keyframes fdToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fdToastOut {
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* ---------- Shop responsive ---------- */
+@media (max-width: 767px) {
+  .fd-shop-intro {
+    padding: 56px 0 24px;
+  }
+
+  .fd-shop-toolbar {
+    padding: 14px;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .fd-shop-meta-row {
+    gap: 8px 10px;
+  }
+
+  /* Shop only: its count drops to its own row inside the toolbar.
+     Home/PDP header counts must stay inline with their toggle. */
+  #fd-shop-toolbar .fd-result-count {
+    flex: 1 1 100%;
+  }
+
+  .fd-shop-select {
+    flex: 1 1 auto;
+  }
+
+  .fd-shop-select .form-select {
+    flex: 1 1 auto;
+  }
+
+  #fd-shop-grid .product-style1,
+#fd-home-grid .product-style1,
+#fd-pdp-related .product-style1 {
+    padding: 12px 10px 14px;
+  }
+
+#featured .product-style1 .product-img img,
+#fd-shop-grid .product-style1 .product-img img,
+#fd-home-grid .product-style1 .product-img img,
+#fd-pdp-related .product-style1 .product-img img {
+    max-height: 120px;
+  }
+
+#featured .product-style1 .product-title,
+#fd-shop-grid .product-style1 .product-title,
+#fd-home-grid .product-style1 .product-title,
+#fd-pdp-related .product-style1 .product-title {
+    font-size: 14.5px;
+  }
+
+  #fd-shop-grid .fd-buy-row .price,
+#fd-home-grid .fd-buy-row .price,
+#fd-pdp-related .fd-buy-row .price {
+    font-size: 16px;
+  }
+
+  #fd-shop-grid .fd-add-btn,
+  #fd-home-grid .fd-add-btn,
+  #fd-pdp-related .fd-add-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  #fd-shop-grid .fd-view-link,
+  #fd-shop-grid .fd-wa-link,
+  #fd-home-grid .fd-view-link,
+  #fd-home-grid .fd-wa-link,
+  #fd-pdp-related .fd-view-link,
+  #fd-pdp-related .fd-wa-link {
+    font-size: 12px;
+    padding: 5px 4px;
+    min-height: 34px;
+    /* Same mobile radius + leading as Home (shared card system, one look). */
+    border-radius: 14px;
+    line-height: 1.3;
+  }
+
+  #fd-toast-region {
+    bottom: 16px;
+  }
+
+  .fd-toast {
+    font-size: 14px;
+    padding: 12px 20px;
+  }
+}
+
+/* ==========================================================================
+   STAGE 3 — PRODUCT DETAILS
+   New classes only (.fd-pdp-*). Reuses tokens, buttons, badges, card
+   language, and section rhythm from Home/Shop. Nothing here restyles
+   existing pages.
+   ========================================================================== */
+
+.fd-pdp-main {
+  padding-top: 40px;
+  padding-bottom: 72px;
+}
+
+/* ---------- Gallery ---------- */
+.fd-pdp-gallery {
+  background: var(--smoke-color);
+  border-radius: var(--fd-radius);
+  padding: 24px;
+  text-align: center;
+  position: relative;
+}
+
+.fd-pdp-gallery .fd-badge {
+  top: 18px;
+  left: 18px;
+}
+
+.fd-pdp-main-img {
+  display: block;
+  cursor: zoom-in;
+}
+
+/* Mock assets are small (~200px) intrinsics: let the image fill the column
+   up to a sane cap instead of sitting tiny in a large box. Aspect is always
+   preserved (no distortion); real high-res photos are the true fix later. */
+.fd-pdp-main-img img {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  max-height: 440px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.fd-pdp-thumbs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.fd-pdp-thumb {
+  width: 72px;
+  height: 72px;
+  padding: 6px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  background: var(--white-color);
+  transition: all ease 0.4s;
+}
+
+.fd-pdp-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fd-pdp-thumb:hover {
+  border-color: var(--border-color);
+}
+
+.fd-pdp-thumb[aria-pressed="true"] {
+  border-color: var(--secondary-color);
+}
+
+/* ---------- Info panel ---------- */
+.fd-pdp-info .fd-product-cat {
+  margin-bottom: 8px;
+}
+
+.fd-pdp-name {
+  font-size: 34px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.fd-pdp-price-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 6px;
+}
+
+.fd-pdp-price {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 30px;
+  color: var(--title-color);
+}
+
+.fd-pdp-unit {
+  font-size: 15px;
+  color: var(--body-color);
+}
+
+.fd-pdp-stock {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.fd-pdp-stock.is-in {
+  color: var(--secondary-color);
+}
+
+.fd-pdp-stock.is-low {
+  color: #8a6d00;
+}
+
+.fd-pdp-stock.is-out {
+  color: var(--error-color);
+}
+
+.fd-pdp-desc {
+  margin-bottom: 22px;
+  max-width: 56ch;
+}
+
+.fd-pdp-field-label {
+  display: block;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.fd-variant-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.fd-variant-btn {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 22px;
+  min-height: 48px;
+  border-radius: 9999px;
+  border: 2px solid var(--border-color);
+  background: var(--white-color);
+  color: var(--title-color);
+  transition: all ease 0.4s;
+}
+
+.fd-variant-btn:hover {
+  border-color: var(--secondary-color);
+}
+
+.fd-variant-btn[aria-pressed="true"] {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.fd-variant-group.is-single .fd-variant-btn {
+  border-style: dashed;
+  cursor: default;
+}
+
+.fd-pdp-buy-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fd-pdp-qty {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  padding: 4px;
+  background: var(--white-color);
+}
+
+.fd-pdp-qty button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--title-color);
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all ease 0.4s;
+}
+
+.fd-pdp-qty button:hover {
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.fd-pdp-qty > span:not(.fd-qty-entry) {
+  min-width: 34px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+/* KG decimal input: same pill slot as the span, no layout shift. */
+.fd-pdp-qty-input {
+  width: 64px;
+  max-width: 72px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.2;
+  color: inherit;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 6px 2px;
+}
+
+.fd-pdp-add {
+  flex: 1 1 220px;
+  min-height: 54px;
+}
+
+.fd-pdp-wa {
+  flex: 1 1 220px;
+  min-height: 54px;
+  justify-content: center;
+}
+
+.fd-pdp-total {
+  font-size: 15px;
+  margin-bottom: 22px;
+}
+
+.fd-pdp-total strong {
+  font-family: var(--title-font);
+  font-size: 19px;
+}
+
+.fd-pdp-facts {
+  list-style: none;
+  margin: 0 0 22px 0;
+  padding: 18px 20px;
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius);
+  background: var(--white-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 15px;
+}
+
+.fd-pdp-facts span {
+  color: var(--body-color);
+}
+
+.fd-pdp-note {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: var(--smoke-color);
+  border-radius: var(--fd-radius);
+  padding: 16px 18px;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.fd-pdp-note i {
+  color: var(--secondary-color);
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+/* ---------- Supporting info + related ---------- */
+.fd-pdp-info-section {
+  padding-bottom: 56px;
+}
+
+.fd-pdp-info-section h2 {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.fd-pdp-info-section p,
+.fd-pdp-info-section ul {
+  max-width: 72ch;
+}
+
+.fd-pdp-related {
+  padding-bottom: 72px;
+}
+
+/* ---------- PDP responsive ---------- */
+@media (max-width: 991px) {
+  .fd-pdp-name {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .fd-pdp-main {
+    padding-top: 28px;
+    padding-bottom: 52px;
+  }
+
+  .fd-pdp-gallery {
+    padding: 22px 16px;
+    margin-bottom: 8px;
+  }
+
+  .fd-pdp-main-img img {
+    max-width: 300px;
+    max-height: 320px;
+  }
+
+  .fd-pdp-info {
+    padding-top: 20px;
+  }
+
+  .fd-pdp-name {
+    font-size: 26px;
+  }
+
+  .fd-pdp-price {
+    font-size: 26px;
+  }
+
+  .fd-variant-btn {
+    padding: 11px 20px;
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .fd-pdp-add,
+  .fd-pdp-wa {
+    flex: 1 1 100%;
+  }
+
+  .fd-pdp-info-section {
+    padding-bottom: 40px;
+  }
+
+  .fd-pdp-related {
+    padding-bottom: 52px;
+  }
+}
+
+/* ==========================================================================
+   UNIVERSAL GRID / LIST VIEW (Shop master, shared everywhere).
+   Toggle reuses the template's icon-button language (fa-th / fa-list).
+   List view restyles the SAME card nodes (no duplicate markup, no second
+   data source): :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list.
+   Grid rules are never touched. The .fd-view-toggle control is identical
+   on every page; only the lightweight .fd-section-view wrapper positions
+   it inside Home / Product Details section headers.
+   ========================================================================== */
+
+.fd-view-toggle {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: 4px;
+}
+
+.fd-view-toggle .icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+/* Obvious active state in the Harvest Castle green (same as icon hover). */
+.fd-view-toggle [aria-pressed="true"] {
+  background: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/* ---------- Section-level view control (Home + PDP headers) ----------
+   Page-specific wrapper ONLY (allowed): docks the shared toggle at the
+   top right of the collection without touching the heading, rhythm, or
+   cards. Own row so it can never overlap the heading or overflow. */
+.fd-section-view {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: -8px 0 28px 0;
+}
+
+.fd-section-view .fd-view-toggle {
+  margin-left: 0;
+}
+
+@media (max-width: 767px) {
+  .fd-section-view {
+    margin: -4px 0 22px 0;
+  }
+
+  /* Slightly smaller view toggle on phones (50px -> 44px circles).
+     Shared control, so Shop / Home / Details stay identical. */
+  .fd-view-toggle .icon-btn {
+    --icon-size: 44px;
+  }
+}
+
+/* ---------- List view: one product per row, horizontal card ---------- */
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list > div {
+  flex: 0 0 100%;
+  max-width: 100%;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 {
+  flex-direction: row;
+  align-items: center;
+  gap: 22px;
+  padding: 18px 22px;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img {
+  flex: 0 0 210px;
+  width: 210px;
+  height: 180px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-about {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Short description exists only for list view (injected from the single
+   catalog by JS); hidden in grid view so cards stay compact. */
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related) .fd-product-desc {
+  display: none;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-product-desc {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--body-color);
+  margin: 6px 0 0 0;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-buy-row {
+  margin-top: 12px;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-buy-row .price {
+  font-size: 22px;
+}
+
+:is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-secondary-row {
+  max-width: 460px;
+}
+
+/* ---------- List view: tablet ---------- */
+@media (max-width: 991px) {
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 {
+    gap: 18px;
+    padding: 16px 18px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img {
+    flex-basis: 170px;
+    width: 170px;
+    height: 150px;
+  }
+}
+
+/* ---------- List view: mobile (compact 2-column grid row) ----------
+   The about-column becomes a tight grid: identity spans full width, then
+   price|Add and View|WhatsApp share rows. Description + unit step aside
+   on phones (name/price/photo carry recognition; PDP holds full info). */
+@media (max-width: 767px) {
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 {
+    gap: 12px;
+    padding: 12px;
+    align-items: center;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img {
+    flex: 0 0 104px;
+    width: 104px;
+    height: 104px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-about {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px 8px;
+    align-items: center;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-product-cat {
+    grid-column: 1 / -1;
+    font-size: 11px;
+    margin-bottom: 0;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-title {
+    grid-column: 1 / -1;
+    font-size: 15px;
+    line-height: 1.3;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-product-desc {
+    display: none;
+  }
+
+  /* Unit sits small above the price (column 1); Add spans both rows so
+     the row stays tight. View | WhatsApp share the next row. */
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-product-unit {
+    display: block;
+    grid-column: 1;
+    grid-row: 3;
+    font-size: 11.5px;
+    margin: 0;
+    align-self: end;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-buy-row,
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-secondary-row {
+    display: contents;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-buy-row .price {
+    grid-column: 1;
+    grid-row: 4;
+    font-size: 16px;
+    margin: 0;
+    align-self: center;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-add-btn {
+    grid-column: 2;
+    grid-row: 3 / span 2;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-view-link {
+    grid-column: 1;
+    grid-row: 5;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-wa-link {
+    grid-column: 2;
+    grid-row: 5;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-add-btn {
+    padding: 9px 8px;
+    font-size: 12.5px;
+    min-height: 40px;
+    width: 100%;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-view-link,
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-wa-link {
+    font-size: 12px;
+    padding: 5px 4px;
+    min-height: 38px;
+    margin: 0;
+    border-radius: 14px;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 360px) {
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img {
+    flex-basis: 88px;
+    width: 88px;
+    height: 92px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-about {
+    gap: 6px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-add-btn,
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-view-link,
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .fd-wa-link {
+    font-size: 11.5px;
+  }
+}
+
+/* ==========================================================================
+   STAGE 4 — FULL CART PAGE (cart.html #fd-cart-wrap only).
+   New layout classes only (.fd-cartpage-*, .fd-cart-summary). Every
+   component inside reuses the existing language exactly: .fd-shop-state
+   (empty), .fd-pdp-note (delivery note), .fd-qty + .fd-cart-remove
+   (quantity/remove, same delegated handlers as the side cart),
+   .vs-btn / .fd-whatsapp-btn / .fd-ghost-btn, tokens and breakpoints.
+   ========================================================================== */
+
+.fd-cartpage-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fd-cartpage-item {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius);
+  padding: 18px;
+}
+
+.fd-cartpage-img {
+  flex: 0 0 auto;
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--smoke-color);
+  border-radius: var(--fd-radius-img);
+  overflow: hidden;
+}
+
+.fd-cartpage-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.fd-cartpage-info {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.fd-cartpage-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.fd-cartpage-id {
+  min-width: 0;
+}
+
+.fd-cartpage-id strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.fd-cartpage-id strong a {
+  color: var(--title-color);
+}
+
+.fd-cartpage-id > span {
+  display: block;
+  font-size: 14px;
+  color: var(--body-color);
+  margin-top: 2px;
+}
+
+.fd-cartpage-line {
+  flex: 0 0 auto;
+  font-family: var(--title-font);
+  font-size: 19px;
+  white-space: nowrap;
+}
+
+.fd-cartpage-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* Full-page remove shows icon + text (side cart stays icon-only);
+   same button, same hover language. */
+.fd-cartpage-item .fd-cart-remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--title-font);
+  font-size: 14px;
+}
+
+.fd-cartpage-note {
+  display: block;
+  font-size: 14px;
+  color: var(--body-color);
+  margin-top: 4px;
+}
+
+.fd-cartpage-item.is-invalid {
+  border-style: dashed;
+}
+
+.fd-cartpage-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.fd-cartpage-clear {
+  border: none;
+  background: transparent;
+  padding: 10px 4px;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--body-color);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fd-cartpage-clear:hover {
+  color: var(--error-color);
+}
+
+/* ---------- Order summary ---------- */
+.fd-cart-summary {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius);
+  padding: 26px 24px;
+}
+
+.fd-cart-summary h2 {
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.fd-cart-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.fd-cart-summary-row strong {
+  font-family: var(--title-font);
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.fd-cart-summary .fd-pdp-note {
+  margin: 4px 0 16px 0;
+}
+
+.fd-cart-summary-row.is-total {
+  border-top: 1px solid #ececec;
+  padding-top: 14px;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  font-family: var(--title-font);
+  font-size: 18px;
+}
+
+.fd-cart-summary-row.is-total strong {
+  font-size: 24px;
+}
+
+.fd-cart-summary-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fd-cart-summary-actions .vs-btn,
+.fd-cart-summary-actions .fd-whatsapp-btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+/* ---------- Cart page responsive ---------- */
+@media (max-width: 991px) {
+  .fd-cart-summary {
+    margin-top: 8px;
+  }
+}
+
+/* ==========================================================================
+   STAGE 5 — CHECKOUT PAGE (checkout.html #fd-checkout-wrap only).
+   New layout classes only (.fd-checkout-*, .fd-field, .fd-check-radio).
+   Reuses exactly: template .form-control + pill rounding, .fd-pdp-note,
+   .fd-cart-summary rows/actions, .vs-btn / .fd-whatsapp-btn /
+   .fd-ghost-btn, .fd-shop-state, tokens and breakpoints.
+   ========================================================================== */
+
+.fd-checkout-card {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius);
+  padding: 26px 24px;
+  margin: 0 0 20px 0;
+  min-width: 0;
+}
+
+.fd-checkout-card > legend {
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 20px;
+  padding: 0 10px;
+  margin-left: -10px;
+}
+
+.fd-checkout-card .fd-pdp-note {
+  margin: 4px 0 0 0;
+}
+
+.fd-field {
+  margin-bottom: 16px;
+}
+
+.fd-field:last-child {
+  margin-bottom: 0;
+}
+
+.fd-field > label {
+  display: block;
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.fd-optional {
+  font-family: var(--body-font, inherit);
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--body-color);
+}
+
+/* Harvest Castle pill inputs on top of the template .form-control. */
+#fd-checkout-form .form-control {
+  border-radius: 9999px;
+  margin-bottom: 0;
+  min-height: 50px;
+}
+
+#fd-checkout-form textarea.form-control {
+  border-radius: var(--fd-radius);
+  height: auto;
+  min-height: 96px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  resize: vertical;
+}
+
+#fd-checkout-form .form-control[aria-invalid="true"] {
+  border-color: var(--error-color);
+}
+
+.fd-field-error {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--error-color);
+  margin-top: 6px;
+}
+
+.fd-field-error[hidden] {
+  display: none;
+}
+
+/* Delivery toggle groups own their rhythm explicitly (flex gap instead of
+   fragile margin collapsing), so the instructions label below always sits
+   exactly one field-gap down — on-campus and off-campus, every viewport. */
+#fd-campus-fields,
+#fd-offcampus-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+#fd-campus-fields .fd-field,
+#fd-offcampus-fields .fd-field {
+  margin-bottom: 0;
+}
+
+/* ---------- Radio rows (delivery mode + ordering method) ---------- */
+.fd-check-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.fd-check-radio {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--fd-radius);
+  padding: 14px 16px;
+  margin: 0;
+  cursor: pointer;
+  transition: border-color ease 0.4s;
+}
+
+.fd-check-radio:hover {
+  border-color: var(--secondary-color);
+}
+
+.fd-check-radio input {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  margin-top: 2px;
+  accent-color: var(--secondary-color);
+}
+
+.fd-check-radio span strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 16px;
+}
+
+.fd-check-radio span small {
+  display: block;
+  font-size: 13.5px;
+  color: var(--body-color);
+}
+
+.fd-check-radio:has(input:checked) {
+  border-color: var(--secondary-color);
+  background: var(--smoke-color);
+}
+
+.fd-check-radio:has(input:focus-visible) {
+  outline: 3px solid var(--secondary-color);
+  outline-offset: 2px;
+}
+
+/* ---------- Summary lines + actions ---------- */
+.fd-checkout-lines {
+  list-style: none;
+  margin: 0 0 14px 0;
+  padding: 0 0 14px 0;
+  border-bottom: 1px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fd-checkout-lines li {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.fd-checkout-lines li > div strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.fd-checkout-lines li > div span {
+  display: block;
+  font-size: 13px;
+  color: var(--body-color);
+}
+
+.fd-checkout-lines li > strong {
+  flex: 0 0 auto;
+  font-family: var(--title-font);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.fd-checkout-edit {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.fd-checkout-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.fd-checkout-actions .vs-btn,
+.fd-checkout-actions .fd-whatsapp-btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+.fd-checkout-status {
+  background: var(--smoke-color);
+  border-radius: var(--fd-radius);
+  padding: 14px 18px;
+  font-size: 14px;
+  margin: 0 0 16px 0;
+}
+
+.fd-checkout-status[hidden] {
+  display: none;
+}
+
+.fd-checkout-status.is-error {
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   STAGE 6 — ORDER CONFIRMATION (order-confirmation.html only).
+   New layout classes only (.fd-confirm-*). Reuses exactly: .fd-badge
+   tones, .fd-checkout-lines, .fd-cart-summary-row, .fd-pdp-facts,
+   .fd-pdp-note, .fd-shop-state, .vs-btn / .fd-whatsapp-btn /
+   .fd-ghost-btn, tokens and breakpoints.
+   ========================================================================== */
+
+.fd-confirm-card {
+  background: var(--white-color);
+  border: 1px solid #ececec;
+  border-radius: var(--fd-radius);
+  padding: 34px 30px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.fd-confirm-head {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.fd-confirm-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 26px;
+}
+
+.fd-confirm-icon.is-pending {
+  color: #8a6d00;
+}
+
+.fd-confirm-icon.is-bad {
+  color: var(--error-color);
+}
+
+.fd-confirm-head .fd-badge {
+  position: static;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.fd-confirm-head h2 {
+  font-size: 28px;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.fd-confirm-lead {
+  font-size: 16px;
+  margin-bottom: 0;
+  max-width: 56ch;
+}
+
+.fd-confirm-ref {
+  font-size: 15px;
+  margin: 16px 0 0 0;
+}
+
+.fd-confirm-ref strong {
+  font-family: var(--title-font);
+  letter-spacing: 0.04em;
+}
+
+.fd-confirm-card h3 {
+  font-size: 20px;
+  margin: 26px 0 12px 0;
+}
+
+.fd-confirm-card .fd-pdp-note {
+  margin: 4px 0 0 0;
+}
+
+.fd-confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.fd-confirm-actions .vs-btn,
+.fd-confirm-actions .fd-whatsapp-btn,
+.fd-confirm-actions .fd-ghost-btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+}
+
+/* ==========================================================================
+   STAGE 8 — CONTACT FAQ (contact.html .fd-faq only).
+   Behavior comes from the already-loaded Bootstrap 5 Collapse plugin via
+   data-bs-toggle — no new JavaScript. These two rules only pull the
+   template accordion into the Harvest Castle radius/spacing system.
+   ========================================================================== */
+.fd-faq .accordion-item {
+  border-radius: var(--fd-radius);
+  overflow: hidden;
+}
+
+@media (max-width: 767px) {
+  .fd-faq .accordion-button {
+    padding: 18px 16px 18px 52px;
+    font-size: 17px;
+  }
+
+  .fd-faq .accordion-button::after {
+    left: 20px;
+  }
+
+  .fd-faq .accordion-body {
+    padding: 16px 18px;
+  }
+}
+
+/* ==========================================================================
+   STAGE 11 — 404 PAGE (404.html .fd-404-* only).
+   Built on .fd-shop-state; produce trio reuses approved product imagery.
+   Buttons reuse .vs-btn / .fd-ghost-btn exactly.
+   ========================================================================== */
+.fd-404-state {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.fd-404-code {
+  font-family: var(--title-font);
+  font-weight: 700;
+  font-size: 76px;
+  line-height: 1;
+  color: var(--secondary-color);
+  margin-bottom: 6px;
+}
+
+.fd-404-produce {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.fd-404-produce img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background: var(--smoke-color);
+  border-radius: 50%;
+  padding: 8px;
+}
+
+.fd-404-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0 0 0;
+}
+
+.fd-404-help {
+  margin: 16px 0 0 0;
+  font-size: 14px;
+}
+
+@media (max-width: 767px) {
+  .fd-404-code {
+    font-size: 60px;
+  }
+
+  .fd-404-produce img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .fd-404-actions .vs-btn,
+  .fd-404-actions .fd-ghost-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ---------- Checkout responsive ---------- */
+@media (max-width: 767px) {
+  .fd-confirm-card {
+    padding: 24px 18px;
+  }
+
+  .fd-confirm-head {
+    gap: 14px;
+  }
+
+  .fd-confirm-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 21px;
+  }
+
+  .fd-confirm-head h2 {
+    font-size: 22px;
+  }
+
+  .fd-confirm-lead {
+    font-size: 15px;
+  }
+
+  .fd-checkout-card {
+    padding: 22px 18px;
+  }
+
+  .fd-checkout-card > legend {
+    font-size: 18px;
+  }
+
+  .fd-check-radio {
+    padding: 12px 14px;
+  }
+
+  .fd-cartpage-item {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .fd-cartpage-img {
+    width: 72px;
+    height: 72px;
+  }
+
+  .fd-cartpage-id strong {
+    font-size: 15px;
+  }
+
+  .fd-cartpage-id > span {
+    font-size: 12.5px;
+  }
+
+  .fd-cartpage-line {
+    font-size: 16px;
+  }
+
+  .fd-cart-summary {
+    padding: 22px 18px;
+  }
+
+  .fd-cart-summary h2 {
+    font-size: 20px;
+  }
+}
+
+/* ---------- Storefront mobile nav polish ----------
+   1. No chevron arrows: the menu holds plain links (no submenus
+      anywhere), so the template's decorative a:before arrow is removed.
+   2. No visible scrollbar: scrolling still works exactly as before
+      (overflow stays on the template rule); only the black bar chrome
+      is hidden — Firefox/IE via properties, WebKit via display:none.
+   3. Logo aligns with links: the logo block takes the same horizontal
+      inset as the link list (40px, 20px on very small phones), so the
+      wordmark's left edge sits exactly above the link text. */
+.vs-mobile-menu {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.vs-mobile-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.vs-mobile-menu ul li a:before {
+  content: none;
+}
+
+.vs-menu-wrapper .mobile-logo {
+  text-align: left;
+  padding: 40px 40px 0 40px;
+}
+
+.vs-menu-wrapper .mobile-logo .fd-logo img.oto-logo-img {
+  height: 50px;
+  width: auto;
+  max-width: 130px;
+  margin-right: 0;
+}
+
+@media (max-width: 400px) {
+  .vs-menu-wrapper .mobile-logo {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* ==========================================================================
+   STAGE 12 — CONTACT FORM (contact.html #message only).
+   Reuses exactly: .fd-location-card (container), .fd-field / .fd-field-error
+   / .fd-optional (fields), template .form-control + pill rounding (same as
+   #fd-checkout-form), .fd-whatsapp-btn / .vs-btn (actions), tokens and
+   breakpoints. New selectors are scoped to #fd-contact-form /
+   .fd-contact-* so no other page or form is affected.
+   ========================================================================== */
+
+/* Form card owns its rhythm with flex gap (same approach as the checkout
+   delivery groups), so label/input spacing stays even at every width. */
+#fd-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+#fd-contact-form .fd-field {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+/* Pill inputs mirror the checkout form; textarea keeps the card radius. */
+#fd-contact-form .form-control {
+  border-radius: 9999px;
+  margin-bottom: 0;
+  min-height: 50px;
+  width: 100%;
+  max-width: 100%;
+}
+
+#fd-contact-form textarea.form-control {
+  border-radius: var(--fd-radius);
+  height: auto;
+  min-height: 140px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  resize: vertical;
+}
+
+#fd-contact-form .form-control[aria-invalid="true"] {
+  border-color: var(--error-color);
+}
+
+/* Inline status mirrors .fd-checkout-status (same smoke/error language). */
+.fd-contact-status {
+  background: var(--smoke-color);
+  border-radius: var(--fd-radius);
+  padding: 14px 18px;
+  font-size: 14px;
+  margin: 0;
+}
+
+.fd-contact-status[hidden] {
+  display: none;
+}
+
+.fd-contact-status.is-error {
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.fd-contact-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fd-contact-actions .vs-btn {
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  margin: 0;
+  min-height: 50px;
+}
+
+.fd-contact-actions .vs-btn:disabled,
+.fd-contact-actions .vs-btn[aria-disabled="true"] {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+/* Info column: same list + button rhythm as other contact cards. */
+#message .fd-location-card ul {
+  margin: 0 0 22px 0;
+  padding-left: 20px;
+}
+
+#message .fd-location-card .fd-whatsapp-btn {
+  max-width: 100%;
+}
+
+/* ---------- Contact responsive ---------- */
+@media (max-width: 767px) {
+  .fd-contact-card {
+    padding: 26px 20px;
+  }
+
+  #fd-contact-form textarea.form-control {
+    min-height: 120px;
+  }
+
+  #message .fd-location-card .fd-whatsapp-btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ---------- Scroll-to-top progress ring ----------
+   JS (wireScrollProgress in fresh-direct.js) injects an
+   .fd-scroll-progress SVG into each .scrollToTop anchor in place — no
+   markup changes. The ring fills with page-scroll progress: empty at
+   the top, a full circle at the bottom, shrinking back on scroll up.
+   Existing show/hide + click-to-top behavior (main.js) is untouched.
+   Follows --btn-size so the ring tracks the 40px mobile button too. */
+.scrollToTop .fd-scroll-progress {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--btn-size, 50px) + 14px);
+  height: calc(var(--btn-size, 50px) + 14px);
+  transform: translate(-50%, -50%) rotate(-90deg);
+  z-index: 3;
+  pointer-events: none;
+}
+
+.fd-scroll-progress-track {
+  fill: none;
+  stroke: var(--secondary-color);
+  stroke-width: 4;
+  opacity: 0.28;
+}
+
+.fd-scroll-progress-bar {
+  fill: none;
+  stroke: var(--secondary-color);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  transition: stroke-dashoffset 0.15s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fd-scroll-progress-bar {
+    transition: none;
+  }
+}
+
+/* ==========================================================================
+   SMALL-SCREEN SAFETY LAYER — responsive hardening, no redesign.
+   Hierarchy: normal mobile (existing rules above) -> small (<=575px) ->
+   very small (<=360px) -> smallest realistic phones (<=330px, covers 320px).
+   Every rule below is layout/spacing/sizing only: typography scale, brand
+   colors, dark-mode palette, radius, animations and component designs are
+   untouched. Touch targets never drop below 40px.
+   Root causes addressed:
+     - mobile header: 3 fixed controls + gaps + full wordmark exceeded
+       ~296px of usable width at 320px viewports;
+     - fixed .vs-btn padding / 2-col grid gutters left cards with ~112px
+       of content at 320px;
+     - toolbar / PDP / cart / checkout rows had no <=360px reflow step.
+   ========================================================================== */
+
+/* ---------- A. Shared overflow guards (all viewports, no visual change) --
+   min-width:0 lets flex/grid children shrink instead of forcing page-wide
+   overflow; long names/refs/errors wrap inside their containers. */
+.vs-header .header-logo,
+.vs-header .menu-area .col,
+.fd-header-actions,
+.fd-shop-meta-row,
+.fd-cartpage-top,
+.fd-confirm-head,
+.fd-checkout-lines li > div {
+  min-width: 0;
+}
+
+.vs-btn,
+.fd-whatsapp-btn,
+.fd-ghost-btn,
+.fd-view-cart-btn,
+.fd-cat-pill,
+.fd-variant-btn,
+.fd-check-radio span,
+.fd-field-error,
+.fd-checkout-status,
+.fd-contact-status,
+.fd-confirm-ref,
+.fd-cartpage-id strong,
+.product-style1 .product-title {
+  overflow-wrap: break-word;
+}
+
+.product-style1 .product-img img,
+.fd-pdp-main-img img,
+.fd-cartpage-img img,
+.fd-404-produce img {
+  max-width: 100%;
+}
+
+/* Header controls must never shrink into each other: the logo column is
+   the only flexible item; every button keeps its size and spacing. */
+.fd-header-actions {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.fd-header-actions .icon-btn,
+.fd-header-actions .vs-menu-toggle {
+  flex: 0 0 auto;
+}
+
+.vs-header .header-logo .fd-logo {
+  max-width: 100%;
+}
+
+/* ---------- B. Small mobile (<=575px): gain room without going tiny ---- */
+@media (max-width: 575px) {
+  /* Header: one calm step down; controls stay >=42px.
+     The Bootstrap .col-auto gutters (12px each side per column) cost more
+     than the buttons at this width, so they step down first — the logo
+     and touch targets are the last things to shrink. */
+  .vs-header .menu-area > .container > .row > .col-auto {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .fd-header-actions {
+    gap: 10px;
+  }
+
+  .fd-header-actions .icon-btn {
+    --icon-size: 42px;
+  }
+
+  .header-layout1 .menu-area {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .vs-header .vs-menu-toggle {
+    width: 44px;
+    height: 44px;
+    font-size: 21px;
+  }
+
+  .fd-cart-btn .badge {
+    min-width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  /* Buttons: slightly narrower pill padding; height/comfort unchanged. */
+  .vs-btn {
+    padding: 16px 24px;
+    font-size: 15px;
+    max-width: 100%;
+  }
+
+  .fd-whatsapp-btn,
+  .fd-ghost-btn,
+  .fd-view-cart-btn {
+    padding: 11px 18px;
+    font-size: 14px;
+    max-width: 100%;
+  }
+
+  /* Product grids: reclaim 8px of gutter so 2-col cards keep content. */
+  #fd-home-grid,
+  #fd-shop-grid,
+  #fd-pdp-related {
+    --bs-gutter-x: 1rem;
+  }
+
+  /* Shop toolbar meta row: count owns its row; controls share the next. */
+  .fd-shop-meta-row {
+    gap: 8px 10px;
+  }
+
+  .fd-view-toggle {
+    gap: 6px;
+  }
+
+  /* Cart / checkout / confirm: keep card air, reduce outer padding only. */
+  .fd-cartpage-item {
+    padding: 14px;
+  }
+
+  .fd-checkout-card {
+    padding: 22px 18px;
+  }
+
+  .fd-confirm-card {
+    padding: 26px 20px;
+  }
+}
+
+/* ---------- C. Narrow phones (<=400px): header breathing room ---------- */
+@media (max-width: 400px) {
+  .vs-header .menu-area > .container > .row > .col-auto {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .fd-header-actions {
+    gap: 8px;
+  }
+
+  .fd-header-actions .icon-btn {
+    --icon-size: 40px;
+  }
+
+  .vs-header .vs-menu-toggle {
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
+  .fd-logo {
+    font-size: 19px;
+  }
+
+  .fd-logo i {
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+    margin-right: 8px;
+  }
+
+  .fd-logo img.fd-logo-img {
+    height: 38px;
+    max-width: 100px;
+    margin-right: 0;
+  }
+
+  #fd-home-grid,
+  #fd-shop-grid,
+  #fd-pdp-related {
+    --bs-gutter-x: 0.75rem;
+  }
+
+  .fd-shop-toolbar {
+    padding: 12px;
+  }
+
+  .fd-pdp-name {
+    font-size: 24px;
+  }
+
+  .fd-pdp-price {
+    font-size: 24px;
+  }
+}
+
+/* ---------- D. Very small phones (<=360px): targeted reflow ------------- */
+@media (max-width: 360px) {
+  .fd-logo {
+    font-size: 18px;
+  }
+
+  .vs-btn {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+
+  /* Grid cards: tighter inner padding/gaps; type steps already set above. */
+  #featured .product-style1,
+  #fd-shop-grid .product-style1,
+  #fd-home-grid .product-style1,
+  #fd-pdp-related .product-style1 {
+    padding: 10px 8px 12px;
+  }
+
+  #featured .fd-buy-row,
+  #fd-shop-grid .fd-buy-row,
+  #fd-home-grid .fd-buy-row,
+  #fd-pdp-related .fd-buy-row {
+    gap: 6px;
+  }
+
+  #featured .product-style1 .product-img img,
+  #fd-shop-grid .product-style1 .product-img img,
+  #fd-home-grid .product-style1 .product-img img,
+  #fd-pdp-related .product-style1 .product-img img {
+    max-height: 110px;
+  }
+
+  /* List view: smaller thumb so text keeps a readable column. */
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img {
+    flex-basis: 80px;
+    width: 80px;
+    height: 88px;
+  }
+
+  /* PDP: keep stepper + buttons comfortable but compact. */
+  .fd-pdp-gallery {
+    padding: 16px 12px;
+  }
+
+  .fd-variant-btn {
+    padding: 10px 16px;
+    min-height: 44px;
+  }
+
+  .fd-pdp-qty button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .fd-pdp-facts {
+    padding: 16px;
+  }
+
+  /* Cart page: smaller thumb, wrapping top row so price never collides. */
+  .fd-cartpage-img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .fd-cartpage-top {
+    flex-wrap: wrap;
+  }
+
+  .fd-cartpage-line {
+    font-size: 15px;
+  }
+
+  /* Checkout: inputs stay >=48px tall; errors wrap naturally. */
+  #fd-checkout-form .form-control,
+  #fd-contact-form .form-control {
+    min-height: 48px;
+  }
+
+  .fd-check-radio span {
+    min-width: 0;
+  }
+
+  .fd-checkout-lines li > strong {
+    white-space: normal;
+    text-align: right;
+  }
+
+  /* Confirmation: smaller icon/headline, wrapping reference. */
+  .fd-confirm-head h2 {
+    font-size: 20px;
+  }
+
+  .fd-confirm-ref {
+    overflow-wrap: anywhere;
+  }
+
+  /* Category cells + footer contact lines wrap safely at this width. */
+  .fd-cat-grid {
+    gap: 20px 10px;
+  }
+
+  .fd-footer-contact li {
+    overflow-wrap: break-word;
+  }
+}
+
+/* ---------- E. Smallest realistic phones (<=330px, covers 320px) --------
+   Final safety net: only spacing/flex behavior changes. Controls stay
+   >=40px; nothing becomes tiny — layouts reflow instead. */
+@media (max-width: 330px) {
+  /* Gutters step down last: container 10px, header columns 4px. Combined
+     with the 40px controls + 6px gaps + 17px wordmark, the full header row
+     (logo + 3 controls) fits 320px viewports with room to spare. */
+  .vs-header .menu-area > .container {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .vs-header .menu-area > .container > .row > .col-auto {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .fd-header-actions {
+    gap: 6px;
+  }
+
+  /* The shared 44px min-width overrides the 40px --icon-size at this
+     width; pin the icon buttons to 40px so the row stays inside 320px. */
+  .fd-header-actions .icon-btn {
+    width: 40px;
+    min-width: 40px;
+  }
+
+  .fd-logo {
+    font-size: 17px;
+  }
+
+  .fd-logo img.fd-logo-img {
+    height: 34px;
+    max-width: 90px;
+    margin-right: 0;
+  }
+
+  .fd-logo i {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+    margin-right: 6px;
+  }
+
+  .vs-header .vs-menu-toggle {
+    width: 40px;
+    height: 40px;
+    font-size: 19px;
+  }
+
+  /* Grid cards keep 2 columns: shave padding, never the touch targets. */
+  #featured .fd-add-btn,
+  #fd-shop-grid .fd-add-btn,
+  #fd-home-grid .fd-add-btn,
+  #fd-pdp-related .fd-add-btn {
+    padding: 9px 8px;
+    min-height: 40px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 {
+    gap: 8px;
+    padding: 10px 8px;
+  }
+
+  :is(#fd-shop-grid, #fd-home-grid, #fd-pdp-related).is-list .product-style1 .product-img {
+    flex-basis: 76px;
+    width: 76px;
+    height: 84px;
+  }
+
+  .fd-shop-meta-row .fd-shop-select {
+    flex: 1 1 100%;
+  }
+
+  .fd-shop-meta-row .fd-shop-select .form-select {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fd-cartpage-item {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .fd-checkout-card,
+  .fd-cart-summary,
+  .fd-confirm-card {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .fd-pdp-name {
+    font-size: 22px;
+  }
+}
+
+/* ---------- Desktop nav fit: links stay on one row ----------------------
+   Below 1300px the item gutters step from 16px to 10px so the menu never
+   wraps mid-header. Typography, colors and behavior are untouched. */
+@media (max-width: 1300px) {
+  .header-layout1 .main-menu > ul > li {
+    margin: 0 10px;
+  }
+}
+
+/* ---------- Compact desktop/tablet header (lg band only) ----------------
+   The desktop nav appears at >=992px (d-lg-block), but between 992px and
+   1200px the 960px container cannot fit the logo + six long nav labels +
+   the full "Order on WhatsApp" button + toggle/cart in one calm row.
+   This band keeps the desktop nav on one row by switching the header
+   WhatsApp control to icon-only and reclaiming a little horizontal
+   padding. Large desktop (>=1200px) and mobile (<992px) are untouched.
+   The label text is visually hidden with an sr-only clip (not
+   display:none), so the link keeps its accessible name and destination. */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .header-layout1 .header-icons.fd-header-actions .fd-whatsapp-btn {
+    position: relative;
+    padding: 12px 14px;
+  }
+
+  .header-layout1 .header-icons.fd-header-actions .fd-whatsapp-btn span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Slightly reduced horizontal padding so the nav has more usable room:
+     outer menu shell, container gutters, middle column and action gaps. */
+  .header-layout1 .menu-area {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .header-layout1 .menu-area > .container {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .header-layout1 .menu-area > .container > .row > .col {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .header-layout1 .header-icons.fd-header-actions {
+    gap: 10px;
+  }
+
+  .header-layout1 .main-menu > ul > li {
+    margin: 0 8px;
+  }
+
+  .header-layout1 .main-menu > ul {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- F. Short mobile heights: reduce vertical air only ----------- */
+@media (max-height: 500px) and (max-width: 767px) {
+  .hero-layout2 .hero-slide {
+    padding: 40px 0 8px;
+  }
+
+  #fd-main .space {
+    padding-top: 36px;
+    padding-bottom: 36px;
+  }
+}
+
+/* ==========================================================================
+   FRESHDRECT NAV ACTIVE STATE + FOOTER DIVIDERS + SOLID BUTTONS
+   - Current-page nav links highlight in theme green (--secondary-color)
+     via aria-current="page" (Django-ready: set aria-current per page).
+   - Footer top contact cells: border-right dividers on desktop (none on
+     last child), border-bottom stacking dividers on mobile.
+   - .vs-btn becomes a solid orange button (--theme-color) for contrast.
+   ========================================================================== */
+
+/* Active nav link: desktop + mobile, current page in Harvest Castle green. */
+.main-menu.menu-style1 > ul > li > a[aria-current="page"],
+.main-menu a[aria-current="page"] {
+  color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.vs-mobile-menu ul li a[aria-current="page"] {
+  color: var(--secondary-color) !important;
+  font-weight: 700;
+}
+
+/* Solid primary buttons: orange fill, readable text, same pill shape. */
+.vs-btn {
+  background-color: var(--theme-color);
+  border-color: var(--theme-color);
+  color: var(--white-color);
+}
+
+.vs-btn:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/* Category cards wrapped in a full-card link. */
+.fd-cat-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: var(--fd-radius);
+}
+
+.fd-cat-card-link:hover .categorie-title,
+.fd-cat-card-link:focus-visible .categorie-title {
+  color: var(--secondary-color);
+}
+
+/* Footer top dividers: same 3px divider as mobile, vertical on desktop.
+   Mobile stacks the cells so the divider sits under each cell; desktop
+   places the cells side by side so the same divider sits to the right
+   of each cell (none on the last child). */
+@media (min-width: 992px) {
+  .footer-wrapper .footer-top .row > div {
+    border-right: 3px solid rgba(255, 217, 0, 0.3215686275);
+    padding-right: 30px;
+  }
+
+  .footer-wrapper .footer-top .row > div:last-child {
+    border-right: none;
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+  }
+
+  .footer-wrapper .footer-top .media-style1 {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .footer-wrapper .footer-top .row > div {
+    border-right: none;
+  }
+
+  .footer-wrapper .footer-top .media-style1 {
+    border-bottom: 3px solid rgba(255, 217, 0, 0.3215686275);
+  }
+
+  .footer-wrapper .footer-top .row > div:last-child .media-style1 {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+}
+
+/* Shop / category pagination (Django-ready). */
+.fd-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.fd-page-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: var(--white-color);
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all ease 0.3s;
+}
+
+a.fd-page-link:hover {
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.fd-page-link.is-current {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/* The current page keeps white text on green when hovered — never
+   green-on-green. */
+a.fd-page-link.is-current:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+.fd-page-link.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Dark mode follows the shop pagination tokens so page numbers stay
+   readable on dark surfaces (storefront + admin share this block). */
+html[data-theme="dark"] .fd-page-link {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+  color: var(--fd-text);
+}
+
+html[data-theme="dark"] a.fd-page-link:hover {
+  border-color: var(--fd-brand-green-text);
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .fd-page-link.is-current,
+html[data-theme="dark"] a.fd-page-link.is-current:hover {
+  background: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: var(--white-color);
+}
+
+/* Admin delete affordance + modal (scoped, reuses tokens). */
+.fd-admin .fd-prod-btn.is-danger {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.fd-admin a.fd-prod-btn.is-danger:hover,
+.fd-admin button.fd-prod-btn.is-danger:hover {
+  background: var(--error-color);
+  border-color: var(--error-color);
+  color: var(--white-color);
+}
+
+.fd-modal[hidden] {
+  display: none;
+}
+
+.fd-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.fd-modal-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.fd-modal-card {
+  position: relative;
+  width: min(440px, 100%);
+  background: var(--white-color);
+  border-radius: 16px;
+  padding: 26px 24px;
+  text-align: center;
+}
+
+.fd-modal-card h2 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+
+.fd-modal-card p {
+  font-size: 14.5px;
+  margin: 0 0 20px 0;
+}
+
+.fd-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.fd-modal-actions .vs-btn.is-danger-btn {
+  background-color: var(--error-color);
+  border-color: var(--error-color);
+  color: var(--white-color);
+}

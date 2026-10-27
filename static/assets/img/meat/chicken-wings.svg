@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of fresh chicken wings">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f7d9a4"/><stop offset="1" stop-color="#dfa961"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="290" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <ellipse cx="240" cy="258" rx="180" ry="52" fill="#fffdf8"/>
+  <g fill="url(#skin)" stroke="#cb924f" stroke-width="4" stroke-linejoin="round">
+    <path d="M104 222c-22-6-32-28-22-46 10-18 32-22 48-10l54 42c14 11 16 30 4 42-12 12-31 10-44-2Z"/>
+    <path d="M194 150c-14-18-8-42 12-50 20-8 40 4 44 24l10 66c3 18-10 34-28 34-18 0-30-14-30-32Z"/>
+    <path d="M300 218c22-6 32-28 22-46-10-18-32-22-48-10l-54 42c-14 11-16 30-4 42 12 12 31 10 44-2Z"/>
+  </g>
+  <path d="M112 204c8-10 20-12 30-6M206 132c10 2 18 10 20 20M292 200c-8-10-20-12-30-6" fill="none" stroke="#fae7c5" stroke-width="5" stroke-linecap="round"/>
+  <path d="M88 288c20-18 42-19 60-6M344 284c18-13 34-12 48-3" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="358" cy="300" r="7" fill="#8a3f3f"/><circle cx="376" cy="292" r="6" fill="#a24b46"/>
+</svg>

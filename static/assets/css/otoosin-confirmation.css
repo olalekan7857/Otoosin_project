@@ -1,0 +1,517 @@
+/* ==========================================================================
+   O'Toosin Farms — Order confirmation page (order-confirmation.html only)
+   Reuses the shared Shop header/footer, FreshDirect tokens and the existing
+   theme layer. Page-level composition for the saved checkout order.
+   ========================================================================== */
+
+.otoosin-confirmation .fd-shop-intro.oto-confirm-intro {
+  background: var(--smoke-color);
+  padding-bottom: 38px;
+}
+
+.oto-confirm-intro .sec-title {
+  margin-bottom: 10px;
+}
+
+.oto-confirm-intro p:last-child {
+  max-width: 660px;
+  margin-bottom: 0;
+  color: var(--body-color);
+}
+
+.oto-confirm-section {
+  padding: 34px 0 72px;
+}
+
+.oto-confirm-card {
+  padding: 28px 28px 26px;
+  border: 1px solid #ececec;
+  border-radius: 24px;
+  background: var(--white-color);
+  box-shadow: 0 20px 50px rgba(6, 65, 29, 0.06);
+}
+
+/* ---------- Hero ---------- */
+.oto-confirm-hero {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding-bottom: 24px;
+  margin-bottom: 26px;
+  border-bottom: 1px solid #ececec;
+}
+
+.oto-confirm-hero-icon {
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-size: 22px;
+}
+
+.oto-confirm-hero-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.oto-confirm-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.oto-confirm-hero h2 {
+  margin: 9px 0 6px;
+  font-size: clamp(26px, 3vw, 34px);
+  line-height: 1.15;
+}
+
+.oto-confirm-lead {
+  max-width: 620px;
+  margin-bottom: 14px;
+  color: var(--body-color);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+.oto-confirm-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 28px;
+  margin: 0;
+}
+
+.oto-confirm-meta-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.oto-confirm-meta-row dt {
+  margin: 0;
+  color: var(--body-color);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.oto-confirm-meta-row dd {
+  margin: 0;
+  font-family: var(--title-font);
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Blocks ---------- */
+.oto-confirm-block {
+  margin-bottom: 26px;
+}
+
+.oto-confirm-block:last-child {
+  margin-bottom: 0;
+}
+
+.oto-confirm-block-title {
+  margin: 0 0 14px;
+  font-size: 19px;
+}
+
+/* ---------- Delivery & pickup ---------- */
+.oto-confirm-method {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #ececec;
+  border-radius: 18px;
+  background: var(--smoke-color);
+}
+
+.oto-confirm-method-icon {
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: var(--secondary-color);
+  color: var(--white-color);
+  font-size: 17px;
+}
+
+.oto-confirm-method-copy {
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.oto-confirm-method-copy strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.oto-confirm-method-note {
+  display: block;
+  margin-top: 3px;
+  color: var(--body-color);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.oto-confirm-method-details {
+  flex: 1 1 100%;
+  padding-top: 14px;
+  margin-top: 2px;
+  border-top: 1px solid #e4e4e4;
+}
+
+.oto-confirm-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.oto-confirm-row {
+  display: grid;
+  grid-template-columns: minmax(118px, 150px) 1fr;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.oto-confirm-row-label {
+  color: var(--body-color);
+}
+
+.oto-confirm-row-value {
+  font-family: var(--title-font);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Items ---------- */
+.oto-confirm-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.oto-confirm-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ececec;
+}
+
+.oto-confirm-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.oto-confirm-thumb {
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px solid #ececec;
+  border-radius: 15px;
+  background: var(--smoke-color);
+  color: var(--secondary-color);
+  font-family: var(--title-font);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.oto-confirm-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.oto-confirm-item-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.oto-confirm-item-name {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 15.5px;
+  line-height: 1.35;
+}
+
+.oto-confirm-item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 5px;
+}
+
+.oto-confirm-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--smoke-color);
+  color: var(--body-color);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.oto-confirm-tag.is-state {
+  color: var(--secondary-color);
+}
+
+.oto-confirm-item-qty {
+  display: block;
+  margin-top: 5px;
+  color: var(--body-color);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.oto-confirm-item-total {
+  flex: 0 0 auto;
+  font-family: var(--title-font);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+/* ---------- Totals ---------- */
+.oto-confirm-summary {
+  padding: 20px 20px 18px;
+  border-radius: 20px;
+  background: var(--smoke-color);
+}
+
+.oto-confirm-summary .oto-confirm-block-title {
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+
+.oto-confirm-total-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 10px;
+  font-size: 14.5px;
+}
+
+.oto-confirm-total-row strong {
+  font-family: var(--title-font);
+  font-size: 16px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.oto-confirm-total-row.is-total {
+  align-items: flex-start;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #e0e0e0;
+  margin-bottom: 0;
+}
+
+.oto-confirm-total-row.is-total span {
+  max-width: 58%;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.oto-confirm-total-row.is-total strong {
+  color: var(--secondary-color);
+  font-size: 25px;
+}
+
+.oto-confirm-summary-note {
+  margin: 13px 0 0;
+  color: var(--body-color);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+/* ---------- Next steps + actions ---------- */
+.oto-confirm-steps {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  color: var(--body-color);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.oto-confirm-steps li::marker {
+  color: var(--secondary-color);
+  font-weight: 700;
+}
+
+.oto-confirm-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.oto-confirm-actions .vs-btn {
+  width: 100%;
+  min-height: 54px;
+  justify-content: center;
+  text-align: center;
+}
+
+.oto-confirm-actions .fd-ghost-btn {
+  width: 100%;
+  min-height: 48px;
+}
+
+/* ---------- Fallback ---------- */
+.oto-confirm-fallback {
+  margin: 0 auto;
+}
+
+.oto-confirm-fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+/* ---------- Dark theme ---------- */
+html[data-theme="dark"] .oto-confirm-card {
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+  box-shadow: none;
+}
+
+html[data-theme="dark"] .oto-confirm-hero,
+html[data-theme="dark"] .oto-confirm-item,
+html[data-theme="dark"] .oto-confirm-method-details,
+html[data-theme="dark"] .oto-confirm-total-row.is-total {
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-confirm-badge,
+html[data-theme="dark"] .oto-confirm-method,
+html[data-theme="dark"] .oto-confirm-summary,
+html[data-theme="dark"] .oto-confirm-thumb,
+html[data-theme="dark"] .oto-confirm-tag {
+  background: var(--fd-surface-2);
+}
+
+html[data-theme="dark"] .oto-confirm-thumb {
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-confirm-hero-icon,
+html[data-theme="dark"] .oto-confirm-method-icon {
+  background: var(--fd-brand-green-text);
+  color: var(--fd-bg);
+}
+
+html[data-theme="dark"] .oto-confirm-badge,
+html[data-theme="dark"] .oto-confirm-tag.is-state,
+html[data-theme="dark"] .oto-confirm-total-row.is-total strong,
+html[data-theme="dark"] .oto-confirm-thumb.is-empty {
+  color: var(--fd-brand-green-text);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991px) {
+  .oto-confirm-summary {
+    position: static;
+  }
+
+  .oto-confirm-section {
+    padding-bottom: 64px;
+  }
+}
+
+@media (max-width: 575px) {
+  .oto-confirm-section {
+    padding: 24px 0 58px;
+  }
+
+  .oto-confirm-card {
+    padding: 22px 18px 20px;
+    border-radius: 19px;
+  }
+
+  .oto-confirm-hero {
+    gap: 13px;
+    padding-bottom: 20px;
+    margin-bottom: 22px;
+  }
+
+  .oto-confirm-hero-icon {
+    flex-basis: 46px;
+    width: 46px;
+    height: 46px;
+    font-size: 18px;
+  }
+
+  .oto-confirm-hero h2 {
+    font-size: 25px;
+  }
+
+  .oto-confirm-row {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .oto-confirm-row-label {
+    font-size: 12.5px;
+  }
+
+  .oto-confirm-item {
+    flex-wrap: wrap;
+  }
+
+  .oto-confirm-thumb {
+    flex-basis: 56px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .oto-confirm-item-total {
+    margin-left: auto;
+  }
+
+  .oto-confirm-total-row.is-total strong {
+    font-size: 22px;
+  }
+
+  .oto-confirm-fallback-actions .vs-btn,
+  .oto-confirm-fallback-actions .fd-ghost-btn {
+    width: 100%;
+  }
+}

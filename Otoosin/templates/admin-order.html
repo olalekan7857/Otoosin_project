@@ -1,0 +1,298 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Order Details | O’TOOSIN Farms Admin</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <!-- Admin is private: never index admin pages or expose order data. -->
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="description" content="Private O’TOOSIN Farms order details.">
+
+    <!-- Mobile Specific Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Favicons - Place favicon.ico in the root directory -->
+    <link rel="shortcut icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+    <link rel="icon" href="assets/img/harvest_castle/of_favicon.png" type="image/png">
+
+    <!--==============================
+	  Google Fonts (same as storefront)
+	============================== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <!--==============================
+	    All CSS File (same stack + scoped admin foundation)
+	============================== -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <!-- Fontawesome Icon -->
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <!-- Theme Custom CSS -->
+    <link rel="stylesheet" href="assets/css/harvest-castle.css">
+    <!-- Storefront foundation overrides -->
+    <link rel="stylesheet" href="assets/css/fresh-direct.css?v=8.1">
+    <!-- O’TOOSIN Farms admin foundation (shared shell + table styles).
+         ?v= pin: force browsers to fetch the latest order styles
+         instead of serving a stale cached copy. Bump when this file
+         changes again. -->
+    <link rel="stylesheet" href="assets/css/fd-admin.css?v=7.4">
+    <!-- Theme layer: light/dark tokens + dark surfaces (inert in Light mode) -->
+    <link rel="stylesheet" href="assets/css/fd-theme.css">
+    <!-- Apply the stored theme before first paint. Default is Light. -->
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+
+</head>
+
+<body class="fd-admin">
+
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to order details</a>
+
+    <!--==============================
+    Admin shell (Stage 1 foundation, reused unchanged).
+    The detail lives under Orders, so Orders keeps
+    aria-current="page".
+    ============================== -->
+    <div class="fd-admin-shell" id="fd-admin-shell">
+
+        <!-- Sidebar navigation -->
+        <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
+            <div class="fd-admin-brand">
+                <a href="index.html" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="assets/img/harvest_castle/of_favicon.png" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
+            </div>
+            <p class="fd-admin-role">Farm Admin</p>
+            <nav class="fd-admin-nav" aria-label="Management sections">
+                <ul>
+                    <li>
+                        <a href="admin-dashboard.html" class="fd-admin-nav-link">
+                            <i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-products.html" class="fd-admin-nav-link">
+                            <i class="fas fa-box" aria-hidden="true"></i>Products
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-inventory.html" class="fd-admin-nav-link">
+                            <i class="fas fa-warehouse" aria-hidden="true"></i>Inventory
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-categories.html" class="fd-admin-nav-link">
+                            <i class="fas fa-layer-group" aria-hidden="true"></i>Categories
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-orders.html" class="fd-admin-nav-link" aria-current="page">
+                            <i class="fas fa-receipt" aria-hidden="true"></i>Orders
+                        </a>
+                    </li>
+                    <li>
+                        <a href="admin-settings.html" class="fd-admin-nav-link">
+                            <i class="fas fa-cog" aria-hidden="true"></i>Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="fd-admin-side-foot">
+                <a class="fd-admin-logout" href="admin-login.html">
+                    <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Staff sign-in
+                </a>
+                <p class="fd-admin-logout-hint">Open the staff access page.</p>
+            </div>
+        </aside>
+
+        <!-- Drawer scrim (mobile only, shown via CSS when .nav-open) -->
+        <button type="button" class="fd-admin-scrim" id="fd-admin-scrim" aria-label="Close admin menu" tabindex="-1"></button>
+
+        <!-- Main column -->
+        <div class="fd-admin-main">
+            <header class="fd-admin-topbar">
+                <button type="button" class="fd-admin-menu-btn" id="fd-admin-menu-btn" aria-label="Open admin menu" aria-expanded="false" aria-controls="fd-admin-sidebar">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <h1 class="fd-admin-title">Order Details</h1>
+                <span class="fd-admin-context">Farm admin &middot; order management</span>
+                <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                    <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                    <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+                </button>
+            </header>
+
+            <main class="fd-admin-content fd-dash" id="fd-admin-main" tabindex="-1">
+                <div class="fd-dash-head">
+                    <p class="fd-edit-back"><a href="admin-orders.html"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to Orders</a></p>
+                    <h2 class="fd-edit-title" id="fd-order-heading">Order details</h2>
+                </div>
+
+                <noscript>
+                    <div class="fd-admin-notice is-error" role="alert">
+                        <strong>JavaScript is required.</strong>
+                        The order details need JavaScript enabled.
+                    </div>
+                </noscript>
+
+                <!-- Loading state: shown until the order settles. -->
+                <div class="fd-admin-notice" id="fd-order-loading" role="status" aria-live="polite">
+                    <strong>Loading order…</strong>
+                    Getting the order details.
+                </div>
+
+                <!-- Error state: honest, with retry. Never shows stale data. -->
+                <div class="fd-admin-notice is-error" id="fd-order-error" role="alert" hidden>
+                    <strong>We couldn&rsquo;t load this order.</strong>
+                    Nothing below is current, so it is hidden until the data loads.
+                    <div class="fd-dash-error-actions">
+                        <button type="button" class="vs-btn fd-dash-btn" id="fd-order-retry">
+                            <i class="far fa-redo" aria-hidden="true"></i>Try again
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Not-found state: never an empty detail page. -->
+                <div class="fd-dash-empty" id="fd-order-missing" hidden>
+                    <i class="far fa-search" aria-hidden="true"></i>
+                    <h3>Order not found</h3>
+                    <p>We could not find that order. It may have been removed or the link is incorrect. Your orders list has not been changed.</p>
+                    <div class="fd-dash-empty-actions">
+                        <a href="admin-orders.html" class="vs-btn fd-dash-btn">Back to Orders</a>
+                    </div>
+                </div>
+
+                <div id="fd-order-content" aria-busy="true" hidden>
+
+                    <!-- Order header: reference, date, both statuses. -->
+                    <section class="fd-dash-section fd-order-head" aria-labelledby="fd-order-head-title">
+                        <h2 id="fd-order-head-title" class="visually-hidden">Order summary</h2>
+                        <div class="fd-order-head-main">
+                            <span class="fd-order-ref-label">Order reference</span>
+                            <strong class="fd-order-ref" id="fd-order-ref">—</strong>
+                            <span class="fd-order-date" id="fd-order-date">—</span>
+                        </div>
+                        <div class="fd-order-pills" id="fd-order-pills" aria-live="polite"></div>
+                    </section>
+
+                    <div class="fd-order-grid">
+                        <!-- Customer: only what checkout collects. -->
+                        <section class="fd-dash-section" aria-labelledby="fd-order-customer-title">
+                            <div class="fd-order-delivery-head">
+                                <h2 id="fd-order-customer-title">Customer</h2>
+                                <span class="fd-dash-pill is-muted">Guest customer</span>
+                            </div>
+                            <ul class="fd-order-facts" id="fd-order-customer"></ul>
+                            <div class="fd-order-contact-actions">
+                                <a href="#" class="fd-ghost-btn fd-dash-btn" id="fd-order-call" hidden>
+                                    <i class="fas fa-phone" aria-hidden="true"></i>Call customer
+                                </a>
+                            </div>
+                        </section>
+
+                        <!-- Delivery: only the relevant mode's fields. -->
+                        <section class="fd-dash-section" aria-labelledby="fd-order-delivery-title">
+                            <div class="fd-order-delivery-head">
+                                <h2 id="fd-order-delivery-title">Delivery &amp; pickup</h2>
+                                <span class="fd-dash-pill" id="fd-order-delivery-mode">—</span>
+                            </div>
+                            <ul class="fd-order-facts" id="fd-order-delivery"></ul>
+                        </section>
+                    </div>
+
+                    <!-- Items: the recorded order-time snapshot. -->
+                    <section class="fd-dash-section" aria-labelledby="fd-order-items-title">
+                        <h2 id="fd-order-items-title">Items</h2>
+                        <div class="fd-dash-table-scroll fd-order-items-scroll" id="fd-order-items-wrap" tabindex="0" role="region" aria-label="Ordered items table, scroll horizontally on small screens">
+                            <table class="fd-dash-table fd-order-items-table">
+                                <caption class="fd-dash-caption">Every item as ordered, at the price and unit recorded at order time.</caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Product</th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">Unit</th>
+                                        <th scope="col">Unit price</th>
+                                        <th scope="col">Line total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fd-order-items-body"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th scope="row" colspan="4">Order total</th>
+                                        <td class="is-amount" id="fd-order-total">₦0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <p class="fd-dash-hint">Quantities, units and prices are preserved from the order. The order total includes the recorded delivery fee where one applies. Pickup has no delivery fee; a park delivery charge is confirmed before dispatch.</p>
+                    </section>
+
+                    <div class="fd-order-grid">
+                        <!-- Payment: arrangement, status, totals and verified-only references. -->
+                        <section class="fd-dash-section" aria-labelledby="fd-order-payment-title">
+                            <h2 id="fd-order-payment-title">Payment and totals</h2>
+                            <ul class="fd-order-facts" id="fd-order-payment"></ul>
+                            <p class="fd-dash-hint" id="fd-order-payment-note"></p>
+                        </section>
+
+                        <!-- Status update: deliberate changes only. -->
+                        <section class="fd-dash-section" aria-labelledby="fd-order-status-title">
+                            <h2 id="fd-order-status-title">Order status</h2>
+                            <form id="fd-order-status-form" novalidate>
+                                <div class="fd-field">
+                                    <label for="fd-order-status">Update status</label>
+                                    <select class="form-select" id="fd-order-status">
+                                        <option value="pending">Pending</option>
+                                        <option value="completed">Completed</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                                <p class="fd-order-status-note" id="fd-order-status-note" role="status" aria-live="polite" hidden></p>
+                                <button type="submit" class="vs-btn fd-dash-btn" id="fd-order-status-btn">
+                                    <i class="fas fa-check" aria-hidden="true"></i>Save Status
+                                </button>
+                            </form>
+                            <p class="fd-dash-hint">Changing the order status does not change payment status. Payment is only shown as Paid when the order record contains a verified payment reference.</p>
+                        </section>
+                    </div>
+
+                    <!-- Follow-up: centralized WhatsApp number, order context. -->
+                    <section class="fd-dash-section" aria-labelledby="fd-order-contact-title">
+                        <h2 id="fd-order-contact-title">Contact about this order</h2>
+                        <div class="fd-dash-actions">
+                            <a href="#" class="vs-btn fd-dash-btn" id="fd-order-wa">
+                                <i class="fab fa-whatsapp" aria-hidden="true"></i>Follow up on WhatsApp
+                            </a>
+                            <a href="admin-orders.html" class="fd-ghost-btn fd-dash-btn">
+                                <i class="fas fa-arrow-left" aria-hidden="true"></i>Back to Orders
+                            </a>
+                        </div>
+                    </section>
+
+                </div>
+
+                <p class="fd-dash-foot-note">
+                    Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="index.html">O’TOOSIN Farms</a>. Farm admin.
+                </p>
+            </main>
+        </div>
+    </div>
+
+    <!-- Admin JS only: deliberately NOT loading fresh-direct.js so the
+         customer cart store can never leak into the admin. -->
+    <script src="assets/js/fd-admin.js?v=6.8"></script>
+    <script src="assets/js/fd-theme.js"></script>
+    <!-- Settings record (Stage 5: store record kept in this browser;
+         the order service below reads the saved WhatsApp number here). -->
+    <script src="assets/js/fd-admin-settings-data.js"></script>
+    <!-- Order source boundary (checkout snapshots kept in this browser;
+         the future backend replaces its internals while the detail UI
+         below is reused untouched). -->
+    <script src="assets/js/fd-admin-orders-data.js?v=3.1"></script>
+    <!-- Order detail (consumes the data boundary above). -->
+    <script src="assets/js/fd-admin-order-detail.js?v=3.0"></script>
+
+</body>
+
+</html>

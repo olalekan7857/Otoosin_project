@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img" aria-label="Illustration of a beef brisket joint">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f8f1e6"/><stop offset="1" stop-color="#ead9c4"/>
+    </linearGradient>
+    <linearGradient id="meat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#a8454a"/><stop offset="1" stop-color="#7d2833"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <ellipse cx="240" cy="292" rx="176" ry="32" fill="#d6c2a8" opacity=".5"/>
+  <rect x="58" y="246" width="364" height="42" rx="18" fill="#c99562" opacity=".9"/>
+  <ellipse cx="240" cy="248" rx="174" ry="40" fill="#fffdf8"/>
+  <g transform="translate(78 108)">
+    <path d="M18 88C10 46 42 12 92 8c58-5 128 8 186 26 46 14 64 44 52 74-14 34-58 44-114 40-62-4-130-14-166-32-18-9-30-16-32-28Z" fill="url(#meat)" stroke="#6e202b" stroke-width="4"/>
+    <path d="M28 62c30-24 86-30 146-20 60 10 112 30 154 52" fill="none" stroke="#f0cbbd" stroke-width="16" stroke-linecap="round" opacity=".85"/>
+    <path d="M32 94c36-18 88-20 140-10 58 11 104 28 142 46" fill="none" stroke="#eab9ad" stroke-width="10" stroke-linecap="round" opacity=".7"/>
+    <g fill="none" stroke="#c57b75" stroke-width="3" stroke-linecap="round" opacity=".8">
+      <path d="M64 46c26 8 48 12 74 14"/>
+      <path d="M84 116c30 10 62 16 94 18"/>
+      <path d="M152 40c30 8 58 16 84 26"/>
+    </g>
+  </g>
+  <path d="M94 290c20-18 42-19 60-6M340 282c18-13 34-12 48-3" fill="none" stroke="#4f7a4a" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="354" cy="300" r="8" fill="#8a3f3f"/><circle cx="374" cy="292" r="7" fill="#a24b46"/>
+</svg>

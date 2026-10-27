@@ -1,0 +1,477 @@
+/* ==========================================================================
+   O’TOOSIN Farms — Contact page
+   Page-specific layout only. Shared header, footer, typography, colours and
+   form field primitives come from fresh-direct.css, fd-theme.css and
+   otoosin-shop.css.
+   ========================================================================== */
+
+.otoosin-contact .fd-shop-intro {
+  padding-bottom: 54px;
+}
+
+.oto-contact-intro .sec-subtitle,
+.oto-contact-form-head .sec-subtitle {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: var(--secondary-color);
+  font-family: var(--title-font);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.oto-band-kicker {
+  display: inline-block;
+  margin-bottom: 10px;
+  color: var(--theme-color);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.oto-contact-layout {
+  padding-top: 64px;
+  padding-bottom: 24px;
+}
+
+.oto-contact-aside {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  padding: 40px 34px;
+  border-radius: 24px;
+  background: linear-gradient(150deg, #06411d 0%, #05371b 58%, #032512 100%);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.oto-contact-aside::after {
+  content: "";
+  position: absolute;
+  top: -120px;
+  right: -100px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(222, 173, 57, 0.22) 0%, rgba(222, 173, 57, 0) 70%);
+  pointer-events: none;
+}
+
+.oto-contact-aside > * {
+  position: relative;
+  z-index: 1;
+}
+
+.oto-contact-aside .sec-subtitle {
+  color: var(--theme-color);
+}
+
+.oto-contact-aside h2 {
+  margin-bottom: 12px;
+  color: var(--white-color);
+  font-size: clamp(27px, 2.4vw, 34px);
+}
+
+.oto-contact-aside p {
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.oto-contact-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 16px;
+  color: var(--white-color);
+  font-size: 16px;
+  font-style: normal;
+  line-height: 1.65;
+}
+
+.oto-contact-address i {
+  margin-top: 4px;
+  color: var(--theme-color);
+  font-size: 17px;
+}
+
+.oto-contact-pickup-note {
+  margin-bottom: 14px !important;
+}
+
+.oto-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--theme-color);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.oto-contact-link i {
+  font-size: 11px;
+  transition: transform 0.3s ease;
+}
+
+.oto-contact-link:hover,
+.oto-contact-link:focus-visible {
+  color: var(--white-color);
+}
+
+.oto-contact-link:hover i,
+.oto-contact-link:focus-visible i {
+  transform: translateX(4px);
+}
+
+.oto-contact-topics {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oto-contact-topics li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.oto-contact-topic-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 12px;
+  background: rgba(222, 173, 57, 0.16);
+  color: var(--theme-color);
+  font-size: 16px;
+}
+
+.oto-contact-topics strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--white-color);
+  font-family: var(--title-font);
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.oto-contact-topics li > span:not(.oto-contact-topic-icon) {
+  display: block;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.oto-contact-aside-divider {
+  margin: 30px 0 24px;
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  opacity: 1;
+}
+
+.oto-contact-aside h3 {
+  margin-bottom: 12px;
+  color: var(--white-color);
+  font-size: 18px;
+}
+
+.oto-contact-tips {
+  margin: 0;
+  padding-left: 20px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.oto-contact-tips li {
+  margin-bottom: 8px;
+}
+
+.oto-contact-tips li:last-child {
+  margin-bottom: 0;
+}
+
+.oto-contact-cat-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.oto-contact-cat-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 6px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
+}
+
+.oto-contact-cat-links a:hover,
+.oto-contact-cat-links a:focus-visible {
+  border-color: var(--theme-color);
+  background: rgba(222, 173, 57, 0.14);
+  color: var(--white-color);
+}
+
+.oto-contact-form-card {
+  height: 100%;
+  padding: 38px 34px;
+  border: 1px solid #ececec;
+  border-radius: 24px;
+  background: var(--white-color);
+}
+
+.oto-contact-form-head {
+  margin-bottom: 26px;
+}
+
+.oto-contact-form-head .sec-subtitle {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.oto-contact-form-head h2 {
+  margin-bottom: 10px;
+  font-size: clamp(27px, 2.6vw, 36px);
+}
+
+.oto-contact-form-head p {
+  margin-bottom: 0;
+  color: var(--body-color);
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+#oto-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+#oto-contact-form .fd-field {
+  margin-bottom: 0;
+  min-width: 0;
+}
+
+#oto-contact-form .form-control,
+#oto-contact-form .form-select {
+  width: 100%;
+  max-width: 100%;
+  min-height: 52px;
+  margin-bottom: 0;
+  padding: 12px 18px;
+  border-radius: 9999px;
+}
+
+#oto-contact-form textarea.form-control {
+  min-height: 160px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  resize: vertical;
+}
+
+#oto-contact-form .form-control:focus,
+#oto-contact-form .form-select:focus {
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 3px rgba(222, 173, 57, 0.22);
+}
+
+#oto-contact-form .form-control[aria-invalid="true"],
+#oto-contact-form .form-select[aria-invalid="true"] {
+  border-color: var(--error-color);
+}
+
+.oto-required {
+  margin-left: 2px;
+  color: var(--error-color);
+  font-weight: 700;
+}
+
+.oto-contact-status {
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid #ececec;
+  border-left: 4px solid var(--theme-color);
+  border-radius: 12px;
+  background: var(--smoke-color);
+  color: var(--body-color);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.oto-contact-status[hidden] {
+  display: none;
+}
+
+.oto-contact-status.is-error {
+  border-left-color: var(--error-color);
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--error-color);
+  font-weight: 600;
+}
+
+.oto-contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 2px;
+}
+
+.oto-contact-actions .vs-btn {
+  min-width: 200px;
+  min-height: 52px;
+  margin: 0;
+  justify-content: center;
+  text-align: center;
+}
+
+.oto-contact-actions .vs-btn i {
+  margin-right: 8px;
+}
+
+.oto-form-note {
+  margin: 0;
+  color: var(--body-color);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.oto-contact-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.oto-contact-cta .vs-btn {
+  padding: 14px 28px;
+  border-color: var(--theme-color);
+  background: var(--theme-color);
+  color: var(--title-color);
+}
+
+.oto-contact-cta .vs-btn:hover {
+  border-color: var(--white-color);
+  background: var(--white-color);
+  color: var(--secondary-color);
+}
+
+.oto-contact-cta .fd-ghost-btn {
+  padding: 12px 26px;
+  border-color: rgba(255, 255, 255, 0.58);
+  background: transparent;
+  color: var(--white-color);
+}
+
+.oto-contact-cta .fd-ghost-btn:hover {
+  border-color: var(--theme-color);
+  background: var(--theme-color);
+  color: var(--title-color);
+}
+
+html[data-theme="dark"] .otoosin-contact .main-menu a[aria-current="page"],
+html[data-theme="dark"] .otoosin-contact .vs-mobile-menu ul li a[aria-current="page"],
+html[data-theme="dark"] .oto-contact-intro .sec-subtitle,
+html[data-theme="dark"] .oto-contact-form-head .sec-subtitle {
+  color: var(--fd-brand-green-text);
+}
+
+html[data-theme="dark"] .oto-contact-form-card {
+  border-color: #2e3b33;
+  background: var(--fd-surface);
+}
+
+html[data-theme="dark"] .oto-contact-status {
+  border-color: #2e3b33;
+  border-left-color: var(--theme-color);
+  background: var(--fd-surface-2);
+}
+
+html[data-theme="dark"] .oto-contact-status.is-error {
+  border-left-color: var(--error-color);
+  background: rgba(220, 53, 69, 0.12);
+  color: var(--fd-error-text);
+}
+
+@media (max-width: 991px) {
+  .oto-contact-layout {
+    padding-top: 48px;
+  }
+
+  .oto-contact-form-card {
+    padding: 32px 28px;
+  }
+
+  .oto-contact-aside {
+    padding: 34px 28px;
+  }
+
+  .oto-contact-cta-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 767px) {
+  .otoosin-contact .fd-shop-intro {
+    padding: 48px 0 34px;
+  }
+
+  .oto-contact-layout {
+    padding-top: 38px;
+  }
+
+  .oto-contact-form-card,
+  .oto-contact-aside {
+    padding: 28px 22px;
+    border-radius: 20px;
+  }
+
+  #oto-contact-form textarea.form-control {
+    min-height: 140px;
+  }
+
+  .oto-contact-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .oto-contact-actions .vs-btn {
+    width: 100%;
+  }
+
+  .oto-form-note {
+    text-align: center;
+  }
+
+  .oto-contact-cta-actions {
+    margin-top: 4px;
+  }
+
+  .oto-contact-cta-actions .vs-btn,
+  .oto-contact-cta-actions .fd-ghost-btn {
+    width: 100%;
+  }
+}
