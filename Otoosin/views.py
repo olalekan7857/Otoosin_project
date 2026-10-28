@@ -615,17 +615,15 @@ def _catalogue_context(request, category=None):
 
 
 def index(request):
-    products = public_products()
-    latest = list(products.order_by("-created_at", "-pk")[:8])
     featured = list(
-        products.filter(is_featured=True).order_by("-created_at", "-pk")[:8]
+        public_products()
+        .filter(is_featured=True)
+        .order_by("-created_at", "-pk")[:8]
     )
-    if not featured:
-        featured = latest[:8]
     return render(
         request,
         "index.html",
-        {"featured_products": featured, "latest_products": latest},
+        {"featured_products": featured},
     )
 
 

@@ -733,13 +733,23 @@ class StorefrontCatalogueTests(TestCase):
             is_default=True,
         )
 
-    def test_home_renders_database_products_and_catalog_feed(self):
+    def test_home_renders_only_featured_database_products(self):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Popular Picks from O’TOOSIN Farms")
+        self.assertContains(response, "Shop All Products")
         self.assertContains(response, "Pork Chops")
-        self.assertContains(response, "Whole Chicken")
+        self.assertContains(response, "Tender pork chops for the grill.")
+        self.assertContains(response, "₦4,800")
+        self.assertContains(response, "1kg")
+        self.assertEqual(
+            [product.pk for product in response.context["featured_products"]],
+            [self.pork.pk],
+        )
         self.assertNotContains(response, "Hidden Product")
         self.assertNotContains(response, "demo-pork-chops")
+        self.assertNotContains(response, "Latest from the farm")
+        self.assertNotContains(response, "Newly added products")
         self.assertContains(response, 'id="fd-storefront-catalog"')
         self.assertContains(response, "4800.0")
 
@@ -786,16 +796,17 @@ class StorefrontCatalogueTests(TestCase):
         response = self.client.get("/shop/?page=2")
         self.assertEqual(len(response.context["products"]), 5)
 
-    def test_home_latest_products_and_related_products_are_limited(self):
+    def test_home_featured_products_and_related_products_are_limited(self):
         for index in range(7):
             product = make_product(
-                name=f"Newest Farm Product {index:02d}",
-                sku=f"SHOP-NEW-{index:02d}",
+                name=f"Featured Farm Product {index:02d}",
+                sku=f"SHOP-FEATURED-{index:02d}",
                 category_slug="pork",
+                is_featured=True,
             )
             ProductVariant.objects.create(
                 product=product,
-                sku=f"SHOP-NEW-{index:02d}-1KG",
+                sku=f"SHOP-FEATURED-{index:02d}-1KG",
                 label="1kg",
                 unit_kind=ProductVariant.UnitKind.KG,
                 price=Decimal("3000.00"),
@@ -803,8 +814,13 @@ class StorefrontCatalogueTests(TestCase):
             )
 
         response = self.client.get("/")
-        self.assertEqual(len(response.context["latest_products"]), 8)
-        self.assertContains(response, "Latest from the farm")
+        self.assertEqual(len(response.context["featured_products"]), 8)
+        self.assertNotIn("latest_products", response.context)
+        self.assertNotContains(response, "Latest from the farm")
+        self.assertNotIn(
+            self.chicken.pk,
+            [product.pk for product in response.context["featured_products"]],
+        )
 
         response = self.client.get(
             f"/product-details/?id={self.pork.slug}"

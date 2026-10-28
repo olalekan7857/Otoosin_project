@@ -244,28 +244,6 @@
             </div>
         </section>
 
-        {% if latest_products %}
-        <section class="space-bottom" id="latest-from-farm" aria-labelledby="latest-title">
-            <div class="container">
-                <div class="oto-discovery-head-row">
-                    <div class="oto-discovery-copy">
-                        <span class="sec-subtitle">Latest from the farm</span>
-                        <h2 id="latest-title">Newly added products</h2>
-                        <p>The newest additions to the O’TOOSIN Farms shop, up to eight products.</p>
-                    </div>
-                    <div class="oto-discovery-actions">
-                        <a href="{% url 'Otoosin:product' %}?sort=featured" class="fd-ghost-btn">View all products</a>
-                    </div>
-                </div>
-                <div class="row g-4" id="fd-latest-grid">
-                    {% for product in latest_products %}
-                        {% include "partials/product-card.html" with order=forloop.counter %}
-                    {% endfor %}
-                </div>
-            </div>
-        </section>
-        {% endif %}
-
         <!--==============================
         Delivery and pickup
         ============================== -->
