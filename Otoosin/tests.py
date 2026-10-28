@@ -1,12 +1,16 @@
 import json
+import os
 import shutil
+import subprocess
+import sys
 import tempfile
 from decimal import Decimal
 from io import BytesIO
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase, override_settings
+from django.test import Client, SimpleTestCase, TestCase, override_settings
 from PIL import Image
 
 from .models import Category, Inventory, Product, ProductImage, ProductVariant
@@ -1055,3 +1059,96 @@ class CartValidationTests(TestCase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("out of stock", response.json()["errors"][0]["message"])
+
+
+class SettingsEnvironmentTests(SimpleTestCase):
+    settings_script = (
+        "import json\n"
+        "from django.conf import settings\n"
+        "print(json.dumps({\n"
+        "    'debug': settings.DEBUG,\n"
+        "    'allowed_hosts': settings.ALLOWED_HOSTS,\n"
+        "    'csrf_trusted_origins': settings.CSRF_TRUSTED_ORIGINS,\n"
+        "    'time_zone': settings.TIME_ZONE,\n"
+        "    'use_tz': settings.USE_TZ,\n"
+        "}))"
+    )
+
+    def run_settings(self, **overrides):
+        environment = os.environ.copy()
+        environment.update(
+            {
+                "DJANGO_SETTINGS_MODULE": "Otoosin_project.settings",
+                "SECRET_KEY": "test-settings-secret",
+                "DEBUG": "True",
+                "ALLOWED_HOSTS": "localhost",
+                "CSRF_TRUSTED_ORIGINS": "http://localhost:8000",
+                "PYTHONIOENCODING": "utf-8",
+            }
+        )
+        environment.update(overrides)
+        return subprocess.run(
+            [sys.executable, "-c", self.settings_script],
+            cwd=settings.BASE_DIR,
+            env=environment,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+
+    def test_environment_values_are_parsed_and_validated(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com, 127.0.0.1",
+            CSRF_TRUSTED_ORIGINS=(
+                "https://farm.example.com/,"
+                "https://www.farm.example.com"
+            ),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout.strip().splitlines()[-1])
+        self.assertFalse(data["debug"])
+        self.assertEqual(
+            data["allowed_hosts"], ["farm.example.com", "127.0.0.1"]
+        )
+        self.assertEqual(
+            data["csrf_trusted_origins"],
+            [
+                "https://farm.example.com",
+                "https://www.farm.example.com",
+            ],
+        )
+        self.assertEqual(data["time_zone"], "Africa/Lagos")
+        self.assertTrue(data["use_tz"])
+
+    def test_production_requires_a_secret_key(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY=" ",
+            ALLOWED_HOSTS="farm.example.com",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("SECRET_KEY must be set", result.stderr)
+        self.assertNotIn("production-settings-secret", result.stderr)
+
+    def test_production_requires_allowed_hosts(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS=" ",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("ALLOWED_HOSTS must be set", result.stderr)
+
+    def test_invalid_csrf_origin_is_rejected(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS="farm.example.com",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "CSRF_TRUSTED_ORIGINS entries must be", result.stderr
+        )

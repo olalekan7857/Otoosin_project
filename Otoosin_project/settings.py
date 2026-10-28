@@ -11,21 +11,109 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+from urllib.parse import urlsplit
+
+from decouple import config
+from django.core.exceptions import ImproperlyConfigured
+from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+def _env_bool(name, default):
+    raw_value = config(name, default=str(default))
+    value = str(raw_value).strip().lower()
+    if value in {"1", "true", "yes", "on"}:
+        return True
+    if value in {"0", "false", "no", "off"}:
+        return False
+    raise ImproperlyConfigured(
+        f"{name} must be a boolean value (true/false, yes/no, 1/0)."
+    )
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-22c)+xeij**lm)wm+r=-_$q0ej4f1ep@g3k8g+(9-())w=_gty'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+def _env_list(name, default=""):
+    raw_value = config(name, default=default)
+    return [
+        item.strip()
+        for item in str(raw_value).split(",")
+        if item.strip()
+    ]
 
-ALLOWED_HOSTS = []
+
+def _validated_hosts(hosts):
+    for host in hosts:
+        if host == "*":
+            continue
+        if "://" in host or "/" in host or " " in host:
+            raise ImproperlyConfigured(
+                "ALLOWED_HOSTS entries must be hostnames, not URLs."
+            )
+        try:
+            parsed = urlsplit(f"//{host}")
+            port = parsed.port
+        except ValueError as error:
+            raise ImproperlyConfigured(
+                "ALLOWED_HOSTS entries must be valid hostnames."
+            ) from error
+        if not parsed.hostname or port is not None:
+            raise ImproperlyConfigured(
+                "ALLOWED_HOSTS entries must be hostnames without ports."
+            )
+    return hosts
+
+
+def _validated_origins(origins):
+    validated = []
+    for origin in origins:
+        normalized = origin.rstrip("/")
+        parsed = urlsplit(normalized)
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.netloc
+            or parsed.path
+            or parsed.query
+            or parsed.fragment
+            or parsed.username
+            or parsed.password
+        ):
+            raise ImproperlyConfigured(
+                "CSRF_TRUSTED_ORIGINS entries must be http(s) origins "
+                "without paths, queries or credentials."
+            )
+        validated.append(normalized)
+    return validated
+
+
+DEBUG = _env_bool("DEBUG", True)
+
+SECRET_KEY = config("SECRET_KEY", default="").strip()
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = get_random_secret_key()
+    else:
+        raise ImproperlyConfigured(
+            "SECRET_KEY must be set in the environment when DEBUG=False."
+        )
+
+_default_hosts = (
+    "localhost,127.0.0.1,[::1]" if DEBUG else ""
+)
+ALLOWED_HOSTS = _validated_hosts(
+    _env_list("ALLOWED_HOSTS", default=_default_hosts)
+)
+if not DEBUG and not ALLOWED_HOSTS:
+    raise ImproperlyConfigured(
+        "ALLOWED_HOSTS must be set in the environment when DEBUG=False."
+    )
+
+_default_origins = (
+    "http://localhost:8000,http://127.0.0.1:8000" if DEBUG else ""
+)
+CSRF_TRUSTED_ORIGINS = _validated_origins(
+    _env_list("CSRF_TRUSTED_ORIGINS", default=_default_origins)
+)
 
 
 # Application definition
@@ -107,7 +195,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Lagos'
 
 USE_I18N = True
 

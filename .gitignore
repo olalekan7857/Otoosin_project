@@ -16,6 +16,7 @@ venv/
 
 # Environment variables
 .env
+.env.*
 
 # Django migrations (generated files)
 # Keep __init__.py so migrations folders remain valid packages.
@@ -24,8 +25,10 @@ venv/
 **/migrations/__pycache__/
 **/migrations/*.pyc
 
-# SQLite database (if used locally)
+# SQLite databases and journal files (kept local, never pushed)
 db.sqlite3
+*.sqlite3
+*.sqlite3-journal
 
 # ========================
 # Static & Media Files
@@ -46,10 +49,10 @@ media/
 *.pyc
 *.pyo
 *.pyd
-*.sqlite3
 *.mo
 *.md
 *.txt
+
 
 # ========================
 # IDEs and Editors
