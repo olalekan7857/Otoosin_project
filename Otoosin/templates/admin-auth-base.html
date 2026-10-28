@@ -1,0 +1,89 @@
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}Staff access | O’TOOSIN Farms{% endblock %}</title>
+    <meta name="author" content="O’TOOSIN Farms">
+    <meta name="description" content="Private O’TOOSIN Farms staff access.">
+    <meta name="robots" content="NOINDEX,NOFOLLOW">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
+    <link rel="icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&amp;family=DM+Sans:wght@400&amp;display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.0">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.4">
+    <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
+</head>
+
+<body class="fd-admin fd-admin-login">
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to staff access</a>
+
+    <div class="fd-admin-shell fd-admin-shell--login" id="fd-admin-shell">
+        <div class="fd-admin-login-theme">
+            <button type="button" class="icon-btn fd-theme-toggle" data-theme-toggle aria-pressed="false" aria-label="Switch to dark mode" title="Switch to dark mode">
+                <i class="fas fa-moon" data-theme-icon="moon" aria-hidden="true"></i>
+                <i class="fas fa-sun" data-theme-icon="sun" aria-hidden="true" hidden></i>
+            </button>
+        </div>
+
+        <div class="fd-admin-main">
+            <main class="fd-admin-content fd-admin-login-content" id="fd-admin-main" tabindex="-1">
+                <div class="fd-admin-login-wrap">
+                    <section class="fd-admin-login-shell" aria-labelledby="fd-auth-title">
+                        <aside class="fd-admin-login-brand" aria-label="O’TOOSIN Farms staff access">
+                            <a class="fd-logo fd-admin-login-brand-logo" href="{% url 'Otoosin:index' %}" aria-label="O’TOOSIN Farms storefront">
+                                <img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50">
+                            </a>
+                            <div class="fd-admin-login-brand-copy">
+                                <p class="fd-admin-login-brand-eyebrow">Farm administration</p>
+                                <h2>Run the farm store from one place.</h2>
+                                <p>Review products, keep the catalogue current and stay on top of availability.</p>
+                            </div>
+                            <ul class="fd-admin-login-brand-list">
+                                <li><i class="fas fa-box" aria-hidden="true"></i><span>Products, categories and pricing</span></li>
+                                <li><i class="fas fa-warehouse" aria-hidden="true"></i><span>Inventory and availability</span></li>
+                                <li><i class="fas fa-image" aria-hidden="true"></i><span>Product images and primary selection</span></li>
+                            </ul>
+                            <p class="fd-admin-login-brand-foot"><i class="fas fa-user-check" aria-hidden="true"></i>Staff access is managed by the farm owner</p>
+                        </aside>
+
+                        <div class="fd-admin-login-form-panel">
+                            <a class="fd-logo fd-admin-login-mobile-brand" href="{% url 'Otoosin:index' %}" aria-label="O’TOOSIN Farms storefront">
+                                <img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50">
+                            </a>
+
+                            <div class="fd-admin-card fd-admin-login-card">
+                                <div class="fd-admin-card-head">
+                                    <p class="fd-admin-login-eyebrow">{% block auth_eyebrow %}Staff access{% endblock %}</p>
+                                    <h1 id="fd-auth-title">{% block auth_title %}Staff access{% endblock %}</h1>
+                                    {% block auth_intro %}{% endblock %}
+                                </div>
+                                {% block auth_content %}{% endblock %}
+                                <a class="fd-admin-back-link fd-admin-login-back" href="{% url 'Otoosin:index' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to storefront</a>
+                            </div>
+
+                            <p class="fd-admin-login-copyright">
+                                Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="{% url 'Otoosin:index' %}">O’TOOSIN Farms</a>.
+                            </p>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'assets/js/fd-admin.js' %}?v=6.8"></script>
+    <script src="{% static 'assets/js/fd-theme.js' %}"></script>
+</body>
+</html>

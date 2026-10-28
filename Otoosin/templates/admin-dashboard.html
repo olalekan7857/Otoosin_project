@@ -23,17 +23,57 @@
     </ul>
 </section>
 
+{% if can_view_messages %}
+<section class="fd-dash-section" aria-labelledby="fd-dash-messages-title">
+    <div class="fd-dash-section-head">
+        <h2 id="fd-dash-messages-title">Customer enquiries</h2>
+        <a href="{% url 'Otoosin:staff_messages' %}" class="fd-ghost-btn fd-dash-btn">Open inbox</a>
+    </div>
+    <ul class="fd-dash-grid">
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Total enquiries</span><span class="fd-dash-card-value">{{ contact_summary.total }}</span><span class="fd-dash-card-context">Stored contact messages.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">New / unread</span><span class="fd-dash-card-value">{{ contact_summary.new }}</span><span class="fd-dash-card-context">Waiting for staff attention.</span></li>
+    </ul>
+    {% if recent_messages %}
+    <div class="fd-dash-table-scroll">
+        <table class="fd-dash-table">
+            <caption class="fd-dash-caption">Recent customer enquiries.</caption>
+            <thead><tr><th scope="col">Status</th><th scope="col">Enquiry</th><th scope="col">Sender</th><th scope="col">Received</th></tr></thead>
+            <tbody>
+                {% for enquiry in recent_messages %}
+                <tr>
+                    <td><span class="fd-dash-pill{% if enquiry.status == 'new' %} is-new{% elif enquiry.status == 'closed' %} is-muted{% endif %}">{{ enquiry.get_status_display }}</span></td>
+                    <td><a href="{% url 'Otoosin:staff_message_detail' enquiry.pk %}">{{ enquiry.get_subject_display }}</a></td>
+                    <td>{{ enquiry.name }}</td>
+                    <td>{{ enquiry.created_at|date:"j M Y H:i" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="fd-dash-empty">
+        <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
+        <h3>No enquiries yet</h3>
+        <p>New enquiries from the contact form will appear here.</p>
+    </div>
+    {% endif %}
+</section>
+{% endif %}
+
 <section class="fd-dash-section" aria-labelledby="fd-dash-actions-title">
     <h2 id="fd-dash-actions-title">Quick actions</h2>
     <div class="fd-dash-actions">
-        <a href="{% url 'Otoosin:staff_product_create' %}" class="vs-btn fd-dash-btn"><i class="fas fa-plus" aria-hidden="true"></i>Add product</a>
-        <a href="{% url 'Otoosin:staff_products' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-box" aria-hidden="true"></i>Manage Products</a>
-        <a href="{% url 'Otoosin:staff_categories' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-layer-group" aria-hidden="true"></i>Categories</a>
-        <a href="{% url 'Otoosin:staff_inventory' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-warehouse" aria-hidden="true"></i>Inventory</a>
-        <span class="fd-ghost-btn fd-dash-btn" aria-disabled="true" title="Order storage is not connected yet."><i class="fas fa-receipt" aria-hidden="true"></i>Orders <span class="fd-admin-soon">Not connected</span></span>
-        <span class="fd-ghost-btn fd-dash-btn" aria-disabled="true" title="Store settings are not connected yet."><i class="fas fa-cog" aria-hidden="true"></i>Settings <span class="fd-admin-soon">Not connected</span></span>
+        {% if perms.Otoosin.add_product %}<a href="{% url 'Otoosin:staff_product_create' %}" class="vs-btn fd-dash-btn"><i class="fas fa-plus" aria-hidden="true"></i>Add product</a>{% endif %}
+        {% if perms.Otoosin.view_product %}<a href="{% url 'Otoosin:staff_products' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-box" aria-hidden="true"></i>Manage Products</a>{% endif %}
+        {% if perms.Otoosin.view_category %}<a href="{% url 'Otoosin:staff_categories' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-layer-group" aria-hidden="true"></i>Categories</a>{% endif %}
+        {% if perms.Otoosin.view_inventory %}<a href="{% url 'Otoosin:staff_inventory' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-warehouse" aria-hidden="true"></i>Inventory</a>{% endif %}
+        {% if perms.Otoosin.view_contactmessage %}<a href="{% url 'Otoosin:staff_messages' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-envelope" aria-hidden="true"></i>Enquiries</a>{% endif %}
+        {% if perms.Otoosin.view_deliverylocation %}<a href="{% url 'Otoosin:staff_delivery' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-truck" aria-hidden="true"></i>Delivery &amp; Pickup</a>{% endif %}
+        {% if perms.Otoosin.change_siteconfiguration %}<a href="{% url 'Otoosin:staff_settings' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-cog" aria-hidden="true"></i>Settings</a>{% endif %}
+        {% if perms.Otoosin.manage_staff %}<a href="{% url 'Otoosin:staff_team' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-users" aria-hidden="true"></i>Team</a>{% endif %}
+        <span class="fd-ghost-btn fd-dash-btn" aria-disabled="true" title="Order storage is not implemented in this phase."><i class="fas fa-receipt" aria-hidden="true"></i>Orders <span class="fd-admin-soon">Not implemented</span></span>
     </div>
-    <p class="fd-dash-hint">Orders and Settings return as working shortcuts once their database-backed admin pages are connected.</p>
+    <p class="fd-dash-hint">Order and payment metrics remain unavailable until those models and workflows are implemented.</p>
 </section>
 
 <section class="fd-dash-section" aria-labelledby="fd-dash-products-title">

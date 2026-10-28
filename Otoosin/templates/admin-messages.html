@@ -1,0 +1,102 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block title %}Enquiries | O’Toosin Farms Admin{% endblock %}
+{% block skip_label %}Skip to enquiries{% endblock %}
+{% block topbar_title %}Enquiries{% endblock %}
+{% block topbar_context %}Farm admin &middot; contact inbox{% endblock %}
+
+{% block admin_content %}
+<div class="fd-dash-head">
+    <p class="fd-dash-lead">Database-backed customer enquiries, newest first. Open an enquiry to review details, update its status and keep internal notes.</p>
+</div>
+
+<section class="fd-dash-section" aria-labelledby="fd-msg-summary-title">
+    <h2 id="fd-msg-summary-title">Inbox summary</h2>
+    <ul class="fd-dash-grid">
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Total</span><span class="fd-dash-card-value">{{ counts.total }}</span><span class="fd-dash-card-context">All stored enquiries.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">New</span><span class="fd-dash-card-value">{{ counts.new }}</span><span class="fd-dash-card-context">Not yet handled.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Read</span><span class="fd-dash-card-value">{{ counts.read }}</span><span class="fd-dash-card-context">Reviewed by staff.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Replied</span><span class="fd-dash-card-value">{{ counts.replied }}</span><span class="fd-dash-card-context">Answered manually.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Closed</span><span class="fd-dash-card-value">{{ counts.closed }}</span><span class="fd-dash-card-context">No further action.</span></li>
+    </ul>
+</section>
+
+<section class="fd-dash-section" aria-labelledby="fd-msg-list-title">
+    <div class="fd-msg-page-head">
+        <div>
+            <h2 id="fd-msg-list-title">All enquiries</h2>
+            <p class="fd-dash-hint">Search and filter the inbox, then select an enquiry to read it, change its status or add a private staff note.</p>
+        </div>
+    </div>
+
+    <form method="get" class="fd-msg-filters" role="search">
+        <div class="fd-field fd-msg-search-field">
+            <label for="fd-msg-search">Search enquiries</label>
+            <input class="form-control" type="search" id="fd-msg-search" name="q" value="{{ search }}" placeholder="Name, email, phone or message">
+        </div>
+        <div class="fd-field fd-msg-status-field">
+            <label for="fd-msg-status">Status</label>
+            <select class="form-select" id="fd-msg-status" name="status">
+                <option value="">All statuses</option>
+                {% for value, label in status_choices %}
+                <option value="{{ value }}"{% if value == status_filter %} selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="vs-btn fd-dash-btn fd-msg-filter-btn"><i class="fas fa-filter" aria-hidden="true"></i>Filter</button>
+        {% if search or status_filter %}<a href="{% url 'Otoosin:staff_messages' %}" class="fd-ghost-btn fd-dash-btn fd-msg-clear-btn">Clear filters</a>{% endif %}
+    </form>
+
+    {% if messages_list %}
+    <p class="fd-msg-table-hint"><i class="fas fa-clock" aria-hidden="true"></i>Newest enquiries first. Select an enquiry to open its full details.</p>
+    <div class="fd-dash-table-scroll">
+        <table class="fd-dash-table fd-msg-table">
+            <caption class="fd-dash-caption">Newest enquiries first. Every row has an Open enquiry link.</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Status</th>
+                    <th scope="col">Enquiry</th>
+                    <th scope="col">Sender</th>
+                    <th scope="col">Received</th>
+                    <th scope="col">Handled by</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enquiry in messages_list %}
+                <tr{% if enquiry.status == 'new' %} class="fd-msg-new"{% endif %}>
+                    <td data-label="Status"><span class="fd-dash-pill{% if enquiry.status == 'new' %} is-new{% elif enquiry.status == 'closed' %} is-muted{% endif %}">{{ enquiry.get_status_display }}</span></td>
+                    <td data-label="Enquiry">
+                        <a class="fd-msg-subject" href="{% url 'Otoosin:staff_message_detail' enquiry.pk %}">{{ enquiry.get_subject_display }}</a>
+                        <div class="fd-msg-snippet">{{ enquiry.message|truncatechars:105 }}</div>
+                    </td>
+                    <td data-label="Sender">
+                        <span class="fd-msg-sender-name">{{ enquiry.name }}</span>
+                        <a class="fd-msg-contact" href="mailto:{{ enquiry.email }}">{{ enquiry.email }}</a>
+                        {% if enquiry.phone %}<a class="fd-msg-contact" href="tel:{{ enquiry.phone }}">{{ enquiry.phone }}</a>{% endif %}
+                    </td>
+                    <td data-label="Received"><time datetime="{{ enquiry.created_at|date:'c' }}">{{ enquiry.created_at|date:"j M Y" }}<span>{{ enquiry.created_at|date:"H:i" }}</span></time></td>
+                    <td data-label="Handled by">{% if enquiry.handled_by %}<span class="fd-msg-handler">{{ enquiry.handled_by.get_username }}</span><span class="fd-msg-handled-at">{{ enquiry.handled_at|date:"j M Y H:i" }}</span>{% else %}<span class="fd-msg-unhandled">Unhandled</span>{% endif %}</td>
+                    <td data-label="Action"><a class="fd-msg-open" href="{% url 'Otoosin:staff_message_detail' enquiry.pk %}">Open enquiry <i class="fas fa-arrow-right" aria-hidden="true"></i></a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if page_obj.paginator.num_pages > 1 %}
+    <nav class="fd-pagination" aria-label="Enquiry pages">
+        {% if page_obj.has_previous %}<a href="?{% if search %}q={{ search|urlencode }}&amp;{% endif %}{% if status_filter %}status={{ status_filter }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>{% endif %}
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}<a href="?{% if search %}q={{ search|urlencode }}&amp;{% endif %}{% if status_filter %}status={{ status_filter }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a>{% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="fd-dash-empty">
+        <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
+        <h3>No enquiries found</h3>
+        <p>{% if search or status_filter %}No enquiries match these filters.{% else %}New customer enquiries will appear here after they are submitted.{% endif %}</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

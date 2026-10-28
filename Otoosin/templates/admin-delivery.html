@@ -1,0 +1,245 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block title %}Delivery & Pickup | O’Toosin Farms Admin{% endblock %}
+{% block skip_label %}Skip to delivery and pickup{% endblock %}
+{% block topbar_title %}Delivery &amp; Pickup{% endblock %}
+{% block topbar_context %}Farm admin &middot; locations and fees{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/css/fd-admin-settings.css' %}?v=1.4">
+{% endblock %}
+
+{% block admin_content %}
+<div class="fd-dash-head fd-settings-page-head">
+    <div class="fd-settings-page-head-text">
+        <p class="fd-settings-eyebrow"><i class="fas fa-truck" aria-hidden="true"></i>Locations</p>
+        <p class="fd-dash-lead">Manage the delivery destinations customers can choose and the pickup points they can collect from. New records are active by default; untick “Active” when a fee or location is not approved yet.</p>
+    </div>
+</div>
+
+<section class="fd-dash-section fd-settings-section" aria-labelledby="fd-delivery-list-title">
+    <div class="fd-settings-section-head">
+        <span class="fd-settings-index" aria-hidden="true">01</span>
+        <div class="fd-settings-section-copy">
+            <h2 id="fd-delivery-list-title">Delivery locations</h2>
+            <p class="fd-settings-section-lead">Doorstep delivery is limited to Abeokuta. Park delivery needs customer collection instructions. An active delivery location must have an approved fee.</p>
+        </div>
+    </div>
+
+    {% if delivery_locations %}
+    <div class="fd-loc-groups">
+        <div class="fd-loc-group-panel">
+            <h3>Doorstep delivery — Abeokuta</h3>
+            <ul class="fd-loc-admin-list">
+                {% for location in delivery_locations %}
+                {% if location.location_type == 'doorstep' %}
+                <li>
+                    <div class="fd-loc-main">
+                        <strong>{{ location.name }}</strong>
+                        <span class="fd-dash-pill{% if not location.is_active %} is-muted{% endif %}">{% if location.is_active %}Active{% else %}Inactive{% endif %}</span>
+                        <div class="fd-dash-hint">{% if location.area %}{{ location.area }} &middot; {% endif %}Abeokuta, Ogun &middot; Fee: {% if location.fee is None %}<strong>not set</strong>{% else %}₦{{ location.fee }}{% endif %}</div>
+                    </div>
+                    <div class="fd-loc-actions">
+                        {% if can_change_delivery %}<a href="?edit_delivery={{ location.pk }}#fd-delivery-form" class="fd-ghost-btn fd-dash-btn">Edit</a>{% endif %}
+                        {% if can_change_delivery %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delivery_toggle">
+                            <input type="hidden" name="location_id" value="{{ location.pk }}">
+                            <button type="submit" class="fd-ghost-btn fd-dash-btn">{% if location.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="fd-loc-group-panel">
+            <h3>Park delivery — approved destinations</h3>
+            <ul class="fd-loc-admin-list">
+                {% for location in delivery_locations %}
+                {% if location.location_type == 'park' %}
+                <li>
+                    <div class="fd-loc-main">
+                        <strong>{{ location.name }}</strong>
+                        <span class="fd-dash-pill{% if not location.is_active %} is-muted{% endif %}">{% if location.is_active %}Active{% else %}Inactive{% endif %}</span>
+                        <div class="fd-dash-hint">{% if location.area %}{{ location.area }} &middot; {% endif %}Fee: {% if location.fee is None %}<strong>not set</strong>{% else %}₦{{ location.fee }}{% endif %}</div>
+                        <div class="fd-dash-hint">{{ location.customer_instructions }}</div>
+                    </div>
+                    <div class="fd-loc-actions">
+                        {% if can_change_delivery %}<a href="?edit_delivery={{ location.pk }}#fd-delivery-form" class="fd-ghost-btn fd-dash-btn">Edit</a>{% endif %}
+                        {% if can_change_delivery %}
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="delivery_toggle">
+                            <input type="hidden" name="location_id" value="{{ location.pk }}">
+                            <button type="submit" class="fd-ghost-btn fd-dash-btn">{% if location.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% else %}
+    <div class="fd-dash-empty">
+        <i class="fas fa-truck" aria-hidden="true"></i>
+        <h3>No delivery locations yet</h3>
+        <p>Add an approved doorstep or park destination using the form below.</p>
+    </div>
+    {% endif %}
+
+    <div id="fd-delivery-form" class="fd-loc-editor">
+        <h3>{% if edit_delivery %}Edit delivery location{% else %}Add a delivery location{% endif %}</h3>
+        <p class="fd-dash-hint">Use only owner-approved destinations and fees. The location stays editable if you need to correct it later.</p>
+        {% if can_add_delivery or edit_delivery %}
+        <form method="post" class="fd-settings-form" id="fd-delivery-location-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="{% if edit_delivery %}delivery_edit{% else %}delivery_create{% endif %}">
+            {% if edit_delivery %}<input type="hidden" name="location_id" value="{{ edit_delivery.pk }}">{% endif %}
+            {% if delivery_form.non_field_errors %}
+            <div class="fd-admin-notice is-error" role="alert">{% for error in delivery_form.non_field_errors %}{{ error }}{% endfor %}</div>
+            {% endif %}
+            <div class="fd-settings-grid">
+                {% for field in delivery_form %}
+                <div class="fd-field{% if field.name == 'customer_instructions' %} fd-field-full{% endif %}" data-delivery-field="{{ field.name }}">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}<span class="fd-required" aria-hidden="true">*</span>{% else %}<span class="fd-optional">(optional)</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}<p class="fd-dash-hint">{{ field.help_text }}</p>{% endif %}
+                    {% for error in field.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="fd-settings-actions">
+                <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save delivery location</button>
+                {% if edit_delivery %}<a href="{% url 'Otoosin:staff_delivery' %}" class="fd-ghost-btn fd-dash-btn">Cancel edit</a>{% endif %}
+            </div>
+        </form>
+        {% else %}
+        <p class="fd-dash-hint">You can view locations but do not have permission to add one.</p>
+        {% endif %}
+    </div>
+</section>
+
+<section class="fd-dash-section fd-settings-section" aria-labelledby="fd-pickup-list-title">
+    <div class="fd-settings-section-head">
+        <span class="fd-settings-index" aria-hidden="true">02</span>
+        <div class="fd-settings-section-copy">
+            <h2 id="fd-pickup-list-title">Pickup locations</h2>
+            <p class="fd-settings-section-lead">Pickup is separate from delivery and never has a fee. Add a pickup point only when the owner has approved its address and collection arrangements.</p>
+        </div>
+    </div>
+
+    {% if pickup_locations %}
+    <ul class="fd-loc-admin-list">
+        {% for pickup in pickup_locations %}
+        <li>
+            <div class="fd-loc-main">
+                <strong>{{ pickup.name }}</strong>
+                <span class="fd-dash-pill{% if not pickup.is_active %} is-muted{% endif %}">{% if pickup.is_active %}Active{% else %}Inactive{% endif %}</span>
+                <div class="fd-dash-hint">{{ pickup.address }}</div>
+                {% if pickup.opening_hours %}<div class="fd-dash-hint">{{ pickup.opening_hours }}</div>{% endif %}
+            </div>
+            <div class="fd-loc-actions">
+                {% if can_change_pickup %}<a href="?edit_pickup={{ pickup.pk }}#fd-pickup-form" class="fd-ghost-btn fd-dash-btn">Edit</a>{% endif %}
+                {% if can_change_pickup %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="pickup_toggle">
+                    <input type="hidden" name="pickup_id" value="{{ pickup.pk }}">
+                    <button type="submit" class="fd-ghost-btn fd-dash-btn">{% if pickup.is_active %}Deactivate{% else %}Activate{% endif %}</button>
+                </form>
+                {% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="fd-dash-empty">
+        <i class="fas fa-store" aria-hidden="true"></i>
+        <h3>No pickup locations yet</h3>
+        <p>Add an approved pickup point using the form below.</p>
+    </div>
+    {% endif %}
+
+    <div id="fd-pickup-form" class="fd-loc-editor">
+        <h3>{% if edit_pickup %}Edit pickup location{% else %}Add a pickup location{% endif %}</h3>
+        <p class="fd-dash-hint">Pickup locations never carry a delivery fee.</p>
+        {% if can_add_pickup or edit_pickup %}
+        <form method="post" class="fd-settings-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="{% if edit_pickup %}pickup_edit{% else %}pickup_create{% endif %}">
+            {% if edit_pickup %}<input type="hidden" name="pickup_id" value="{{ edit_pickup.pk }}">{% endif %}
+            {% if pickup_form.non_field_errors %}
+            <div class="fd-admin-notice is-error" role="alert">{% for error in pickup_form.non_field_errors %}{{ error }}{% endfor %}</div>
+            {% endif %}
+            <div class="fd-settings-grid">
+                {% for field in pickup_form %}
+                <div class="fd-field{% if field.name == 'customer_instructions' %} fd-field-full{% endif %}">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                        {% if field.field.required %}<span class="fd-required" aria-hidden="true">*</span>{% else %}<span class="fd-optional">(optional)</span>{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}<p class="fd-dash-hint">{{ field.help_text }}</p>{% endif %}
+                    {% for error in field.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="fd-settings-actions">
+                <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save pickup location</button>
+                {% if edit_pickup %}<a href="{% url 'Otoosin:staff_delivery' %}" class="fd-ghost-btn fd-dash-btn">Cancel edit</a>{% endif %}
+            </div>
+        </form>
+        {% else %}
+        <p class="fd-dash-hint">You can view pickup locations but do not have permission to add one.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    "use strict";
+    var form = document.getElementById("fd-delivery-location-form");
+    if (!form) {
+        return;
+    }
+    var type = form.querySelector("#id_location_type");
+    var active = form.querySelector("#id_is_active");
+    var fee = form.querySelector("#id_fee");
+    var instructionsField = form.querySelector('[data-delivery-field="customer_instructions"]');
+    var instructions = form.querySelector("#id_customer_instructions");
+
+    function syncFields() {
+        var isPark = type && type.value === "park";
+        if (instructionsField && instructions) {
+            instructionsField.hidden = !isPark;
+            instructions.disabled = !isPark;
+            instructions.required = isPark;
+        }
+        if (fee && active) {
+            fee.required = !!active.checked;
+            fee.setAttribute("aria-required", active.checked ? "true" : "false");
+        }
+    }
+
+    if (type) {
+        type.addEventListener("change", syncFields);
+    }
+    if (active) {
+        active.addEventListener("change", syncFields);
+    }
+    syncFields();
+})();
+</script>
+{% endblock %}

@@ -14,7 +14,7 @@ __pycache__/
 venv/
 
 
-# Environment variables
+# Environment variables (single local file: .env; never commit it)
 .env
 .env.*
 
@@ -22,6 +22,7 @@ venv/
 # Keep __init__.py so migrations folders remain valid packages.
 **/migrations/*.py
 !**/migrations/__init__.py
+!Otoosin/migrations/*.py
 **/migrations/__pycache__/
 **/migrations/*.pyc
 

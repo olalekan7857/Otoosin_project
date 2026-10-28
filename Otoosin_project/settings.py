@@ -13,12 +13,22 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from decouple import config
+from decouple import AutoConfig, Config, RepositoryEnv
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.utils import get_random_secret_key
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# The project has exactly one local environment file: <BASE_DIR>/.env.
+# Explicitly anchor it to the project root so management commands behave the
+# same from any working directory. Real environment variables still win.
+_env_file = BASE_DIR / ".env"
+config = (
+    Config(RepositoryEnv(str(_env_file)))
+    if _env_file.exists()
+    else AutoConfig(search_path=str(BASE_DIR))
+)
 
 
 def _env_bool(name, default):
@@ -109,7 +119,10 @@ if not DEBUG and not ALLOWED_HOSTS:
     )
 
 _default_origins = (
-    "http://localhost:8000,http://127.0.0.1:8000" if DEBUG else ""
+    "http://localhost:8000,http://127.0.0.1:8000,"
+    "http://localhost:5555,http://127.0.0.1:5555"
+    if DEBUG
+    else ""
 )
 CSRF_TRUSTED_ORIGINS = _validated_origins(
     _env_list("CSRF_TRUSTED_ORIGINS", default=_default_origins)
@@ -152,6 +165,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'Otoosin.context_processors.storefront_catalog',
+                'Otoosin.context_processors.storefront_settings',
             ],
         },
     },
@@ -225,3 +239,37 @@ LOGOUT_REDIRECT_URL = '/staff/login/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ---------------------------------------------------------------------------
+# Staff email (Resend) and public link configuration
+# ---------------------------------------------------------------------------
+# Email is sent through the Resend HTTPS API, not SMTP. The API key and sender
+# are read from the environment and are never exposed to templates or clients.
+RESEND_API_KEY = config("RESEND_API_KEY", default="").strip()
+RESEND_API_URL = config(
+    "RESEND_API_URL", default="https://api.resend.com/emails"
+).strip()
+RESEND_FROM_EMAIL = config(
+    "RESEND_FROM_EMAIL", default=config("DEFAULT_FROM_EMAIL", default="")
+).strip()
+DEFAULT_FROM_EMAIL = RESEND_FROM_EMAIL
+RESEND_TIMEOUT_SECONDS = config(
+    "RESEND_TIMEOUT_SECONDS", default=30, cast=int
+)
+STAFF_INVITATION_HOURS = config(
+    "STAFF_INVITATION_HOURS", default=72, cast=int
+)
+
+SITE_URL = config("SITE_URL", default="http://localhost:8000").strip().rstrip("/")
+if SITE_URL:
+    _site_parts = urlsplit(SITE_URL)
+    if (
+        _site_parts.scheme not in {"http", "https"}
+        or not _site_parts.netloc
+        or _site_parts.path
+        or _site_parts.query
+        or _site_parts.fragment
+    ):
+        raise ImproperlyConfigured(
+            "SITE_URL must be an http(s) origin without a path or query."
+        )

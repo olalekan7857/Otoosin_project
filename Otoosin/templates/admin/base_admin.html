@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.4">
-    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=7.6">
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.0">
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.4">
     <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
@@ -40,9 +40,27 @@
             <nav class="fd-admin-nav" aria-label="Management sections">
                 <ul>
                     <li><a href="{% url 'Otoosin:staff_dashboard' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_dashboard' %} aria-current="page"{% endif %}><i class="fas fa-tachometer-alt" aria-hidden="true"></i>Dashboard</a></li>
+                    {% if perms.Otoosin.view_product %}
                     <li><a href="{% url 'Otoosin:staff_products' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_products' or request.resolver_match.url_name == 'staff_product_create' or request.resolver_match.url_name == 'staff_product_edit' %} aria-current="page"{% endif %}><i class="fas fa-box" aria-hidden="true"></i>Products</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.view_inventory %}
                     <li><a href="{% url 'Otoosin:staff_inventory' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_inventory' %} aria-current="page"{% endif %}><i class="fas fa-warehouse" aria-hidden="true"></i>Inventory</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.view_category %}
                     <li><a href="{% url 'Otoosin:staff_categories' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_categories' %} aria-current="page"{% endif %}><i class="fas fa-layer-group" aria-hidden="true"></i>Categories</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.view_contactmessage %}
+                    <li><a href="{% url 'Otoosin:staff_messages' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_messages' or request.resolver_match.url_name == 'staff_message_detail' %} aria-current="page"{% endif %}><i class="fas fa-envelope" aria-hidden="true"></i>Enquiries</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.view_deliverylocation %}
+                    <li><a href="{% url 'Otoosin:staff_delivery' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_delivery' %} aria-current="page"{% endif %}><i class="fas fa-truck" aria-hidden="true"></i>Delivery</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.change_siteconfiguration %}
+                    <li><a href="{% url 'Otoosin:staff_settings' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_settings' %} aria-current="page"{% endif %}><i class="fas fa-cog" aria-hidden="true"></i>Settings</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.manage_staff %}
+                    <li><a href="{% url 'Otoosin:staff_team' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_team' %} aria-current="page"{% endif %}><i class="fas fa-users" aria-hidden="true"></i>Team</a></li>
+                    {% endif %}
                 </ul>
             </nav>
             <div class="fd-admin-side-foot">

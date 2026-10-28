@@ -1,0 +1,68 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block title %}Enquiry #{{ enquiry.pk }} | O’Toosin Farms Admin{% endblock %}
+{% block skip_label %}Skip to enquiry detail{% endblock %}
+{% block topbar_title %}Enquiry #{{ enquiry.pk }}{% endblock %}
+{% block topbar_context %}Farm admin &middot; contact inbox{% endblock %}
+
+{% block admin_content %}
+<div class="fd-dash-head fd-prod-head">
+    <div class="fd-prod-head-text">
+        <p class="fd-dash-lead"><a href="{% url 'Otoosin:staff_messages' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to enquiries</a></p>
+        <h2>{{ enquiry.get_subject_display }}</h2>
+    </div>
+    <span class="fd-dash-pill{% if enquiry.status == 'new' %} is-new{% elif enquiry.status == 'closed' %} is-muted{% endif %}">{{ enquiry.get_status_display }}</span>
+</div>
+
+<section class="fd-dash-section" aria-labelledby="fd-msg-content-title">
+    <h2 id="fd-msg-content-title">Submitted enquiry</h2>
+    <dl class="fd-dash-meta">
+        <dt>Name</dt><dd>{{ enquiry.name }}</dd>
+        <dt>Email</dt><dd><a href="mailto:{{ enquiry.email }}">{{ enquiry.email }}</a></dd>
+        <dt>Phone</dt><dd>{% if enquiry.phone %}{{ enquiry.phone }}{% else %}Not supplied{% endif %}</dd>
+        <dt>Received</dt><dd>{{ enquiry.created_at|date:"j M Y H:i" }}</dd>
+        <dt>Last updated</dt><dd>{{ enquiry.updated_at|date:"j M Y H:i" }}</dd>
+        <dt>Handled by</dt><dd>{% if enquiry.handled_by %}{{ enquiry.handled_by.get_username }} at {{ enquiry.handled_at|date:"j M Y H:i" }}{% else %}Not handled yet{% endif %}</dd>
+    </dl>
+    <div class="fd-msg-body">
+        {{ enquiry.message|linebreaks }}
+    </div>
+    {% if can_change %}
+    <p class="fd-dash-hint">This page does not send a reply. Use the email address above to respond from your own mail client, then mark the enquiry as replied.</p>
+    {% endif %}
+</section>
+
+{% if can_change %}
+<section class="fd-dash-section" aria-labelledby="fd-msg-status-title">
+    <h2 id="fd-msg-status-title">Status</h2>
+    <form method="post" class="fd-dash-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="status">
+        <div class="fd-field">
+            <label for="{{ status_form.status.id_for_label }}">Enquiry status</label>
+            {{ status_form.status }}
+            <p class="fd-dash-hint">{{ status_form.status.help_text }}</p>
+            {% for error in status_form.status.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+        <button type="submit" class="vs-btn fd-dash-btn">Update status</button>
+    </form>
+</section>
+
+<section class="fd-dash-section" aria-labelledby="fd-msg-notes-title">
+    <h2 id="fd-msg-notes-title">Internal notes</h2>
+    <p class="fd-dash-hint">Notes are only visible to permitted staff. Do not store passwords, API keys or unnecessary sensitive information.</p>
+    <form method="post" class="fd-dash-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="notes">
+        <div class="fd-field">
+            <label for="{{ note_form.internal_notes.id_for_label }}">Staff notes</label>
+            {{ note_form.internal_notes }}
+            <p class="fd-dash-hint">{{ note_form.internal_notes.help_text }}</p>
+            {% for error in note_form.internal_notes.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+        </div>
+        <button type="submit" class="vs-btn fd-dash-btn">Save notes</button>
+    </form>
+</section>
+{% endif %}
+{% endblock %}

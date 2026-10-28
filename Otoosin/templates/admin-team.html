@@ -1,0 +1,165 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block title %}Staff Team | O’Toosin Farms Admin{% endblock %}
+{% block skip_label %}Skip to staff team{% endblock %}
+{% block topbar_title %}Team{% endblock %}
+{% block topbar_context %}Farm admin &middot; staff access{% endblock %}
+
+{% block admin_content %}
+<div class="fd-dash-head">
+    <p class="fd-dash-lead">Invite staff, assign an approved role, and review account or invitation state. Only an Owner can manage the team.</p>
+    <ol class="fd-team-guide" aria-label="How staff access works">
+        <li><strong>Invite</strong>Enter the staff email and choose a role.</li>
+        <li><strong>Open the email</strong>Resend sends a single-use activation link.</li>
+        <li><strong>Set a password</strong>The staff member opens the link and chooses a password.</li>
+        <li><strong>Sign in</strong>Forgotten passwords can be reset from the staff sign-in page.</li>
+    </ol>
+</div>
+
+<section class="fd-dash-section" aria-labelledby="fd-team-invite-title">
+    <h2 id="fd-team-invite-title">Invite a staff member</h2>
+    <p class="fd-dash-hint">The account stays inactive until the recipient opens the invitation link and sets a password. No password is included in the email.</p>
+    <div class="fd-role-access" aria-label="What each staff role can access">
+        <p class="fd-role-access-title">What each role can access</p>
+        <ul>
+            <li><strong>Owner</strong><span>Full access: team, catalogue, inventory, delivery, settings and enquiries.</span></li>
+            <li><strong>Manager</strong><span>Catalogue, inventory, delivery, business settings and enquiries. Cannot manage the team.</span></li>
+            <li><strong>Support</strong><span>Enquiries only: read, update status and add internal notes.</span></li>
+            <li><strong>Fulfilment</strong><span>Orders only. Reserved until order management is added.</span></li>
+        </ul>
+    </div>
+    {% if resend_uses_test_sender %}
+    <div class="fd-admin-notice is-dev" role="note">
+        <strong>Temporary Resend test sender</strong>
+        Invitations are currently sent from <code>onboarding@resend.dev</code>. Resend only delivers that test sender to the Resend account owner's email. Verify a domain in Resend, then set <code>RESEND_FROM_EMAIL</code> in <code>.env</code> to a sender on that domain before inviting other staff.
+    </div>
+    {% endif %}
+    <form method="post" class="fd-dash-form" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="invite">
+        <div class="fd-edit-grid">
+            <div class="fd-field">
+                <label for="{{ invite_form.email.id_for_label }}">Email address <span class="fd-required" aria-hidden="true">*</span></label>
+                {{ invite_form.email }}
+                <p class="fd-dash-hint">{{ invite_form.email.help_text }}</p>
+                {% for error in invite_form.email.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ invite_form.role.id_for_label }}">Role <span class="fd-required" aria-hidden="true">*</span></label>
+                {{ invite_form.role }}
+                <p class="fd-dash-hint">{{ invite_form.role.help_text }}</p>
+                {% for error in invite_form.role.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ invite_form.first_name.id_for_label }}">First name <span class="fd-optional">(optional)</span></label>
+                {{ invite_form.first_name }}
+                <p class="fd-dash-hint">{{ invite_form.first_name.help_text }}</p>
+                {% for error in invite_form.first_name.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-field">
+                <label for="{{ invite_form.last_name.id_for_label }}">Last name <span class="fd-optional">(optional)</span></label>
+                {{ invite_form.last_name }}
+                <p class="fd-dash-hint">{{ invite_form.last_name.help_text }}</p>
+                {% for error in invite_form.last_name.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+        </div>
+        <div class="fd-settings-actions">
+            <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-paper-plane" aria-hidden="true"></i>Send invitation</button>
+        </div>
+    </form>
+</section>
+
+<section class="fd-dash-section" aria-labelledby="fd-team-list-title">
+    <h2 id="fd-team-list-title">Staff accounts</h2>
+    <p class="fd-dash-hint">Active and inactive staff accounts, including pending invitations. Role changes and activation changes take effect immediately.</p>
+    {% if rows %}
+    <div class="fd-team-list">
+        {% for row in rows %}
+        <article class="fd-team-card{% if not row.user.is_active %} is-inactive{% endif %}">
+            <div class="fd-team-card-head">
+                <div class="fd-team-name">
+                    <strong>{{ row.user.get_full_name|default:row.user.username }}</strong>
+                    <span>{{ row.user.email|default:"No email on file" }}</span>
+                </div>
+                <div class="fd-team-badges">
+                    {% if row.user.is_active %}<span class="fd-dash-pill">Active account</span>{% else %}<span class="fd-dash-pill is-muted">Inactive account</span>{% endif %}
+                    {% if row.role %}<span class="fd-dash-pill is-muted">{{ row.role|capfirst }} role</span>{% else %}<span class="fd-dash-pill is-muted">No role group</span>{% endif %}
+                    {% if row.user.is_superuser %}<span class="fd-dash-pill is-muted">Superuser</span>{% endif %}
+                </div>
+            </div>
+
+            <div class="fd-team-meta">
+                <span>Joined {{ row.user.date_joined|date:"j M Y" }}</span>
+                {% if row.user.last_login %}<span>Last sign-in {{ row.user.last_login|date:"j M Y H:i" }}</span>{% else %}<span>Has not signed in yet</span>{% endif %}
+            </div>
+
+            {% if row.invitation and not row.invitation.used_at %}
+            <div class="fd-team-invite-state">
+                {% if row.invitation.revoked_at %}
+                <span class="fd-dash-pill is-muted">Invitation revoked</span>
+                This link can no longer be used.
+                {% elif row.invitation.is_pending %}
+                <span class="fd-dash-pill">Invitation pending</span>
+                Sent for the {{ row.invitation.get_role_display }} role. Expires {{ row.invitation.expires_at|date:"j M Y H:i" }}.
+                {% else %}
+                <span class="fd-dash-pill is-muted">Invitation expired</span>
+                Expired {{ row.invitation.expires_at|date:"j M Y H:i" }}. Resend a new link if access is still needed.
+                {% endif %}
+                {% if row.invitation.email_delivery %}
+                <span class="fd-dash-hint">Email: {{ row.invitation.email_delivery.get_status_display }}{% if row.invitation.email_delivery.last_error %} &middot; {{ row.invitation.email_delivery.last_error }}{% endif %}</span>
+                {% endif %}
+            </div>
+            {% elif not row.invitation %}
+            <div class="fd-team-invite-state">
+                <span class="fd-dash-hint">No invitation record. This account was created outside the invitation flow.</span>
+            </div>
+            {% endif %}
+
+            <div class="fd-team-controls">
+                <form method="post" class="fd-team-role-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="change_role">
+                    <input type="hidden" name="user_id" value="{{ row.user.pk }}">
+                    <div class="fd-field">
+                        <label for="role-{{ row.user.pk }}">Role</label>
+                        <select class="form-select" id="role-{{ row.user.pk }}" name="role">
+                            {% for value, label in role_choices %}
+                            <option value="{{ value }}"{% if value == row.role %} selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <p class="fd-team-role-help">Each role option includes its access summary. Owner has full access; Manager cannot manage the team; Support handles enquiries only.</p>
+                    </div>
+                    <button type="submit" class="fd-ghost-btn fd-dash-btn">Update role</button>
+                </form>
+
+                {% if row.invitation and not row.invitation.used_at and not row.invitation.revoked_at %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="resend">
+                    <input type="hidden" name="invitation_id" value="{{ row.invitation.pk }}">
+                    <button type="submit" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-paper-plane" aria-hidden="true"></i>Resend invitation</button>
+                </form>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="toggle_active">
+                    <input type="hidden" name="user_id" value="{{ row.user.pk }}">
+                    <button type="submit" class="fd-ghost-btn fd-dash-btn">
+                        {% if row.user.is_active %}Deactivate account{% else %}Activate account{% endif %}
+                    </button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="fd-dash-empty">
+        <i class="fas fa-users" aria-hidden="true"></i>
+        <h3>No staff accounts yet</h3>
+        <p>Invite the first staff member using the form above.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -100,7 +100,7 @@ textarea:focus-visible,
 /* Slightly wider mark without changing the approved logo height. The gentle
    horizontal scale keeps the artwork proportional and avoids re-cropping. */
 img.fd-logo-img {
-  transform: scaleX(1.1);
+  transform: scaleX(1.2);
   transform-origin: center center;
 }
 
@@ -3963,4 +3963,68 @@ html[data-theme="dark"] a.fd-page-link.is-current:hover {
   background-color: var(--error-color);
   border-color: var(--error-color);
   color: var(--white-color);
+}
+
+/* ==========================================================================
+   LOGO VISIBILITY PASS
+   Keep the header height unchanged by reclaiming the vertical padding around
+   the mark and spending it on the logo itself. Sizes stay proportional and
+   step down responsively so the narrow header never overflows.
+   ========================================================================== */
+.vs-header .header-logo {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.fd-logo img.fd-logo-img {
+  height: 76px;
+  max-width: 190px;
+}
+
+.oto-footer-logo {
+  display: inline-flex;
+  margin-bottom: 16px;
+}
+
+.oto-footer-logo img.fd-logo-img {
+  height: 88px;
+  max-width: 220px;
+}
+
+.vs-menu-wrapper .mobile-logo {
+  padding-top: 24px;
+}
+
+.vs-menu-wrapper .mobile-logo .fd-logo img.oto-logo-img {
+  height: 70px;
+  max-width: 175px;
+}
+
+@media (max-width: 991px) {
+  .fd-logo img.fd-logo-img {
+    height: 68px;
+    max-width: 170px;
+  }
+
+  .oto-footer-logo img.fd-logo-img {
+    height: 78px;
+    max-width: 195px;
+  }
+}
+
+@media (max-width: 575px) {
+  .fd-logo img.fd-logo-img {
+    height: 62px;
+    max-width: 150px;
+  }
+
+  .oto-footer-logo img.fd-logo-img {
+    height: 72px;
+    max-width: 175px;
+  }
+
+  .vs-menu-wrapper .mobile-logo .fd-logo img.oto-logo-img {
+    height: 62px;
+    max-width: 150px;
+  }
 }

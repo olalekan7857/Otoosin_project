@@ -21,8 +21,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.4">
-    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=7.6">
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.0">
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.4">
     <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
 </head>
@@ -108,7 +108,8 @@
 
                                 <div class="fd-admin-forgot-panel" id="fd-admin-forgot-panel" hidden>
                                     <p><strong>Password help</strong></p>
-                                    <p>Staff passwords are managed by the farm owner. Contact the owner if you need access or a password change.</p>
+                                    <p>Staff passwords are managed by the farm owner. You can also request a secure reset link by email.</p>
+                                    <p><a href="{% url 'Otoosin:staff_password_reset' %}">Reset a staff password</a></p>
                                 </div>
 
                                 <a class="fd-admin-back-link fd-admin-login-back" href="{% url 'Otoosin:index' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to storefront</a>

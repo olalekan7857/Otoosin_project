@@ -1,0 +1,59 @@
+{% extends "admin-auth-base.html" %}
+
+{% block title %}{% if invalid %}Invitation not valid{% else %}Activate staff account{% endif %} | O’TOOSIN Farms{% endblock %}
+{% block auth_eyebrow %}Staff invitation{% endblock %}
+{% block auth_title %}{% if invalid %}This invitation is not valid{% else %}Activate your staff account{% endif %}{% endblock %}
+{% block auth_intro %}{% if not invalid %}<p>Set up your sign-in details below. Your account becomes active as soon as you finish.</p>{% endif %}{% endblock %}
+
+{% block auth_content %}
+{% if invalid %}
+<div class="fd-admin-notice is-error" role="alert">
+    <p>This invitation link is expired, already used or revoked. Ask an Owner to resend a new invitation.</p>
+</div>
+<a class="fd-admin-back-link" href="{% url 'Otoosin:staff_login' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to staff sign-in</a>
+{% else %}
+<div class="fd-auth-context" aria-label="Invitation details">
+    <div>
+        <span>Email address</span>
+        <strong>{{ invitation.email }}</strong>
+    </div>
+    <div>
+        <span>Staff role</span>
+        <strong>{{ invitation.get_role_display }}</strong>
+    </div>
+</div>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <div class="fd-admin-notice is-error" role="alert">
+        {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="fd-field">
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+        {% if form.username.help_text %}<p class="fd-auth-field-help">{{ form.username.help_text }}</p>{% endif %}
+        {% for error in form.username.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+    </div>
+
+    <div class="fd-field">
+        <label for="{{ form.new_password1.id_for_label }}">New password</label>
+        {{ form.new_password1 }}
+        {% if form.new_password1.help_text %}<div class="fd-auth-field-help">{{ form.new_password1.help_text|safe }}</div>{% endif %}
+        {% for error in form.new_password1.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+    </div>
+
+    <div class="fd-field">
+        <label for="{{ form.new_password2.id_for_label }}">Confirm new password</label>
+        {{ form.new_password2 }}
+        {% for error in form.new_password2.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+    </div>
+
+    <button type="submit" class="vs-btn"><i class="fas fa-user-check" aria-hidden="true"></i>Activate account</button>
+</form>
+
+<a class="fd-admin-back-link" href="{% url 'Otoosin:staff_login' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to staff sign-in</a>
+{% endif %}
+{% endblock %}

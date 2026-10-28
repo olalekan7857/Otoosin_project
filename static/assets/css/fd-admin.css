@@ -47,7 +47,7 @@
 .fd-admin-brand {
   display: flex;
   align-items: center;
-  padding: 20px 20px 16px 20px;
+  padding: 10px 20px;
 }
 
 /* Reuse the customer wordmark at a quieter size; same markup (.fd-logo). */
@@ -56,9 +56,9 @@
 }
 
 .fd-admin-brand .fd-logo img.fd-logo-img {
-  height: 54px;
+  height: 80px;
   width: auto;
-  max-width: 150px;
+  max-width: 205px;
   margin-right: 0;
 }
 
@@ -330,7 +330,7 @@ html[data-theme="dark"] .fd-admin-login-shell {
   min-width: 0;
   background: var(--secondary-color);
   color: var(--white-color);
-  padding: 46px 42px 38px;
+  padding: 32px 42px 38px;
 }
 
 .fd-admin.fd-admin-login .fd-admin-login-brand .fd-logo {
@@ -341,9 +341,9 @@ html[data-theme="dark"] .fd-admin-login-shell {
 }
 
 .fd-admin.fd-admin-login .fd-admin-login-brand .fd-logo img.fd-logo-img {
-  height: 64px;
+  height: 86px;
   width: auto;
-  max-width: 180px;
+  max-width: 230px;
   margin-right: 0;
 }
 
@@ -436,14 +436,14 @@ html[data-theme="dark"] .fd-admin-login-shell {
 
 .fd-admin.fd-admin-login .fd-admin-login-mobile-brand {
   display: inline-flex;
-  margin-bottom: 28px;
+  margin-bottom: 20px;
   font-size: 24px;
 }
 
 .fd-admin.fd-admin-login .fd-admin-login-mobile-brand img.fd-logo-img {
-  height: 52px;
+  height: 72px;
   width: auto;
-  max-width: 145px;
+  max-width: 190px;
   margin-right: 0;
 }
 
@@ -481,6 +481,67 @@ html[data-theme="dark"] .fd-admin-login-shell {
   color: var(--fd-brand-green-text);
   font-size: 12px;
   line-height: 1.4;
+}
+
+/* Invitation context and field help on activation/reset pages. */
+.fd-auth-context {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1px;
+  margin: 0 0 20px 0;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--fd-hairline);
+}
+
+.fd-auth-context > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--smoke-color);
+}
+
+.fd-auth-context span {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--body-color);
+}
+
+.fd-auth-context strong {
+  font-family: var(--title-font);
+  font-size: 15px;
+  color: var(--title-color);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.fd-auth-field-help,
+.fd-auth-field-help ul {
+  margin: 6px 0 0 0;
+  padding-left: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--body-color);
+}
+
+.fd-auth-field-help ul {
+  padding-left: 18px;
+}
+
+.fd-auth-field-help li {
+  margin-bottom: 4px;
+}
+
+.fd-auth-field-help li:last-child {
+  margin-bottom: 0;
+}
+
+html[data-theme="dark"] .fd-auth-context > div {
+  background: var(--fd-surface-2);
 }
 
 .fd-admin.fd-admin-login .form-control {
@@ -605,10 +666,24 @@ html[data-theme="dark"] .fd-admin-login-shell {
   font-size: 14.5px;
 }
 
-/* Slightly roomier auth fields; still the template .form-control. */
-.fd-admin .form-control {
+/* Slightly roomier admin fields; keep selects on the same radius as inputs. */
+.fd-admin .form-control,
+.fd-admin .form-select {
   border-radius: 12px;
   min-height: 52px;
+}
+
+/* Keep numeric inputs visually consistent with text fields. */
+.fd-admin input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.fd-admin input[type="number"]::-webkit-outer-spin-button,
+.fd-admin input[type="number"]::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .fd-admin-check-row {
@@ -4105,4 +4180,499 @@ html[data-theme="dark"] .fd-dash-card-icon {
 
 .fd-admin .fd-edit-more .fd-field:last-child {
   margin-bottom: 0;
+}
+
+/* ---------- Team management ------------------------------------------- */
+.fd-team-guide {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: team-step;
+}
+
+.fd-team-guide li {
+  position: relative;
+  padding: 14px 14px 14px 46px;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 14px;
+  background: var(--fd-surface);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fd-team-guide li::before {
+  counter-increment: team-step;
+  content: counter(team-step);
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  color: #fff;
+  font-family: var(--title-font);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.fd-team-guide strong {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--title-font);
+  font-size: 13.5px;
+}
+
+.fd-team-list {
+  display: grid;
+  gap: 14px;
+}
+
+.fd-team-card {
+  padding: 18px;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 16px;
+  background: var(--fd-surface);
+}
+
+.fd-team-card.is-inactive {
+  background: var(--fd-surface-2);
+}
+
+.fd-team-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.fd-team-name {
+  min-width: 0;
+}
+
+.fd-team-name strong {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 16px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.fd-team-name span {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--body-color);
+  overflow-wrap: anywhere;
+}
+
+.fd-team-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.fd-team-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--body-color);
+}
+
+.fd-team-invite-state {
+  margin-top: 12px;
+  padding: 11px 13px;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 12px;
+  background: var(--fd-surface-2);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fd-team-invite-state .fd-dash-pill {
+  margin-right: 6px;
+}
+
+.fd-role-access {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 14px;
+  background: var(--fd-surface-2);
+}
+
+.fd-role-access-title {
+  margin: 0 0 8px;
+  font-family: var(--title-font);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--title-color);
+}
+
+.fd-role-access ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-role-access li {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.fd-role-access li strong {
+  font-family: var(--title-font);
+  color: var(--title-color);
+}
+
+.fd-role-access li span {
+  color: var(--body-color);
+}
+
+.fd-team-controls {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) auto auto;
+  align-items: end;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.fd-team-controls form {
+  margin: 0;
+}
+
+.fd-team-controls .fd-field {
+  margin: 0;
+}
+
+.fd-team-role-help {
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--body-color);
+}
+
+@media (max-width: 767px) {
+  .fd-team-guide {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fd-role-access ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-team-controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .fd-team-guide {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Enquiries inbox ------------------------------------------- */
+.fd-msg-page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.fd-msg-page-head h2 {
+  margin: 0 0 4px;
+}
+
+.fd-msg-page-head .fd-dash-hint {
+  margin: 0;
+  max-width: 70ch;
+}
+
+.fd-msg-filters {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 230px auto auto;
+  align-items: end;
+  gap: 12px;
+  width: 100%;
+  margin: 18px 0 20px;
+}
+
+.fd-msg-filters .fd-field {
+  min-width: 0;
+  margin: 0;
+}
+
+.fd-msg-filter-btn,
+.fd-msg-clear-btn {
+  min-height: 52px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.fd-msg-filter-btn i {
+  margin-right: 7px;
+}
+
+.fd-msg-table-hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--body-color);
+}
+
+.fd-msg-table-hint i {
+  color: var(--theme-color);
+}
+
+.fd-msg-table {
+  min-width: 900px;
+}
+
+.fd-msg-table th {
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.fd-msg-table td {
+  vertical-align: top;
+}
+
+.fd-msg-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.fd-msg-table tbody tr:hover {
+  background: var(--fd-surface-2);
+}
+
+.fd-msg-table tbody tr.fd-msg-new {
+  background: rgba(222, 173, 57, 0.06);
+}
+
+.fd-msg-subject {
+  display: inline-block;
+  font-family: var(--title-font);
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--title-color);
+}
+
+.fd-msg-subject:hover,
+.fd-msg-subject:focus-visible {
+  color: var(--theme-color);
+}
+
+.fd-msg-snippet {
+  max-width: 34ch;
+  margin-top: 4px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--body-color);
+}
+
+.fd-msg-sender-name,
+.fd-msg-handler {
+  display: block;
+  font-family: var(--title-font);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--title-color);
+}
+
+.fd-msg-contact {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--body-color);
+  overflow-wrap: anywhere;
+}
+
+.fd-msg-contact:hover,
+.fd-msg-contact:focus-visible {
+  color: var(--theme-color);
+}
+
+.fd-msg-table time {
+  display: block;
+  font-size: 13px;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.fd-msg-table time span {
+  display: block;
+  font-size: 12px;
+  color: var(--body-color);
+}
+
+.fd-msg-handled-at,
+.fd-msg-unhandled {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--body-color);
+}
+
+.fd-msg-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 7px 12px;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 10px;
+  background: var(--fd-surface-2);
+  color: var(--title-color);
+  font-family: var(--title-font);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.fd-msg-open:hover,
+.fd-msg-open:focus-visible {
+  border-color: var(--theme-color);
+  color: var(--theme-color);
+}
+
+@media (max-width: 991px) {
+  .fd-msg-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .fd-msg-search-field {
+    grid-column: 1 / -1;
+  }
+
+  .fd-msg-filter-btn,
+  .fd-msg-clear-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .fd-msg-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fd-msg-search-field {
+    grid-column: auto;
+  }
+
+  .fd-msg-table-hint {
+    align-items: flex-start;
+  }
+
+  .fd-msg-table-scroll {
+    border: none;
+    overflow: visible;
+  }
+
+  .fd-msg-table {
+    min-width: 0;
+  }
+
+  .fd-msg-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .fd-msg-table,
+  .fd-msg-table tbody,
+  .fd-msg-table tr,
+  .fd-msg-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .fd-msg-table caption {
+    display: block;
+    width: 100%;
+    padding: 0 0 12px;
+  }
+
+  .fd-msg-table tbody tr {
+    margin-bottom: 14px;
+    padding: 16px;
+    border: 1px solid var(--fd-hairline);
+    border-radius: 14px;
+    background: var(--fd-surface);
+  }
+
+  .fd-msg-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .fd-msg-table td {
+    display: grid;
+    grid-template-columns: 112px minmax(0, 1fr);
+    gap: 4px 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--fd-hairline);
+    text-align: left;
+  }
+
+  .fd-msg-table td::before {
+    content: attr(data-label);
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--body-color);
+  }
+
+  .fd-msg-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .fd-msg-table td[data-label="Action"] {
+    display: block;
+    padding-top: 14px;
+  }
+
+  .fd-msg-table td[data-label="Action"]::before {
+    display: none;
+  }
+
+  .fd-msg-open {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .fd-msg-snippet {
+    max-width: none;
+  }
 }

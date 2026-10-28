@@ -1,8 +1,7 @@
 /* ==========================================================================
    O’TOOSIN Farms — Contact form
-   Frontend validation and honest submission feedback. No message delivery
-   endpoint is configured, so the form never claims a message was sent and
-   never persists the enquiry.
+   Frontend validation mirrors the server form. The browser submits normally;
+   Django re-validates, stores the enquiry and returns the real receipt.
    ========================================================================== */
 (function () {
   "use strict";
@@ -13,6 +12,7 @@
   }
 
   var statusBox = document.getElementById("oto-contact-status");
+  var statusText = statusBox ? statusBox.querySelector(".oto-contact-status-text") : null;
   var fields = {
     name: document.getElementById("oto-contact-name"),
     email: document.getElementById("oto-contact-email"),
@@ -110,7 +110,9 @@
     if (!statusBox) {
       return;
     }
-    statusBox.textContent = "";
+    if (statusText) {
+      statusText.textContent = "";
+    }
     statusBox.classList.remove("is-error");
     statusBox.setAttribute("hidden", "");
   }
@@ -119,9 +121,30 @@
     if (!statusBox) {
       return;
     }
-    statusBox.textContent = message;
+    if (statusText) {
+      statusText.textContent = message;
+    }
     statusBox.classList.toggle("is-error", !!isError);
     statusBox.removeAttribute("hidden");
+  }
+
+  var dismissButtons = document.querySelectorAll(
+    "[data-dismiss-contact-status], [data-dismiss-contact-notice]"
+  );
+  Array.prototype.forEach.call(dismissButtons, function (button) {
+    button.addEventListener("click", function () {
+      var target = button.closest(
+        "[data-contact-notice], #oto-contact-status"
+      );
+      if (target) {
+        target.setAttribute("hidden", "");
+      }
+    });
+  });
+
+  var serverNotice = document.querySelector("[data-contact-notice]");
+  if (serverNotice) {
+    serverNotice.scrollIntoView({ block: "center" });
   }
 
   var orderedFields = [fields.name, fields.email, fields.phone, fields.subject, fields.message];
@@ -149,7 +172,6 @@
   });
 
   form.addEventListener("submit", function (event) {
-    event.preventDefault();
     triedSubmit = true;
 
     var firstInvalid = null;
@@ -165,18 +187,13 @@
     });
 
     if (firstInvalid) {
+      event.preventDefault();
       showStatus("Please check the highlighted fields and try again.", true);
       firstInvalid.focus();
       return;
     }
 
-    showStatus(
-      "Message delivery is not connected on this page, so your enquiry has not been sent. Your details remain in the form.",
-      false
-    );
-
-    if (statusBox) {
-      statusBox.focus();
-    }
+    /* The server validates again, saves the enquiry and shows the receipt. */
+    showStatus("Sending your enquiry…", false);
   });
 })();

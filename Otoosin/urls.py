@@ -1,10 +1,8 @@
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from . import views
-from .forms import StaffLoginForm
 
 app_name = "Otoosin"
 
@@ -32,19 +30,53 @@ urlpatterns = [
     path("terms/", views.terms, name="terms"),
     path(
         "staff/login/",
-        auth_views.LoginView.as_view(
-            template_name="admin-login.html",
-            authentication_form=StaffLoginForm,
-            redirect_authenticated_user=True,
-        ),
+        views.StaffLoginView.as_view(),
         name="staff_login",
     ),
     path(
         "staff/logout/",
-        auth_views.LogoutView.as_view(next_page="Otoosin:staff_login"),
+        views.StaffLogoutView.as_view(),
         name="staff_logout",
     ),
+    path(
+        "staff/password-reset/",
+        views.staff_password_reset,
+        name="staff_password_reset",
+    ),
+    path(
+        "staff/password-reset/done/",
+        views.staff_password_reset_done,
+        name="staff_password_reset_done",
+    ),
+    path(
+        "staff/password-reset/<uidb64>/<token>/",
+        views.StaffPasswordResetConfirmView.as_view(),
+        name="staff_password_reset_confirm",
+    ),
+    path(
+        "staff/password-reset/complete/",
+        views.staff_password_reset_complete,
+        name="staff_password_reset_complete",
+    ),
+    path(
+        "staff/activate/<uidb64>/<token>/",
+        views.staff_activate,
+        name="staff_activate",
+    ),
     path("staff/", views.staff_dashboard, name="staff_dashboard"),
+    path("staff/team/", views.staff_team, name="staff_team"),
+    path("staff/messages/", views.staff_messages, name="staff_messages"),
+    path(
+        "staff/messages/<int:pk>/",
+        views.staff_message_detail,
+        name="staff_message_detail",
+    ),
+    path(
+        "staff/delivery/",
+        views.staff_delivery_locations,
+        name="staff_delivery",
+    ),
+    path("staff/settings/", views.staff_settings, name="staff_settings"),
     path(
         "staff/products/",
         views.staff_product_list,

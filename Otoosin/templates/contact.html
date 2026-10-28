@@ -1,30 +1,31 @@
 {% extends "layout.html" %}
 {% load static %}
 
-{% block title %}Contact O’TOOSIN Farms | Products, Orders and Pickup{% endblock title %}
+{% block title %}Contact {{ site_config.business_name|default:'O’Toosin Farms' }} | Products, Orders and Pickup{% endblock title %}
 
 {% block body_class %}otoosin-shop otoosin-contact{% endblock body_class %}
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'assets/css/otoosin-shop.css' %}?v=8.0">
-    <link rel="stylesheet" href="{% static 'assets/css/otoosin-contact.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-contact.css' %}?v=1.2">
 
 <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "ContactPage",
-      "name": "Contact O’TOOSIN Farms",
-      "description": "Contact O’TOOSIN Farms about a product, an existing order or delivery and pickup.",
+      "name": "Contact {{ site_config.business_name|default:'O’Toosin Farms'|escapejs }}",
+      "description": "Contact {{ site_config.business_name|default:'O’Toosin Farms'|escapejs }} about a product, an existing order or delivery and pickup.",
       "mainEntity": {
         "@type": "Organization",
-        "name": "O’TOOSIN Farms",
+        "name": "{{ site_config.business_name|default:'O’Toosin Farms'|escapejs }}",
         "logo": "{% static 'assets/img/harvest_castle/of_favicon.png' %}",
-        "description": "A complete farm shop offering meats, fish, live animals, eggs, veggies and fruits.",
-        "location": {
+        "description": "{{ site_config.description|default:'A complete farm shop offering meats, fish, live animals, eggs, veggies and fruits.'|escapejs }}"{% if site_config.address %},
+        "address": "{{ site_config.address|escapejs }}"{% endif %}{% if active_pickup_locations %}
+        ,"location": {
           "@type": "Place",
-          "name": "Mummy-D Stores",
-          "address": "Beside FUNAAB MANCOT Park, Camp, Abeokuta"
-        }
+          "name": "{{ active_pickup_locations.0.name|escapejs }}",
+          "address": "{{ active_pickup_locations.0.address|escapejs }}"
+        }{% endif %}
       }
     }
     </script>
@@ -45,7 +46,7 @@
                     </ol>
                 </nav>
                 <span class="sec-subtitle">Contact us</span>
-                <h1 class="sec-title" id="oto-contact-heading">Contact O’TOOSIN Farms</h1>
+                <h1 class="sec-title" id="oto-contact-heading">Contact {{ site_config.business_name|default:'O’Toosin Farms' }}</h1>
                 <p>Questions about meats, fish, live animals, eggs, veggies or fruits? Ask about a product, an existing order, or delivery and pickup. Use the enquiry form below or check the pickup details on this page.</p>
             </div>
         </section>
@@ -63,20 +64,52 @@
                                 <h2 id="oto-contact-form-title">How can we help?</h2>
                                 <p>Tell us what you need. Required fields are marked with an asterisk.</p>
                             </div>
-                            <form id="oto-contact-form" novalidate>
+                            {% if submitted %}
+                            <div class="oto-contact-notice is-success" role="status" data-contact-notice>
+                                <span class="oto-contact-notice-icon"><i class="fas fa-check-circle" aria-hidden="true"></i></span>
+                                <div class="oto-contact-notice-copy">
+                                    <strong>Your enquiry was sent successfully.</strong>
+                                    <p>Our team can now review it in the staff inbox. Please keep any order reference you already have.</p>
+                                </div>
+                                <button type="button" class="oto-contact-notice-close" aria-label="Dismiss message" data-dismiss-contact-notice>&times;</button>
+                            </div>
+                            {% endif %}
+                            {% if form.errors %}
+                            <div class="oto-contact-notice is-error" role="alert" data-contact-notice>
+                                <span class="oto-contact-notice-icon"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i></span>
+                                <div class="oto-contact-notice-copy">
+                                    <strong>Your enquiry was not sent.</strong>
+                                    {% if form.non_field_errors %}
+                                    {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                                    {% else %}
+                                    <p>Please correct the following and try again:</p>
+                                    <ul>
+                                        {% for field in form %}{% for error in field.errors %}<li><strong>{{ field.label }}:</strong> {{ error }}</li>{% endfor %}{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="oto-contact-notice-close" aria-label="Dismiss message" data-dismiss-contact-notice>&times;</button>
+                            </div>
+                            {% endif %}
+                            <form id="oto-contact-form" method="post" action="{% url 'Otoosin:contact' %}" novalidate>
+                                {% csrf_token %}
+                                <div class="oto-honeypot-field" aria-hidden="true">
+                                    <label for="oto-contact-website">Website</label>
+                                    {{ form.website }}
+                                </div>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="fd-field">
                                             <label for="oto-contact-name">Full name <span class="oto-required" aria-hidden="true">*</span></label>
-                                            <input class="form-control" type="text" id="oto-contact-name" name="name" autocomplete="name" placeholder="e.g. Adaeze Okafor" minlength="2" required aria-describedby="oto-contact-name-error">
-                                            <span class="fd-field-error" id="oto-contact-name-error" hidden></span>
+                                            {{ form.name }}
+                                            <span class="fd-field-error" id="oto-contact-name-error" {% if not form.name.errors %}hidden{% endif %}>{% for error in form.name.errors %}{{ error }}{% endfor %}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="fd-field">
                                             <label for="oto-contact-email">Email address <span class="oto-required" aria-hidden="true">*</span></label>
-                                            <input class="form-control" type="email" id="oto-contact-email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required aria-describedby="oto-contact-email-error">
-                                            <span class="fd-field-error" id="oto-contact-email-error" hidden></span>
+                                            {{ form.email }}
+                                            <span class="fd-field-error" id="oto-contact-email-error" {% if not form.email.errors %}hidden{% endif %}>{% for error in form.email.errors %}{{ error }}{% endfor %}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -84,31 +117,27 @@
                                     <div class="col-md-6">
                                         <div class="fd-field">
                                             <label for="oto-contact-phone">Phone number <span class="fd-optional">(Optional)</span></label>
-                                            <input class="form-control" type="tel" id="oto-contact-phone" name="phone" autocomplete="tel" inputmode="tel" placeholder="e.g. 0803 123 4567" aria-describedby="oto-contact-phone-error">
-                                            <span class="fd-field-error" id="oto-contact-phone-error" hidden></span>
+                                            {{ form.phone }}
+                                            <span class="fd-field-error" id="oto-contact-phone-error" {% if not form.phone.errors %}hidden{% endif %}>{% for error in form.phone.errors %}{{ error }}{% endfor %}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="fd-field">
                                             <label for="oto-contact-subject">Enquiry type <span class="oto-required" aria-hidden="true">*</span></label>
-                                            <select class="form-select" id="oto-contact-subject" name="subject" required aria-describedby="oto-contact-subject-error">
-                                                <option value="" selected disabled>Choose an enquiry type</option>
-                                                <option value="product">Product or category question</option>
-                                                <option value="order">Existing order</option>
-                                                <option value="delivery">Delivery or pickup</option>
-                                                <option value="general">General enquiry</option>
-                                                <option value="feedback">Feedback or other</option>
-                                            </select>
-                                            <span class="fd-field-error" id="oto-contact-subject-error" hidden></span>
+                                            {{ form.subject }}
+                                            <span class="fd-field-error" id="oto-contact-subject-error" {% if not form.subject.errors %}hidden{% endif %}>{% for error in form.subject.errors %}{{ error }}{% endfor %}</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="fd-field">
                                     <label for="oto-contact-message">Message <span class="oto-required" aria-hidden="true">*</span></label>
-                                    <textarea class="form-control" id="oto-contact-message" name="message" rows="6" minlength="10" placeholder="Tell us what you need help with. If your enquiry is about an order, include the name used at checkout and your order reference if you have one." required aria-describedby="oto-contact-message-error"></textarea>
-                                    <span class="fd-field-error" id="oto-contact-message-error" hidden></span>
+                                    {{ form.message }}
+                                    <span class="fd-field-error" id="oto-contact-message-error" {% if not form.message.errors %}hidden{% endif %}>{% for error in form.message.errors %}{{ error }}{% endfor %}</span>
                                 </div>
-                                <p class="oto-contact-status" id="oto-contact-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></p>
+                                <div class="oto-contact-status" id="oto-contact-status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden>
+                                    <span class="oto-contact-status-text"></span>
+                                    <button type="button" class="oto-contact-status-close" aria-label="Dismiss message" data-dismiss-contact-status>&times;</button>
+                                </div>
                                 <div class="oto-contact-actions">
                                     <button type="submit" class="vs-btn" id="oto-contact-submit"><i class="fas fa-paper-plane" aria-hidden="true"></i>Submit Enquiry</button>
                                     <p class="oto-form-note"><span class="oto-required" aria-hidden="true">*</span> Required fields</p>
@@ -119,12 +148,20 @@
                     <div class="col-lg-5 order-lg-1">
                         <aside class="oto-contact-aside" aria-labelledby="oto-contact-pickup-title">
                             <span class="sec-subtitle">Pickup Location</span>
-                            <h2 id="oto-contact-pickup-title">Mummy-D Stores</h2>
+                            {% if active_pickup_locations %}
+                            {% with pickup=active_pickup_locations.0 %}
+                            <h2 id="oto-contact-pickup-title">{{ pickup.name }}</h2>
                             <address class="oto-contact-address">
                                 <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                                <span>Beside FUNAAB MANCOT Park,<br>Camp, Abeokuta.</span>
+                                <span>{{ pickup.address|linebreaksbr }}</span>
                             </address>
-                            <p class="oto-contact-pickup-note">Choose a pickup location and collect your order yourself. No delivery fee applies. Select Mummy-D Stores as your pickup location at checkout.</p>
+                            <p class="oto-contact-pickup-note">{{ pickup.customer_instructions|default:"Choose a pickup location and collect your order yourself. No delivery fee applies." }}</p>
+                            {% if pickup.opening_hours %}<p class="oto-contact-pickup-note">{{ pickup.opening_hours }}</p>{% endif %}
+                            {% endwith %}
+                            {% else %}
+                            <h2 id="oto-contact-pickup-title">Pickup details</h2>
+                            <p class="oto-contact-pickup-note">Pickup location and collection details are confirmed during checkout. Contact us if you need help before ordering.</p>
+                            {% endif %}
                             <a class="oto-contact-link" href="{% url 'Otoosin:index' %}#delivery-pickup">Delivery &amp; Pickup details <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
 
                             <hr class="oto-contact-aside-divider">
@@ -198,5 +235,5 @@
 {% endblock content %}
 
 {% block extra_js %}
-    <script src="{% static 'assets/js/otoosin-contact.js' %}" defer></script>
+    <script src="{% static 'assets/js/otoosin-contact.js' %}?v=1.2" defer></script>
 {% endblock extra_js %}

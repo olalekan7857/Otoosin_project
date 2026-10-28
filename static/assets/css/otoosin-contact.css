@@ -308,7 +308,114 @@
   font-weight: 700;
 }
 
+.oto-contact-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 18px;
+  padding: 15px 16px;
+  border: 1px solid #ececec;
+  border-left: 4px solid var(--theme-color);
+  border-radius: 12px;
+  background: var(--smoke-color);
+  color: var(--body-color);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.oto-contact-notice[hidden] {
+  display: none;
+}
+
+.oto-contact-notice.is-error {
+  border-color: var(--error-color);
+  border-left-color: var(--error-color);
+  background: rgba(220, 53, 69, 0.08);
+}
+
+.oto-contact-notice.is-success {
+  border-color: var(--success-color);
+  border-left-color: var(--success-color);
+  background: rgba(40, 167, 69, 0.1);
+}
+
+.oto-contact-notice-icon {
+  flex: 0 0 auto;
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.oto-contact-notice.is-error .oto-contact-notice-icon {
+  color: var(--error-color);
+}
+
+.oto-contact-notice.is-success .oto-contact-notice-icon {
+  color: var(--success-color);
+}
+
+.oto-contact-notice-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.oto-contact-notice-copy strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--title-font);
+  font-size: 15px;
+  color: var(--title-color);
+}
+
+.oto-contact-notice-copy p {
+  margin: 0;
+}
+
+.oto-contact-notice-copy ul {
+  margin: 6px 0 0;
+  padding-left: 20px;
+}
+
+.oto-contact-notice-copy li + li {
+  margin-top: 3px;
+}
+
+.oto-contact-notice-close,
+.oto-contact-status-close {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin: -4px -4px 0 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.oto-contact-notice-close:hover,
+.oto-contact-status-close:hover {
+  border-color: var(--border-color);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.oto-contact-notice-close:focus-visible,
+.oto-contact-status-close:focus-visible {
+  outline: 2px solid var(--theme-color);
+  outline-offset: 2px;
+}
+
 .oto-contact-status {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
   margin: 0;
   padding: 14px 18px;
   border: 1px solid #ececec;
@@ -318,6 +425,11 @@
   color: var(--body-color);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.oto-contact-status-text {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .oto-contact-status[hidden] {
@@ -404,16 +516,33 @@ html[data-theme="dark"] .oto-contact-form-card {
   background: var(--fd-surface);
 }
 
-html[data-theme="dark"] .oto-contact-status {
+html[data-theme="dark"] .oto-contact-status,
+html[data-theme="dark"] .oto-contact-notice {
   border-color: #2e3b33;
   border-left-color: var(--theme-color);
   background: var(--fd-surface-2);
 }
 
-html[data-theme="dark"] .oto-contact-status.is-error {
+html[data-theme="dark"] .oto-contact-status.is-error,
+html[data-theme="dark"] .oto-contact-notice.is-error {
   border-left-color: var(--error-color);
   background: rgba(220, 53, 69, 0.12);
   color: var(--fd-error-text);
+}
+
+html[data-theme="dark"] .oto-contact-notice.is-success {
+  border-color: var(--success-color);
+  border-left-color: var(--success-color);
+  background: rgba(40, 167, 69, 0.14);
+}
+
+html[data-theme="dark"] .oto-contact-notice-copy strong {
+  color: var(--fd-text);
+}
+
+html[data-theme="dark"] .oto-contact-notice-close:hover,
+html[data-theme="dark"] .oto-contact-status-close:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
 @media (max-width: 991px) {
@@ -475,3 +604,6 @@ html[data-theme="dark"] .oto-contact-status.is-error {
     width: 100%;
   }
 }
+
+/* Honeypot: hidden from people, still present for basic bot filtering. */
+.oto-honeypot-field{position:absolute!important;left:-10000px!important;top:auto!important;width:1px!important;height:1px!important;overflow:hidden!important;}

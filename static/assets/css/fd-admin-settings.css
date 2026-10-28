@@ -240,6 +240,10 @@
   min-width: 0;
 }
 
+.fd-settings-grid > .fd-field-full {
+  grid-column: 1 / -1;
+}
+
 /* ---------- Brand reference and slogan -------------------------------- */
 .fd-settings-brand {
   display: grid;
@@ -966,6 +970,56 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.fd-loc-admin-list > li {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 14px;
+  border: 1px solid var(--fd-hairline);
+  border-radius: 12px;
+  background: var(--fd-surface);
+}
+
+.fd-loc-main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.fd-loc-main strong {
+  font-family: var(--title-font);
+  font-size: 14.5px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.fd-loc-main .fd-dash-pill {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.fd-loc-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+
+.fd-loc-actions form {
+  margin: 0;
+}
+
+@media (max-width: 575px) {
+  .fd-loc-admin-list > li {
+    flex-direction: column;
+  }
+
+  .fd-loc-actions {
+    width: 100%;
+  }
 }
 
 .fd-loc-admin-item {

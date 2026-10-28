@@ -1,10 +1,15 @@
+import hashlib
+import re
+from datetime import timedelta
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
 from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.text import slugify
 
 
@@ -418,3 +423,333 @@ class Inventory(models.Model):
         if not self.track_stock:
             return False
         return self.quantity_available <= 0
+
+
+NIGERIAN_PHONE_RE = re.compile(r"^\+?234[789][01]\d{8}$")
+
+
+def normalise_nigerian_phone(value, *, required=False):
+    """Return a canonical +234 phone number or blank for an optional field."""
+    raw = (value or "").strip()
+    if not raw:
+        if required:
+            raise ValidationError("Enter a phone number.")
+        return ""
+
+    digits = re.sub(r"\D", "", raw)
+    if digits.startswith("0") and len(digits) == 11:
+        digits = "234" + digits[1:]
+    elif digits.startswith("234"):
+        pass
+    elif len(digits) == 10 and digits[0] in "789":
+        digits = "234" + digits
+
+    candidate = f"+{digits}"
+    if not NIGERIAN_PHONE_RE.match(candidate):
+        raise ValidationError(
+            "Enter a valid Nigerian phone number, for example 0803 123 4567."
+        )
+    return candidate
+
+
+class SiteConfiguration(models.Model):
+    """Single owner-managed business configuration record."""
+
+    business_name = models.CharField(max_length=120, default="O’Toosin Farms")
+    address = models.CharField(max_length=300, blank=True)
+    contact_phone = models.CharField(max_length=30, blank=True)
+    whatsapp_number = models.CharField(max_length=30, blank=True)
+    support_email = models.EmailField(blank=True)
+    description = models.TextField(blank=True)
+    delivery_cutoff_time = models.TimeField(default="17:00")
+    delivery_cutoff_note = models.CharField(max_length=300, blank=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "site configuration"
+        verbose_name_plural = "site configuration"
+
+    def __str__(self):
+        return self.business_name
+
+    @classmethod
+    def load(cls):
+        instance, _ = cls.objects.get_or_create(pk=1)
+        return instance
+
+    def clean(self):
+        super().clean()
+        if self.pk and self.pk != 1:
+            raise ValidationError("Only one site configuration record is allowed.")
+        if self.contact_phone:
+            self.contact_phone = normalise_nigerian_phone(self.contact_phone)
+        if self.whatsapp_number:
+            self.whatsapp_number = normalise_nigerian_phone(
+                self.whatsapp_number
+            )
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @property
+    def whatsapp_digits(self):
+        return re.sub(r"\D", "", self.whatsapp_number or "")
+
+
+class DeliveryLocation(models.Model):
+    class LocationType(models.TextChoices):
+        DOORSTEP = "doorstep", "Doorstep delivery"
+        PARK = "park", "Park delivery"
+
+    location_type = models.CharField(
+        max_length=20, choices=LocationType.choices
+    )
+    name = models.CharField(max_length=120)
+    slug = models.SlugField(max_length=140, unique=True, blank=True)
+    city = models.CharField(max_length=80, blank=True)
+    state = models.CharField(max_length=80, blank=True)
+    area = models.CharField(max_length=200, blank=True)
+    fee = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(Decimal("0"))],
+    )
+    customer_instructions = models.CharField(max_length=300, blank=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["location_type", "name"],
+                name="unique_delivery_location_name_per_type",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.get_location_type_display()}: {self.name}"
+
+    def _unique_slug(self, base):
+        base = (base or "").strip("-") or "delivery-location"
+        candidate = base
+        model = type(self)
+        counter = 2
+        while model.objects.exclude(pk=self.pk).filter(slug=candidate).exists():
+            candidate = f"{base}-{counter}"
+            counter += 1
+        return candidate
+
+    def clean(self):
+        super().clean()
+        if self.fee is not None and self.fee < 0:
+            raise ValidationError({"fee": "Delivery fees cannot be negative."})
+        if self.is_active and self.fee is None:
+            raise ValidationError(
+                {"fee": "An active delivery location needs an approved fee."}
+            )
+        if self.location_type == self.LocationType.DOORSTEP:
+            if (self.city or "").strip().casefold() != "abeokuta":
+                raise ValidationError(
+                    {"city": "Doorstep delivery is currently limited to Abeokuta."}
+                )
+            if (self.state or "").strip().casefold() not in {"", "ogun"}:
+                raise ValidationError(
+                    {"state": "Doorstep delivery is currently limited to Ogun State."}
+                )
+        elif self.location_type == self.LocationType.PARK:
+            if not (self.customer_instructions or "").strip():
+                raise ValidationError(
+                    {
+                        "customer_instructions": (
+                            "Add a short instruction so customers know how the "
+                            "park delivery works."
+                        )
+                    }
+                )
+
+    def save(self, *args, **kwargs):
+        if self.location_type == self.LocationType.DOORSTEP:
+            self.city = "Abeokuta"
+            self.state = "Ogun"
+        if not self.slug:
+            self.slug = self._unique_slug(
+                slugify(f"{self.name}-{self.location_type}")
+            )
+        super().save(*args, **kwargs)
+
+
+class PickupLocation(models.Model):
+    name = models.CharField(max_length=120)
+    address = models.CharField(max_length=300)
+    customer_instructions = models.TextField(blank=True)
+    opening_hours = models.CharField(max_length=200, blank=True)
+    is_active = models.BooleanField(default=True)
+    sort_order = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+
+    def __str__(self):
+        return self.name
+
+
+class ContactMessage(models.Model):
+    class Subject(models.TextChoices):
+        PRODUCT = "product", "Product or category question"
+        ORDER = "order", "Existing order"
+        DELIVERY = "delivery", "Delivery or pickup"
+        GENERAL = "general", "General enquiry"
+        FEEDBACK = "feedback", "Feedback or other"
+
+    class Status(models.TextChoices):
+        NEW = "new", "New"
+        READ = "read", "Read"
+        REPLIED = "replied", "Replied"
+        CLOSED = "closed", "Closed"
+
+    name = models.CharField(max_length=120)
+    email = models.EmailField()
+    phone = models.CharField(max_length=30, blank=True)
+    subject = models.CharField(max_length=20, choices=Subject.choices)
+    message = models.TextField()
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.NEW
+    )
+    internal_notes = models.TextField(blank=True)
+    handled_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="handled_contact_messages",
+    )
+    handled_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def __str__(self):
+        return f"{self.get_subject_display()} from {self.name}"
+
+
+class AuditEvent(models.Model):
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="audit_events",
+    )
+    action = models.CharField(max_length=80)
+    target_type = models.CharField(max_length=80, blank=True)
+    target_id = models.CharField(max_length=80, blank=True)
+    summary = models.CharField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def __str__(self):
+        return f"{self.action} at {self.created_at:%Y-%m-%d %H:%M}"
+
+
+class EmailDelivery(models.Model):
+    class Category(models.TextChoices):
+        STAFF_INVITE = "staff_invite", "Staff invitation"
+        PASSWORD_RESET = "password_reset", "Password reset"
+
+    class Status(models.TextChoices):
+        QUEUED = "queued", "Queued"
+        SENT = "sent", "Accepted by provider"
+        FAILED = "failed", "Failed"
+
+    category = models.CharField(max_length=30, choices=Category.choices)
+    recipient = models.EmailField()
+    subject = models.CharField(max_length=200)
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.QUEUED
+    )
+    provider_message_id = models.CharField(max_length=120, blank=True)
+    attempts = models.PositiveIntegerField(default=0)
+    retryable = models.BooleanField(default=True)
+    last_error = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def __str__(self):
+        return f"{self.get_category_display()} to {self.recipient} ({self.status})"
+
+
+class StaffInvitation(models.Model):
+    class Role(models.TextChoices):
+        OWNER = "owner", "Owner"
+        MANAGER = "manager", "Manager"
+        FULFILMENT = "fulfilment", "Fulfilment"
+        SUPPORT = "support", "Support"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="staff_invitations",
+    )
+    email = models.EmailField()
+    role = models.CharField(max_length=20, choices=Role.choices)
+    token_hash = models.CharField(max_length=64, unique=True)
+    expires_at = models.DateTimeField()
+    used_at = models.DateTimeField(null=True, blank=True)
+    revoked_at = models.DateTimeField(null=True, blank=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_staff_invitations",
+    )
+    email_delivery = models.ForeignKey(
+        EmailDelivery,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="staff_invitations",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        permissions = [("manage_staff", "Can manage staff accounts")]
+
+    def __str__(self):
+        return f"Invitation for {self.email} ({self.get_role_display()})"
+
+    @staticmethod
+    def hash_token(raw_token):
+        return hashlib.sha256(raw_token.encode("utf-8")).hexdigest()
+
+    @property
+    def is_pending(self):
+        return (
+            self.used_at is None
+            and self.revoked_at is None
+            and self.expires_at > timezone.now()
+        )
+
+    @classmethod
+    def default_expiry(cls):
+        return timezone.now() + timedelta(
+            hours=getattr(settings, "STAFF_INVITATION_HOURS", 72)
+        )
