@@ -260,6 +260,42 @@ STAFF_INVITATION_HOURS = config(
     "STAFF_INVITATION_HOURS", default=72, cast=int
 )
 
+# ---------------------------------------------------------------------------
+# Paystack (server-side only). The secret key is never exposed to templates
+# or browser JavaScript. Test credentials remain in the single local .env.
+# ---------------------------------------------------------------------------
+PAYSTACK_SECRET_KEY = config("PAYSTACK_SECRET_KEY", default="").strip()
+PAYSTACK_PUBLIC_KEY = config("PAYSTACK_PUBLIC_KEY", default="").strip()
+PAYSTACK_BASE_URL = config(
+    "PAYSTACK_BASE_URL", default="https://api.paystack.co"
+).strip().rstrip("/")
+PAYSTACK_TIMEOUT_SECONDS = config(
+    "PAYSTACK_TIMEOUT_SECONDS", default=30, cast=int
+)
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        }
+    },
+    "loggers": {
+        "Otoosin": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        }
+    },
+}
+
 SITE_URL = config("SITE_URL", default="http://localhost:8000").strip().rstrip("/")
 if SITE_URL:
     _site_parts = urlsplit(SITE_URL)

@@ -51,6 +51,10 @@
   }
 
   function locationList() {
+    var server = window.FD_CHECKOUT_LOCATIONS;
+    if (server && Array.isArray(server.delivery)) {
+      return server.delivery;
+    }
     if (!locationsApi || typeof locationsApi.getActiveDeliveryLocations !== "function") {
       return [];
     }
@@ -75,16 +79,23 @@
     return findLocation(valueOf("oto-co-delivery-location"));
   }
 
-  function findPickupLocation(id) {
+  function pickupList() {
+    var server = window.FD_CHECKOUT_LOCATIONS;
+    if (server && Array.isArray(server.pickup)) {
+      return server.pickup;
+    }
     if (!locationsApi || typeof locationsApi.getPickupLocations !== "function") {
-      return null;
+      return [];
     }
-    var list;
     try {
-      list = locationsApi.getPickupLocations() || [];
+      return locationsApi.getPickupLocations() || [];
     } catch (e) {
-      return null;
+      return [];
     }
+  }
+
+  function findPickupLocation(id) {
+    var list = pickupList();
     for (var i = 0; i < list.length; i++) {
       if (list[i].id === id) {
         return list[i];
@@ -100,9 +111,7 @@
     if (checked) {
       return checked.value;
     }
-    var locations = locationsApi && locationsApi.getPickupLocations
-      ? locationsApi.getPickupLocations()
-      : [];
+    var locations = pickupList();
     return locations.length ? locations[0].id : "";
   }
 
@@ -510,7 +519,7 @@
         : "Please enter a valid Nigerian phone number.";
     } else if (id === "oto-co-email") {
       message =
-        !value || /^\S+@\S+\.\S+$/.test(value)
+        value && /^\S+@\S+\.\S+$/.test(value)
           ? ""
           : "Please enter a valid email address.";
     } else if (id === "oto-co-address") {
@@ -756,54 +765,50 @@
     }
   }
 
-  function makeOrderRef() {
-    var chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    var out = "";
-    try {
-      for (var i = 0; i < 6; i++) {
-        out += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-    } catch (e) {
-      out = "000000";
-    }
-    return "OF-" + out;
+  function csrfToken() {
+    var meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.getAttribute("content") || "" : "";
   }
 
-  function saveOrderSnapshot(order) {
-    var snapshot = {
-      id: makeOrderRef(),
-      status: "saved",
-      placedAt: new Date().toISOString(),
-      orderingMethod: "website",
-      customer: order.customer,
-      delivery: order.delivery,
-      receive: order.receive,
-      items: order.items,
-      subtotal: order.subtotal,
-      deliveryFee: order.deliveryFee,
-      total: order.total,
-      payment: {
-        method: order.payment.method,
-        label: order.payment.label,
-        dueOnline: order.payment.dueOnline,
-        deliveryFee: order.payment.deliveryFee,
-        feeConfirmed: order.payment.feeConfirmed,
-        confirmed: order.payment.confirmed,
-        status: "unpaid",
-        verified: false,
-        provider: "",
-        reference: "",
-      },
-    };
-    try {
-      window.sessionStorage.setItem(
-        LAST_ORDER_KEY,
-        JSON.stringify(snapshot)
-      );
-      return snapshot;
-    } catch (e) {
-      return null;
+  function checkoutLines(items) {
+    var lines = [];
+    for (var i = 0; i < items.length; i++) {
+      lines.push({
+        product: items[i].id,
+        variant: items[i].variantId || "",
+        quantity: items[i].qty,
+        price: items[i].price,
+      });
     }
+    return lines;
+  }
+
+  function setRecovery(url) {
+    var row = byId("fd-checkout-recovery");
+    var link = byId("fd-checkout-recovery-link");
+    if (!row || !link) {
+      return;
+    }
+    if (!url) {
+      row.setAttribute("hidden", "");
+      link.setAttribute("href", "#");
+      return;
+    }
+    link.setAttribute("href", url);
+    row.removeAttribute("hidden");
+  }
+
+  function serverErrorMessage(result) {
+    if (result && result.errors) {
+      var keys = Object.keys(result.errors);
+      for (var i = 0; i < keys.length; i++) {
+        var list = result.errors[keys[i]];
+        if (list && list.length) {
+          return list[0];
+        }
+      }
+    }
+    return (result && result.message) || "We could not start your order. Please try again.";
   }
 
   function finishCheckout() {
@@ -814,18 +819,98 @@
     if (busy) {
       return;
     }
-    busy = true;
-    var snapshot = saveOrderSnapshot(lastOrder);
-    if (!snapshot) {
-      busy = false;
-      status(
-        "We could not save your order summary in this browser. Please try again.",
-        true
-      );
+    var items = currentItems();
+    if (!items.length) {
+      status("Your cart is empty. Add some products before checking out.", true);
       return;
     }
-    window.location.href =
-      routes.orderConfirmation + "?order=" + encodeURIComponent(snapshot.id);
+    var method = receiveValue();
+    var payload = {
+      checkout_token: valueOf("oto-checkout-token"),
+      name: valueOf("oto-co-name"),
+      phone: valueOf("oto-co-phone"),
+      email: valueOf("oto-co-email"),
+      receive_method: method === "pickup" ? "pickup" : "delivery",
+      delivery_location:
+        method === "delivery" ? valueOf("oto-co-delivery-location") : "",
+      pickup_location: method === "pickup" ? selectedPickupId() : "",
+      address: method === "delivery" ? valueOf("oto-co-address") : "",
+      landmark: method === "delivery" ? valueOf("oto-co-landmark") : "",
+      instructions: valueOf("oto-co-notes"),
+      items: checkoutLines(items)
+    };
+
+    busy = true;
+    setRecovery("");
+    status("Creating your order and starting secure payment…");
+    var proceed = byId("fd-proceed-payment");
+    var confirm = byId("fd-review-confirm");
+    if (proceed) {
+      proceed.disabled = true;
+    }
+    if (confirm) {
+      confirm.disabled = true;
+    }
+    function release() {
+      busy = false;
+      if (proceed) {
+        proceed.disabled = false;
+      }
+      if (confirm) {
+        confirm.disabled = false;
+      }
+    }
+
+    window
+      .fetch(routes.checkout, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrfToken()
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(function (response) {
+        return response
+          .json()
+          .then(function (data) {
+            return { ok: response.ok, data: data };
+          })
+          .catch(function () {
+            return { ok: false, data: null };
+          });
+      })
+      .then(function (result) {
+        if (!result.data) {
+          status(
+            "We could not reach the server. Your cart has not been cleared. Please try again.",
+            true
+          );
+          release();
+          return;
+        }
+        if (result.ok && result.data.redirect_url) {
+          window.location.href = result.data.redirect_url;
+          return;
+        }
+        if (result.ok && result.data.confirmation_url) {
+          window.location.href = result.data.confirmation_url;
+          return;
+        }
+        status(serverErrorMessage(result.data), true);
+        if (result.data.confirmation_url) {
+          setRecovery(result.data.confirmation_url);
+        }
+        release();
+      })
+      .catch(function () {
+        status(
+          "We could not reach the server. Your cart has not been cleared. Please try again.",
+          true
+        );
+        release();
+      });
   }
 
   function reviewOrder() {
@@ -1359,10 +1444,7 @@
     if (!wrap) {
       return;
     }
-    var locations =
-      locationsApi && locationsApi.getPickupLocations
-        ? locationsApi.getPickupLocations()
-        : [];
+    var locations = pickupList();
     wrap.innerHTML = "";
     for (var i = 0; i < locations.length; i++) {
       var location = locations[i];
@@ -1508,7 +1590,6 @@
     if (!wrap) {
       return;
     }
-    cart.seedDemo();
     renderLocationDropdown();
     renderPickupOptions();
     updatePanels();

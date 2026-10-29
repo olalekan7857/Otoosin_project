@@ -794,7 +794,7 @@ STAFF_ROLE_CHOICES = [
     ),
     (
         StaffInvitation.Role.FULFILMENT,
-        "Fulfilment — orders only (reserved until order management is added)",
+        "Fulfilment — view orders and update permitted fulfilment statuses",
     ),
 ]
 
@@ -831,7 +831,8 @@ class StaffInviteForm(forms.Form):
         help_text=(
             "Owner can manage everything including staff. Manager manages the "
             "catalogue, settings and messages. Support only handles enquiries. "
-            "Fulfilment is reserved for orders when order management is added."
+            "Fulfilment can view orders and update permitted order statuses "
+            "without catalogue, settings or payment powers."
         ),
     )
 
@@ -1081,4 +1082,82 @@ class StaffPasswordResetRequestForm(forms.Form):
                 "autofocus": True,
             }
         )
+    )
+
+
+class CheckoutForm(forms.Form):
+    """Customer and fulfilment fields for server-authoritative checkout."""
+
+    checkout_token = forms.CharField(max_length=64)
+    name = forms.CharField(max_length=120)
+    phone = forms.CharField(max_length=30)
+    email = forms.EmailField(max_length=254)
+    receive_method = forms.ChoiceField(
+        choices=(("delivery", "Delivery"), ("pickup", "Pickup"))
+    )
+    delivery_location = forms.CharField(max_length=20, required=False)
+    pickup_location = forms.CharField(max_length=20, required=False)
+    address = forms.CharField(max_length=300, required=False)
+    landmark = forms.CharField(max_length=200, required=False)
+    instructions = forms.CharField(max_length=2000, required=False)
+
+    def clean_name(self):
+        value = " ".join((self.cleaned_data.get("name") or "").split())
+        if len(value) < 2:
+            raise forms.ValidationError("Please enter your full name.")
+        return value
+
+    def clean_phone(self):
+        try:
+            return normalise_nigerian_phone(
+                self.cleaned_data.get("phone"), required=True
+            )
+        except forms.ValidationError as exc:
+            raise forms.ValidationError(
+                "Enter a valid Nigerian phone number, for example 0803 123 4567."
+            ) from exc
+
+    def clean_email(self):
+        value = (self.cleaned_data.get("email") or "").strip().lower()
+        if not value:
+            raise forms.ValidationError(
+                "An email address is required to pay securely online."
+            )
+        return value
+
+    def clean_address(self):
+        return (self.cleaned_data.get("address") or "").strip()
+
+    def clean_landmark(self):
+        return (self.cleaned_data.get("landmark") or "").strip()
+
+    def clean_instructions(self):
+        return (self.cleaned_data.get("instructions") or "").strip()
+
+    def clean(self):
+        cleaned = super().clean()
+        method = cleaned.get("receive_method")
+        if method == "delivery":
+            if not (cleaned.get("delivery_location") or "").strip():
+                self.add_error(
+                    "delivery_location", "Please select a delivery location."
+                )
+        elif method == "pickup":
+            if not (cleaned.get("pickup_location") or "").strip():
+                self.add_error(
+                    "pickup_location", "Please select a pickup location."
+                )
+        else:
+            self.add_error("receive_method", "Choose delivery or pickup.")
+        return cleaned
+
+
+class OrderStatusUpdateForm(forms.Form):
+    status = forms.ChoiceField(
+        choices=(("pending", "Pending"), ("completed", "Completed"), ("cancelled", "Cancelled"))
+    )
+    reason = forms.CharField(
+        max_length=300,
+        required=False,
+        widget=forms.TextInput(attrs={**TEXT_INPUT, "placeholder": "Optional safe reason"}),
     )

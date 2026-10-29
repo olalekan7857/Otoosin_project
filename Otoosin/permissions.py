@@ -37,11 +37,23 @@ MANAGER_CODENAMES = {
     "view_siteconfiguration",
     "view_contactmessage",
     "change_contactmessage",
+    "view_order",
+    "change_order",
+    "view_orderitem",
+    "view_payment",
+    "view_orderstatusevent",
+    "change_order_status",
 }
 
 SUPPORT_CODENAMES = {"view_contactmessage", "change_contactmessage"}
 
-FULFILMENT_CODENAMES = set()
+FULFILMENT_CODENAMES = {
+    "view_order",
+    "view_orderitem",
+    "view_payment",
+    "view_orderstatusevent",
+    "change_order_status",
+}
 
 
 def _app_permissions(codenames=None):

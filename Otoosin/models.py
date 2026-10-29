@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
 from django.core.validators import FileExtensionValidator, MinValueValidator
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -599,6 +599,279 @@ class PickupLocation(models.Model):
 
     def __str__(self):
         return self.name
+
+
+ORDER_REFERENCE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+MONEY_QUANTUM = Decimal("0.01")
+
+
+def _money(value):
+    return Decimal(value).quantize(MONEY_QUANTUM)
+
+
+class Order(models.Model):
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        COMPLETED = "completed", "Completed"
+        CANCELLED = "cancelled", "Cancelled"
+
+    class ReceiveMethod(models.TextChoices):
+        DOORSTEP = "doorstep", "Doorstep delivery"
+        PARK = "park", "Park delivery"
+        PICKUP = "pickup", "Pickup"
+
+    reference = models.CharField(max_length=20, unique=True)
+    access_token = models.CharField(max_length=64, unique=True)
+    checkout_token = models.CharField(
+        max_length=64, unique=True, null=True, blank=True
+    )
+    cart_fingerprint = models.CharField(max_length=64, blank=True)
+
+    customer_name = models.CharField(max_length=120)
+    customer_phone = models.CharField(max_length=30)
+    customer_email = models.EmailField(blank=True)
+
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PENDING
+    )
+    receive_method = models.CharField(
+        max_length=20, choices=ReceiveMethod.choices
+    )
+    ordering_method = models.CharField(max_length=20, default="website")
+
+    delivery_location = models.ForeignKey(
+        DeliveryLocation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="orders",
+    )
+    pickup_location = models.ForeignKey(
+        PickupLocation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="orders",
+    )
+    location_name = models.CharField(max_length=120, blank=True)
+    location_address = models.CharField(max_length=300, blank=True)
+    location_instructions = models.CharField(max_length=300, blank=True)
+    delivery_address = models.CharField(max_length=300, blank=True)
+    landmark = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=80, blank=True)
+    state = models.CharField(max_length=80, blank=True)
+    customer_notes = models.TextField(blank=True)
+
+    subtotal = models.DecimalField(max_digits=12, decimal_places=2)
+    delivery_fee = models.DecimalField(
+        max_digits=12, decimal_places=2, default=Decimal("0.00")
+    )
+    total = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=3, default="NGN")
+
+    expected_delivery_date = models.DateField(null=True, blank=True)
+    placed_at = models.DateTimeField(default=timezone.now, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    status_changed_at = models.DateTimeField(default=timezone.now)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    cancelled_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-placed_at", "-pk"]
+        permissions = [
+            ("change_order_status", "Can update order status"),
+        ]
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(currency="NGN"),
+                name="order_currency_ngn",
+            ),
+            models.CheckConstraint(
+                condition=Q(total__gte=0) & Q(subtotal__gte=0),
+                name="order_totals_non_negative",
+            ),
+            models.CheckConstraint(
+                condition=Q(delivery_fee__gte=0),
+                name="order_delivery_fee_non_negative",
+            ),
+            models.CheckConstraint(
+                condition=Q(total=F("subtotal") + F("delivery_fee")),
+                name="order_total_matches_lines",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.reference} — {self.customer_name}"
+
+    @property
+    def item_count(self):
+        return sum(Decimal(item.quantity) for item in self.items.all())
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="items"
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="order_items",
+    )
+    variant = models.ForeignKey(
+        ProductVariant,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="order_items",
+    )
+    product_name = models.CharField(max_length=120)
+    variant_label = models.CharField(max_length=60, blank=True)
+    sku = models.CharField(max_length=40, blank=True)
+    unit = models.CharField(max_length=40, blank=True)
+    unit_kind = models.CharField(max_length=20, blank=True)
+    category_name = models.CharField(max_length=80, blank=True)
+    condition = models.CharField(max_length=20, blank=True)
+    image_path = models.CharField(max_length=500, blank=True)
+    image_alt = models.CharField(max_length=125, blank=True)
+    quantity = models.DecimalField(max_digits=10, decimal_places=3)
+    quantity_label = models.CharField(max_length=60, blank=True)
+    unit_price = models.DecimalField(max_digits=12, decimal_places=2)
+    line_total = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=3, default="NGN")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["pk"]
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(quantity__gt=0), name="order_item_quantity_positive"
+            ),
+            models.CheckConstraint(
+                condition=Q(unit_price__gte=0) & Q(line_total__gte=0),
+                name="order_item_amounts_non_negative",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.product_name} × {self.quantity}"
+
+
+class Payment(models.Model):
+    class Provider(models.TextChoices):
+        PAYSTACK = "paystack", "Paystack"
+
+    class Status(models.TextChoices):
+        INITIATED = "initiated", "Initiated"
+        PENDING = "pending", "Pending"
+        PAID = "paid", "Paid"
+        FAILED = "failed", "Failed"
+        ABANDONED = "abandoned", "Abandoned"
+        REFUNDED = "refunded", "Refunded"
+
+    order = models.ForeignKey(
+        Order, on_delete=models.PROTECT, related_name="payments"
+    )
+    provider = models.CharField(
+        max_length=20, choices=Provider.choices, default=Provider.PAYSTACK
+    )
+    provider_reference = models.CharField(max_length=100, unique=True)
+    provider_access_code = models.CharField(max_length=200, blank=True)
+    authorization_url = models.URLField(max_length=500, blank=True)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=3, default="NGN")
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.INITIATED
+    )
+    failure_category = models.CharField(max_length=60, blank=True)
+    failure_message = models.CharField(max_length=300, blank=True)
+    gateway_response = models.JSONField(default=dict, blank=True)
+    initialized_at = models.DateTimeField(null=True, blank=True)
+    last_checked_at = models.DateTimeField(null=True, blank=True)
+    verified_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(currency="NGN"), name="payment_currency_ngn"
+            ),
+            models.CheckConstraint(
+                condition=Q(amount__gte=0), name="payment_amount_non_negative"
+            ),
+            models.UniqueConstraint(
+                fields=["order"],
+                condition=Q(status="paid"),
+                name="unique_paid_payment_per_order",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.provider_reference} ({self.status})"
+
+    @property
+    def is_verified_paid(self):
+        return self.status == self.Status.PAID and self.verified_at is not None
+
+
+class PaymentWebhookEvent(models.Model):
+    class ProcessingStatus(models.TextChoices):
+        RECEIVED = "received", "Received"
+        PROCESSED = "processed", "Processed"
+        FAILED = "failed", "Failed"
+        IGNORED = "ignored", "Ignored"
+
+    provider = models.CharField(max_length=20, default="paystack")
+    event_id = models.CharField(max_length=120)
+    event_type = models.CharField(max_length=80, blank=True)
+    payload_summary = models.JSONField(default=dict, blank=True)
+    signature_valid = models.BooleanField(default=False)
+    processing_status = models.CharField(
+        max_length=20,
+        choices=ProcessingStatus.choices,
+        default=ProcessingStatus.RECEIVED,
+    )
+    processing_error = models.CharField(max_length=300, blank=True)
+    received_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-received_at", "-pk"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["provider", "event_id"],
+                name="unique_provider_webhook_event",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.provider}:{self.event_id} ({self.processing_status})"
+
+
+class OrderStatusEvent(models.Model):
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name="status_events"
+    )
+    from_status = models.CharField(max_length=20, blank=True)
+    to_status = models.CharField(max_length=20)
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="order_status_events",
+    )
+    note = models.CharField(max_length=300, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+
+    def __str__(self):
+        return f"{self.order.reference}: {self.from_status} → {self.to_status}"
 
 
 class ContactMessage(models.Model):

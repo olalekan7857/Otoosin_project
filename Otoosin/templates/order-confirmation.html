@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load static %}
+{% load static humanize %}
 
 {% block title %}Order Confirmation | O’TOOSIN Farms{% endblock title %}
 
@@ -7,8 +7,7 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'assets/css/otoosin-shop.css' %}?v=8.0">
-    <link rel="stylesheet" href="{% static 'assets/css/otoosin-confirmation.css' %}">
-
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-confirmation.css' %}?v=2.0">
 <noscript>
         <style>.sideCartToggler,[data-theme-toggle],#fd-cart-count,#fd-cart-count-mobile{display:none!important}</style>
     </noscript>
@@ -16,38 +15,184 @@
 
 {% block content %}
 <main id="fd-main">
+    <section class="fd-shop-intro oto-shop-intro oto-confirm-intro" aria-labelledby="oto-confirm-heading">
+        <div class="container">
+            <nav aria-label="Breadcrumb">
+                <ol class="fd-breadcrumb">
+                    <li><a href="{% url 'Otoosin:index' %}">Home</a></li>
+                    <li aria-current="page">Order Confirmation</li>
+                </ol>
+            </nav>
+            <span class="sec-subtitle">Order update</span>
+            <h1 class="sec-title" id="oto-confirm-heading">Order Confirmation</h1>
+            <p>Your order and verified payment status from O’TOOSIN Farms appear here. Keep the order reference for future enquiries.</p>
+        </div>
+    </section>
 
-        <section class="fd-shop-intro oto-shop-intro oto-confirm-intro" aria-labelledby="oto-confirm-heading">
-            <div class="container">
-                <nav aria-label="Breadcrumb">
-                    <ol class="fd-breadcrumb">
-                        <li><a href="{% url 'Otoosin:index' %}">Home</a></li>
-                        <li aria-current="page">Order Confirmation</li>
-                    </ol>
-                </nav>
-                <span class="sec-subtitle">Order update</span>
-                <h1 class="sec-title" id="oto-confirm-heading">Order Confirmation</h1>
-                <p>Your saved order summary from checkout appears here. Keep the order reference for future enquiries.</p>
+    <section class="oto-confirm-section" aria-label="Order confirmation">
+        <div class="container" id="oto-confirm-wrap"{% if clear_payload %} data-clear-cart="{{ clear_payload }}"{% endif %}>
+            {% if not order %}
+            <div class="fd-shop-state oto-confirm-fallback">
+                <i class="far fa-receipt" aria-hidden="true"></i>
+                <h2>Order details unavailable</h2>
+                <p>We could not find an order you are allowed to view. The link may be incomplete, expired or belong to another browser session.</p>
+                <div class="oto-confirm-fallback-actions">
+                    <a href="{% url 'Otoosin:product' %}" class="vs-btn">Continue Shopping</a>
+                    <a href="{% url 'Otoosin:cart' %}" class="fd-ghost-btn">Return to Cart</a>
+                </div>
             </div>
-        </section>
+            {% else %}
+            <article class="oto-confirm-card">
+                <header class="oto-confirm-hero">
+                    <span class="oto-confirm-hero-icon">
+                        {% if verified_paid %}<i class="fas fa-check" aria-hidden="true"></i>{% elif latest_payment and latest_payment.status == 'failed' %}<i class="fas fa-exclamation" aria-hidden="true"></i>{% else %}<i class="far fa-clock" aria-hidden="true"></i>{% endif %}
+                    </span>
+                    <div class="oto-confirm-hero-copy">
+                        {% if verified_paid %}
+                            <span class="oto-confirm-badge">Payment verified</span>
+                            <h2>Thank you, {{ order.customer_name }}</h2>
+                            <p class="oto-confirm-lead">Your payment has been verified by Paystack. Your order is confirmed and the farm will arrange fulfilment using the details below.</p>
+                        {% elif order.status == 'cancelled' %}
+                            <span class="oto-confirm-badge">Order cancelled</span>
+                            <h2>This order was cancelled</h2>
+                            <p class="oto-confirm-lead">No further payment can be made for this order. If you were charged, please contact the farm with your order reference.</p>
+                        {% elif latest_payment and latest_payment.status == 'failed' %}
+                            <span class="oto-confirm-badge">Payment failed</span>
+                            <h2>Your payment did not go through</h2>
+                            <p class="oto-confirm-lead">Your order is saved and your cart has not been cleared. You can safely try the payment again for this same order.</p>
+                        {% elif latest_payment and latest_payment.status == 'abandoned' %}
+                            <span class="oto-confirm-badge">Payment not completed</span>
+                            <h2>Your payment was not completed</h2>
+                            <p class="oto-confirm-lead">Your order is saved and your cart has not been cleared. You can resume payment for this same order when you are ready.</p>
+                        {% elif latest_payment and latest_payment.status == 'refunded' %}
+                            <span class="oto-confirm-badge">Payment reversed</span>
+                            <h2>This payment was reversed</h2>
+                            <p class="oto-confirm-lead">The farm will review this order. Please contact us with the order reference if you need help.</p>
+                        {% else %}
+                            <span class="oto-confirm-badge">Payment pending</span>
+                            <h2>Thank you, {{ order.customer_name }}</h2>
+                            <p class="oto-confirm-lead">Your order is saved. We have not yet received a verified payment confirmation from Paystack. Nothing below is shown as paid until the provider confirms it.</p>
+                        {% endif %}
 
-        <section class="oto-confirm-section" aria-label="Order confirmation">
-            <div class="container" id="oto-confirm-wrap">
-                <noscript>
-                    <div class="fd-shop-state">
-                        <i class="far fa-exclamation-circle" aria-hidden="true"></i>
-                        <h2>JavaScript is required</h2>
-                        <p>Please enable JavaScript to view your order details.</p>
-                        <a href="{% url 'Otoosin:product' %}" class="vs-btn">Continue Shopping</a>
+                        <dl class="oto-confirm-meta">
+                            <div class="oto-confirm-meta-row"><dt>Order reference</dt><dd>{{ order.reference }}</dd></div>
+                            <div class="oto-confirm-meta-row"><dt>Date</dt><dd>{{ order.placed_at|date:"j F Y, H:i" }}</dd></div>
+                            <div class="oto-confirm-meta-row"><dt>Order status</dt><dd>{{ order.get_status_display }}</dd></div>
+                            <div class="oto-confirm-meta-row"><dt>Payment status</dt><dd>{% if verified_paid %}Paid and verified{% elif latest_payment %}{{ latest_payment.get_status_display }}{% else %}Not started{% endif %}</dd></div>
+                        </dl>
                     </div>
-                </noscript>
-                <div id="oto-confirm-state" aria-live="polite"></div>
-            </div>
-        </section>
+                </header>
 
-    </main>
+                <div class="row g-4 g-xl-5">
+                    <div class="col-lg-7">
+                        <section class="oto-confirm-block">
+                            <h2 class="oto-confirm-block-title">{{ order.get_receive_method_display }}</h2>
+                            <div class="oto-confirm-method">
+                                <span class="oto-confirm-method-icon" aria-hidden="true">
+                                    {% if order.receive_method == 'pickup' %}<i class="fas fa-store"></i>{% elif order.receive_method == 'park' %}<i class="fas fa-bus"></i>{% else %}<i class="fas fa-motorcycle"></i>{% endif %}
+                                </span>
+                                <div class="oto-confirm-method-copy">
+                                    <strong>{{ order.location_name }}</strong>
+                                    <span class="oto-confirm-method-note">
+                                        {% if order.receive_method == 'pickup' %}No delivery fee. Collect from the location below.{% elif order.receive_method == 'park' %}Approved park destination.{% else %}Doorstep delivery in Abeokuta.{% endif %}
+                                    </span>
+                                </div>
+                                <div class="oto-confirm-method-details">
+                                    <div class="oto-confirm-rows">
+                                        {% if order.location_address %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">Location</span><strong class="oto-confirm-row-value">{{ order.location_address }}</strong></div>{% endif %}
+                                        {% if order.delivery_address %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">Delivery address</span><strong class="oto-confirm-row-value">{{ order.delivery_address }}</strong></div>{% endif %}
+                                        {% if order.landmark %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">Landmark</span><strong class="oto-confirm-row-value">{{ order.landmark }}</strong></div>{% endif %}
+                                        {% if order.city %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">City / state</span><strong class="oto-confirm-row-value">{{ order.city }}{% if order.state %}, {{ order.state }}{% endif %}</strong></div>{% endif %}
+                                        {% if order.location_instructions %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">Instructions</span><strong class="oto-confirm-row-value">{{ order.location_instructions }}</strong></div>{% endif %}
+                                        {% if order.customer_notes %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">Order notes</span><strong class="oto-confirm-row-value">{{ order.customer_notes }}</strong></div>{% endif %}
+                                        {% if order.expected_delivery_date %}<div class="oto-confirm-row"><span class="oto-confirm-row-label">Expected date</span><strong class="oto-confirm-row-value">{{ order.expected_delivery_date|date:"j F Y" }}</strong></div>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="oto-confirm-block">
+                            <h2 class="oto-confirm-block-title">Your items</h2>
+                            <ul class="oto-confirm-items" aria-label="Items in this order">
+                                {% for item in order.items.all %}
+                                <li class="oto-confirm-item">
+                                    <span class="oto-confirm-thumb">
+                                        {% if item.image_path %}<img src="{{ item.image_path }}" alt="{{ item.image_alt|default:item.product_name }}" width="64" height="64" loading="lazy" decoding="async">{% else %}{{ item.product_name|first|upper }}{% endif %}
+                                    </span>
+                                    <div class="oto-confirm-item-copy">
+                                        <strong class="oto-confirm-item-name">{{ item.product_name }}</strong>
+                                        <span class="oto-confirm-item-tags">
+                                            {% if item.category_name %}<span class="oto-confirm-tag">{{ item.category_name }}</span>{% endif %}
+                                            {% if item.condition %}<span class="oto-confirm-tag is-state">{{ item.condition }}</span>{% endif %}
+                                        </span>
+                                        <span class="oto-confirm-item-qty">Quantity: {{ item.quantity_label|default:item.quantity }} &middot; &#8358;{{ item.unit_price|floatformat:2|intcomma }}{% if item.unit_kind == 'kg' %}/kg{% endif %}</span>
+                                    </div>
+                                    <strong class="oto-confirm-item-total">&#8358;{{ item.line_total|floatformat:2|intcomma }}</strong>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </section>
+
+                        <section class="oto-confirm-block">
+                            <h2 class="oto-confirm-block-title">Payment</h2>
+                            <div class="oto-confirm-rows">
+                                <div class="oto-confirm-row"><span class="oto-confirm-row-label">Provider</span><strong class="oto-confirm-row-value">Paystack</strong></div>
+                                {% if display_payment %}
+                                <div class="oto-confirm-row"><span class="oto-confirm-row-label">Payment reference</span><strong class="oto-confirm-row-value">{{ display_payment.provider_reference }}</strong></div>
+                                <div class="oto-confirm-row"><span class="oto-confirm-row-label">Payment status</span><strong class="oto-confirm-row-value">{{ display_payment.get_status_display }}</strong></div>
+                                {% endif %}
+                                {% if verified_paid and verified_paid.verified_at %}
+                                <div class="oto-confirm-row"><span class="oto-confirm-row-label">Verified</span><strong class="oto-confirm-row-value">{{ verified_paid.verified_at|date:"j F Y, H:i" }}</strong></div>
+                                {% endif %}
+                            </div>
+                            {% if order.status == 'pending' and not verified_paid %}
+                            <form method="post" action="{% url 'Otoosin:order_retry_payment' order.reference %}" class="oto-confirm-actions">
+                                {% csrf_token %}
+                                <input type="hidden" name="access_token" value="{{ order.access_token }}">
+                                <button type="submit" class="vs-btn">
+                                    {% if latest_payment %}
+                                        {% if latest_payment.status == 'pending' or latest_payment.status == 'initiated' %}Check payment status
+                                        {% elif latest_payment.status == 'failed' or latest_payment.status == 'abandoned' %}Try payment again
+                                        {% else %}Pay for this order{% endif %}
+                                    {% else %}Pay for this order{% endif %}
+                                </button>
+                            </form>
+                            {% endif %}
+                            {% if verified_paid %}
+                            <p class="oto-confirm-summary-note">Your payment is verified. Keep this reference for any support enquiry. Do not pay for this order again.</p>
+                            {% endif %}
+                        </section>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <aside class="oto-confirm-summary" aria-label="Order totals">
+                            <h2 class="oto-confirm-block-title">Order totals</h2>
+                            <div class="oto-confirm-total-row"><span>Products subtotal</span><strong>&#8358;{{ order.subtotal|floatformat:2|intcomma }}</strong></div>
+                            {% if order.receive_method == 'pickup' %}
+                            <div class="oto-confirm-total-row"><span>Delivery fee</span><strong>No delivery fee</strong></div>
+                            {% elif order.receive_method == 'park' %}
+                            <div class="oto-confirm-total-row"><span>Park delivery fee</span><strong>&#8358;{{ order.delivery_fee|floatformat:2|intcomma }}</strong></div>
+                            {% else %}
+                            <div class="oto-confirm-total-row"><span>Delivery fee</span><strong>&#8358;{{ order.delivery_fee|floatformat:2|intcomma }}</strong></div>
+                            {% endif %}
+                            <div class="oto-confirm-total-row is-total"><span>Order total</span><strong>&#8358;{{ order.total|floatformat:2|intcomma }}</strong></div>
+                            <p class="oto-confirm-summary-note">All amounts are in NGN and were calculated by O’TOOSIN Farms at checkout.{% if order.receive_method == 'pickup' %} Pickup orders do not include a delivery fee.{% endif %}</p>
+                        </aside>
+
+                        <div class="oto-confirm-actions">
+                            <a href="{% url 'Otoosin:product' %}" class="vs-btn">Continue Shopping</a>
+                            <a href="{% url 'Otoosin:contact' %}" class="fd-ghost-btn">Contact Us</a>
+                            <a href="{% url 'Otoosin:cart' %}" class="fd-ghost-btn">View Cart</a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endif %}
+        </div>
+    </section>
+</main>
 {% endblock content %}
 
 {% block extra_js %}
-    <script src="{% static 'assets/js/otoosin-confirmation.js' %}?v=2.1"></script>
+    <script src="{% static 'assets/js/otoosin-confirmation.js' %}?v=3.0"></script>
 {% endblock extra_js %}

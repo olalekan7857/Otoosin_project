@@ -43,6 +43,9 @@
                     {% if perms.Otoosin.view_product %}
                     <li><a href="{% url 'Otoosin:staff_products' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_products' or request.resolver_match.url_name == 'staff_product_create' or request.resolver_match.url_name == 'staff_product_edit' %} aria-current="page"{% endif %}><i class="fas fa-box" aria-hidden="true"></i>Products</a></li>
                     {% endif %}
+                    {% if perms.Otoosin.view_order %}
+                    <li><a href="{% url 'Otoosin:staff_orders' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_orders' or request.resolver_match.url_name == 'staff_order_detail' %} aria-current="page"{% endif %}><i class="fas fa-receipt" aria-hidden="true"></i>Orders</a></li>
+                    {% endif %}
                     {% if perms.Otoosin.view_inventory %}
                     <li><a href="{% url 'Otoosin:staff_inventory' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_inventory' %} aria-current="page"{% endif %}><i class="fas fa-warehouse" aria-hidden="true"></i>Inventory</a></li>
                     {% endif %}

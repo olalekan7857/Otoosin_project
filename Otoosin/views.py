@@ -1,8 +1,10 @@
 import hashlib
+import hmac
 import json
 import logging
 import secrets
 from datetime import timedelta
+from decimal import Decimal
 from functools import wraps
 from urllib.parse import urlencode
 
@@ -22,25 +24,34 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.core.paginator import Paginator
 from django.db import DatabaseError, transaction
 from django.db.models import Count, OuterRef, Prefetch, Q, Subquery
-from django.http import JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
 
+from . import paystack
 from .audit import record_audit
-from .cart import CartPayloadError, validate_cart_request
+from .cart import (
+    CartPayloadError,
+    build_checkout_lines,
+    validate_cart_request,
+)
 from .catalogue import public_products
 from .email_service import send_email
 from .forms import (
     CategoryForm,
+    CheckoutForm,
     ContactForm,
     ContactMessageNoteForm,
     ContactMessageStatusForm,
     DeliveryLocationForm,
     ImageFormSet,
+    OrderStatusUpdateForm,
     PickupLocationForm,
     ProductForm,
     ProductInventoryForm,
@@ -59,11 +70,32 @@ from .models import (
     ContactMessage,
     DeliveryLocation,
     EmailDelivery,
+    Order,
+    OrderItem,
+    OrderStatusEvent,
+    Payment,
+    PaymentWebhookEvent,
     PickupLocation,
     Product,
     ProductVariant,
     SiteConfiguration,
     StaffInvitation,
+)
+from .orders import (
+    CheckoutError,
+    create_order,
+    create_payment_attempt,
+    expected_delivery_date,
+    money,
+    restore_stock,
+)
+from .payments import process_webhook, verify_payment
+from .checkout_views import (
+    checkout,
+    order_confirmation,
+    order_retry_payment,
+    payment_callback,
+    paystack_webhook,
 )
 from .permissions import ROLE_GROUPS
 
@@ -786,6 +818,25 @@ def staff_dashboard(request):
         ),
     )
     can_view_messages = request.user.has_perm("Otoosin.view_contactmessage")
+    can_view_orders = request.user.has_perm("Otoosin.view_order")
+    order_summary = {
+        "total": 0,
+        "pending": 0,
+        "paid": 0,
+    }
+    if can_view_orders:
+        order_summary = {
+            "total": Order.objects.count(),
+            "pending": Order.objects.filter(
+                status=Order.Status.PENDING
+            ).count(),
+            "paid": Payment.objects.filter(
+                status=Payment.Status.PAID, verified_at__isnull=False
+            )
+            .values("order_id")
+            .distinct()
+            .count(),
+        }
     contact_summary = {
         "total": 0,
         "new": 0,
@@ -814,6 +865,8 @@ def staff_dashboard(request):
                 "-created_at"
             )[:5],
             "can_view_messages": can_view_messages,
+            "can_view_orders": can_view_orders,
+            "order_summary": order_summary,
             "contact_summary": contact_summary,
             "recent_messages": recent_messages,
         },
@@ -1719,10 +1772,6 @@ def cart(request):
     return render(request, "cart.html")
 
 
-def checkout(request):
-    return render(request, "checkout.html")
-
-
 def _invalid_cart_response(error, status=400):
     return JsonResponse(
         {
@@ -1758,10 +1807,6 @@ def checkout_validate(request):
     return JsonResponse(result)
 
 
-def order_confirmation(request):
-    return render(request, "order-confirmation.html")
-
-
 def privacy(request):
     return render(request, "privacy.html")
 
@@ -1772,3 +1817,228 @@ def terms(request):
 
 def not_found(request, exception):
     return render(request, "404.html", status=404)
+
+
+@_staff_permission("Otoosin.view_order")
+def staff_orders(request):
+    latest_payments = Payment.objects.filter(order=OuterRef("pk")).order_by(
+        "-created_at", "-pk"
+    )
+    orders = (
+        Order.objects.select_related("delivery_location", "pickup_location")
+        .prefetch_related("items")
+        .annotate(
+            line_count=Count("items", distinct=True),
+            latest_payment_status=Subquery(latest_payments.values("status")[:1]),
+            latest_payment_reference=Subquery(
+                latest_payments.values("provider_reference")[:1]
+            ),
+            has_paid=Count(
+                "payments",
+                filter=Q(
+                    payments__status=Payment.Status.PAID,
+                    payments__verified_at__isnull=False,
+                ),
+                distinct=True,
+            ),
+        )
+    )
+
+    q = (request.GET.get("q") or "").strip()
+    status_filter = (request.GET.get("status") or "").strip()
+    payment_filter = (request.GET.get("payment") or "").strip()
+    receive_filter = (request.GET.get("receive") or "").strip()
+    date_from = (request.GET.get("date_from") or "").strip()
+    date_to = (request.GET.get("date_to") or "").strip()
+    sort = (request.GET.get("sort") or "newest").strip()
+
+    if q:
+        orders = orders.filter(
+            Q(reference__icontains=q)
+            | Q(customer_name__icontains=q)
+            | Q(customer_phone__icontains=q)
+            | Q(customer_email__icontains=q)
+        )
+    if status_filter in Order.Status.values:
+        orders = orders.filter(status=status_filter)
+    if receive_filter in Order.ReceiveMethod.values:
+        orders = orders.filter(receive_method=receive_filter)
+    parsed_from = parse_date(date_from) if date_from else None
+    parsed_to = parse_date(date_to) if date_to else None
+    if parsed_from:
+        orders = orders.filter(placed_at__date__gte=parsed_from)
+    else:
+        date_from = ""
+    if parsed_to:
+        orders = orders.filter(placed_at__date__lte=parsed_to)
+    else:
+        date_to = ""
+    paid_filter = Q(
+        payments__status=Payment.Status.PAID,
+        payments__verified_at__isnull=False,
+    )
+    if payment_filter == "paid":
+        orders = orders.filter(paid_filter).distinct()
+    elif payment_filter == "pending":
+        orders = (
+            orders.filter(
+                payments__status__in=[
+                    Payment.Status.PENDING,
+                    Payment.Status.INITIATED,
+                ]
+            )
+            .exclude(paid_filter)
+            .distinct()
+        )
+    elif payment_filter == "failed":
+        orders = (
+            orders.filter(payments__status=Payment.Status.FAILED)
+            .exclude(paid_filter)
+            .distinct()
+        )
+    elif payment_filter == "refunded":
+        orders = orders.filter(payments__status=Payment.Status.REFUNDED).distinct()
+    elif payment_filter == "unpaid":
+        orders = orders.exclude(paid_filter).distinct()
+
+    ordering = {
+        "oldest": ("placed_at", "pk"),
+        "total-desc": ("-total", "-placed_at"),
+        "total-asc": ("total", "-placed_at"),
+    }.get(sort, ("-placed_at", "-pk"))
+    orders = orders.order_by(*ordering)
+    paginator, page_obj, page_range = _paginate(request, orders, 25)
+
+    summary = {
+        "total": Order.objects.count(),
+        "pending": Order.objects.filter(status=Order.Status.PENDING).count(),
+        "paid": Order.objects.filter(
+            payments__status=Payment.Status.PAID,
+            payments__verified_at__isnull=False,
+        )
+        .distinct()
+        .count(),
+        "cancelled": Order.objects.filter(status=Order.Status.CANCELLED).count(),
+    }
+    return render(
+        request,
+        "admin-orders.html",
+        {
+            "orders": page_obj,
+            "page_obj": page_obj,
+            "paginator": paginator,
+            "page_range": page_range,
+            "summary": summary,
+            "filters": {
+                "q": q,
+                "status": status_filter,
+                "payment": payment_filter,
+                "receive": receive_filter,
+                "date_from": date_from,
+                "date_to": date_to,
+                "sort": sort,
+            },
+        },
+    )
+
+
+@_staff_permission("Otoosin.view_order")
+def staff_order_detail(request, reference):
+    order = get_object_or_404(
+        Order.objects.select_related(
+            "delivery_location", "pickup_location"
+        ).prefetch_related("items", "payments", "status_events"),
+        reference__iexact=reference,
+    )
+    can_change_status = request.user.has_perm(
+        "Otoosin.change_order_status"
+    ) and order.status == Order.Status.PENDING
+    form = OrderStatusUpdateForm(initial={"status": order.status})
+    if request.method == "POST":
+        if not request.user.has_perm("Otoosin.change_order_status"):
+            raise PermissionDenied
+        form = OrderStatusUpdateForm(request.POST)
+        if form.is_valid():
+            new_status = form.cleaned_data["status"]
+            reason = (form.cleaned_data.get("reason") or "").strip()
+            allowed = {
+                Order.Status.PENDING: {
+                    Order.Status.COMPLETED,
+                    Order.Status.CANCELLED,
+                }
+            }
+            try:
+                with transaction.atomic():
+                    locked = Order.objects.select_for_update().get(pk=order.pk)
+                    old_status = locked.status
+                    if new_status not in allowed.get(old_status, set()):
+                        raise CheckoutError(
+                            "That status change is not allowed for this order.",
+                            field="status",
+                        )
+                    locked.status = new_status
+                    locked.status_changed_at = timezone.now()
+                    if new_status == Order.Status.COMPLETED:
+                        locked.completed_at = timezone.now()
+                    if new_status == Order.Status.CANCELLED:
+                        locked.cancelled_at = timezone.now()
+                    locked.save(
+                        update_fields=[
+                            "status",
+                            "status_changed_at",
+                            "completed_at",
+                            "cancelled_at",
+                            "updated_at",
+                        ]
+                    )
+                    note = reason[:300]
+                    if new_status == Order.Status.CANCELLED:
+                        paid = locked.payments.filter(
+                            status=Payment.Status.PAID,
+                            verified_at__isnull=False,
+                        ).exists()
+                        if paid:
+                            note = (
+                                f"{note} Paid order cancelled; a refund or "
+                                "reconciliation requires owner review."
+                            )[:300]
+                        restore_stock(locked)
+                    OrderStatusEvent.objects.create(
+                        order=locked,
+                        from_status=old_status,
+                        to_status=new_status,
+                        actor=request.user,
+                        note=note,
+                    )
+                    record_audit(
+                        actor=request.user,
+                        action="order.status_changed",
+                        target=locked,
+                        summary=f"{old_status} -> {new_status}",
+                    )
+                messages.success(request, "Order status updated.")
+                return redirect(
+                    reverse(
+                        "Otoosin:staff_order_detail",
+                        kwargs={"reference": locked.reference},
+                    )
+                )
+            except CheckoutError as exc:
+                form.add_error("status", exc.message)
+            except Exception:
+                logger.exception("Staff order status update failed")
+                form.add_error(None, "The order could not be updated. Try again.")
+        else:
+            messages.error(request, "Choose a valid order status.")
+    return render(
+        request,
+        "admin-order.html",
+        {
+            "order": order,
+            "payment_attempts": order.payments.all(),
+            "latest_payment": order.payments.order_by("-created_at", "-pk").first(),
+            "status_events": order.status_events.all(),
+            "status_form": form,
+            "can_change_status": can_change_status,
+        },
+    )

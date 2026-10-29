@@ -26,6 +26,26 @@ urlpatterns = [
         views.order_confirmation,
         name="order_confirmation",
     ),
+    path(
+        "order-confirmation/<str:reference>/",
+        views.order_confirmation,
+        name="order_confirmation_detail",
+    ),
+    path(
+        "order-confirmation/<str:reference>/retry/",
+        views.order_retry_payment,
+        name="order_retry_payment",
+    ),
+    path(
+        "payments/callback/",
+        views.payment_callback,
+        name="payment_callback",
+    ),
+    path(
+        "payments/webhook/paystack/",
+        views.paystack_webhook,
+        name="paystack_webhook",
+    ),
     path("privacy/", views.privacy, name="privacy"),
     path("terms/", views.terms, name="terms"),
     path(
@@ -77,6 +97,12 @@ urlpatterns = [
         name="staff_delivery",
     ),
     path("staff/settings/", views.staff_settings, name="staff_settings"),
+    path("staff/orders/", views.staff_orders, name="staff_orders"),
+    path(
+        "staff/orders/<str:reference>/",
+        views.staff_order_detail,
+        name="staff_order_detail",
+    ),
     path(
         "staff/products/",
         views.staff_product_list,

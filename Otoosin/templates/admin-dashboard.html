@@ -23,6 +23,20 @@
     </ul>
 </section>
 
+{% if can_view_orders %}
+<section class="fd-dash-section" aria-labelledby="fd-dash-orders-title">
+    <div class="fd-dash-section-head">
+        <h2 id="fd-dash-orders-title">Orders</h2>
+        <a href="{% url 'Otoosin:staff_orders' %}" class="fd-ghost-btn fd-dash-btn">Open orders</a>
+    </div>
+    <ul class="fd-dash-grid">
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Total orders</span><span class="fd-dash-card-value">{{ order_summary.total }}</span><span class="fd-dash-card-context">All database orders.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Pending orders</span><span class="fd-dash-card-value">{{ order_summary.pending }}</span><span class="fd-dash-card-context">Awaiting fulfilment or payment.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Verified paid</span><span class="fd-dash-card-value">{{ order_summary.paid }}</span><span class="fd-dash-card-context">Orders with a server-verified payment.</span></li>
+    </ul>
+</section>
+{% endif %}
+
 {% if can_view_messages %}
 <section class="fd-dash-section" aria-labelledby="fd-dash-messages-title">
     <div class="fd-dash-section-head">
@@ -71,9 +85,9 @@
         {% if perms.Otoosin.view_deliverylocation %}<a href="{% url 'Otoosin:staff_delivery' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-truck" aria-hidden="true"></i>Delivery &amp; Pickup</a>{% endif %}
         {% if perms.Otoosin.change_siteconfiguration %}<a href="{% url 'Otoosin:staff_settings' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-cog" aria-hidden="true"></i>Settings</a>{% endif %}
         {% if perms.Otoosin.manage_staff %}<a href="{% url 'Otoosin:staff_team' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-users" aria-hidden="true"></i>Team</a>{% endif %}
-        <span class="fd-ghost-btn fd-dash-btn" aria-disabled="true" title="Order storage is not implemented in this phase."><i class="fas fa-receipt" aria-hidden="true"></i>Orders <span class="fd-admin-soon">Not implemented</span></span>
+        {% if perms.Otoosin.view_order %}<a href="{% url 'Otoosin:staff_orders' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-receipt" aria-hidden="true"></i>Orders</a>{% endif %}
     </div>
-    <p class="fd-dash-hint">Order and payment metrics remain unavailable until those models and workflows are implemented.</p>
+    <p class="fd-dash-hint">Order and payment counts come from the database. Payment is shown as paid only after server-side Paystack verification.</p>
 </section>
 
 <section class="fd-dash-section" aria-labelledby="fd-dash-products-title">

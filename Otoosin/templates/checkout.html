@@ -56,6 +56,7 @@
                         </div>
 
                         <form id="fd-checkout-form" class="oto-checkout-form" novalidate>
+                            <input type="hidden" id="oto-checkout-token" name="checkout_token" value="{{ checkout_token }}">
                             <fieldset class="fd-checkout-card oto-checkout-card">
                                 <legend>Customer information</legend>
                                 <div class="fd-field">
@@ -73,8 +74,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="fd-field">
-                                            <label for="oto-co-email">Email address <span class="fd-optional">(Optional)</span></label>
-                                            <input class="form-control" type="email" id="oto-co-email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com">
+                                            <label for="oto-co-email">Email address <span class="fd-required" aria-hidden="true">*</span></label>
+                                            <input class="form-control" type="email" id="oto-co-email" name="email" autocomplete="email" inputmode="email" placeholder="you@example.com" required>
                                             <span class="fd-field-error" id="oto-co-email-error" hidden></span>
                                         </div>
                                     </div>
@@ -154,7 +155,7 @@
                                     <p class="oto-receive-note"><i class="fas fa-info-circle" aria-hidden="true"></i><span id="oto-park-detail">Park delivery is available to approved destinations. Delivery arrangements and any applicable park charge depend on the selected destination.</span></p>
                                 </div>
 
-                                <p class="oto-receive-note oto-delivery-cutoff"><i class="far fa-clock" aria-hidden="true"></i><span><strong>Delivery timing:</strong> Orders placed after 5:00 PM will be delivered the next day.</span></p>
+                                <p class="oto-receive-note oto-delivery-cutoff"><i class="far fa-clock" aria-hidden="true"></i><span><strong>Delivery timing:</strong> Orders placed after {% if cutoff_time %}{{ cutoff_time }}{% else %}the daily cut-off{% endif %} will be delivered the next day. Expected date shown at checkout: {{ expected_delivery_date|date:"j M Y" }}.</span></p>
                             </fieldset>
 
                             <fieldset class="fd-checkout-card oto-checkout-card oto-receive-panel" id="oto-pickup-panel" hidden>
@@ -178,6 +179,7 @@
                             </fieldset>
 
                             <p class="fd-checkout-status" id="fd-checkout-status" role="status" aria-live="polite" hidden></p>
+                            <p class="fd-checkout-recovery" id="fd-checkout-recovery" hidden><a href="#" id="fd-checkout-recovery-link">Check your order and payment status</a></p>
 
                             <div class="oto-checkout-actions">
                                 <button type="submit" class="vs-btn" id="fd-proceed-payment">Proceed to Payment</button>
@@ -255,6 +257,14 @@
 {% endblock content %}
 
 {% block extra_js %}
-    <script src="{% static 'assets/js/fd-delivery-locations.js' %}?v=1.1"></script>
-    <script src="{% static 'assets/js/otoosin-checkout.js' %}?v=2.2"></script>
+    {{ delivery_locations|json_script:"fd-checkout-delivery-locations" }}
+    {{ pickup_locations|json_script:"fd-checkout-pickup-locations" }}
+    <script>
+        window.FD_CHECKOUT_LOCATIONS = {
+            delivery: JSON.parse(document.getElementById("fd-checkout-delivery-locations").textContent),
+            pickup: JSON.parse(document.getElementById("fd-checkout-pickup-locations").textContent)
+        };
+    </script>
+    <script src="{% static 'assets/js/fd-delivery-locations.js' %}?v=1.2"></script>
+    <script src="{% static 'assets/js/otoosin-checkout.js' %}?v=3.0"></script>
 {% endblock extra_js %}

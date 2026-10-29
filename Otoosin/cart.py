@@ -382,3 +382,50 @@ def validate_cart_request(request, normalize=False):
         result["errors"].append(_message("", "Your cart is empty."))
         result["ok"] = False
     return result
+
+
+def build_checkout_lines(lines):
+    """Return authoritative Decimal line data for order creation.
+
+    This deliberately reuses the same validator used by the cart endpoints so
+    checkout cannot drift into a second, weaker set of rules. The client price
+    is never used for money.
+    """
+    result = validate_cart_lines(lines, normalize=False)
+    if not result["items"] and not result["errors"]:
+        result["errors"].append(_message("", "Your cart is empty."))
+    if result["errors"] or not result["items"]:
+        return [], result
+
+    authoritative = []
+    for item in result["items"]:
+        product = _find_product(item["id"])
+        variant = _find_variant(product, item["variantId"]) if product else None
+        if product is None or variant is None:
+            result["errors"].append(
+                _message(item.get("key", ""), "This product is no longer available.")
+            )
+            continue
+        try:
+            quantity = Decimal(str(item["qty"]))
+        except (InvalidOperation, TypeError, ValueError):
+            result["errors"].append(
+                _message(item.get("key", ""), "Enter a valid quantity.")
+            )
+            continue
+        unit_price = _money(variant.price)
+        line_total = _money(unit_price * quantity)
+        authoritative.append(
+            {
+                "key": item["key"],
+                "product": product,
+                "variant": variant,
+                "quantity": quantity,
+                "unit_price": unit_price,
+                "line_total": line_total,
+            }
+        )
+
+    if result["errors"] or not authoritative:
+        return [], result
+    return authoritative, result

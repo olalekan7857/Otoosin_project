@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Payment Status | O’TOOSIN Farms{% endblock %}
+
+{% block body_class %}otoosin-shop otoosin-confirmation{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'assets/css/otoosin-shop.css' %}?v=8.0">
+<link rel="stylesheet" href="{% static 'assets/css/otoosin-confirmation.css' %}?v=2.0">
+{% endblock %}
+
+{% block content %}
+<main id="fd-main">
+    <section class="oto-confirm-section" aria-label="Payment status">
+        <div class="container">
+            <div class="fd-shop-state oto-confirm-fallback">
+                <i class="far fa-exclamation-circle" aria-hidden="true"></i>
+                <h2>Payment status unavailable</h2>
+                <p>{{ message }}</p>
+                <div class="oto-confirm-fallback-actions">
+                    <a href="{% url 'Otoosin:cart' %}" class="vs-btn">Return to Cart</a>
+                    <a href="{% url 'Otoosin:contact' %}" class="fd-ghost-btn">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}
