@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Something Went Wrong | O’TOOSIN Farms{% endblock title %}
+
+{% block body_class %}otoosin-shop otoosin-error{% endblock body_class %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-shop.css' %}?v=8.0">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-legal.css' %}">
+{% endblock extra_head %}
+
+{% block content %}
+<main id="fd-main">
+        <section class="oto-error-section" aria-labelledby="oto-error-heading">
+            <div class="container">
+                <div class="oto-error-panel">
+                    <span class="oto-error-code" aria-hidden="true">500</span>
+                    <span class="oto-error-icon" aria-hidden="true"><i class="fas fa-seedling"></i></span>
+                    <h1 id="oto-error-heading">Something Went Wrong</h1>
+                    <p>We hit an unexpected problem while preparing this page. Your cart and order data are safe. Please try again shortly.</p>
+                    <div class="oto-error-actions">
+                        <a href="{% url 'Otoosin:index' %}" class="vs-btn">Back to Home</a>
+                        <a href="{% url 'Otoosin:product' %}" class="fd-ghost-btn">Shop All Products</a>
+                    </div>
+                    <p class="oto-error-help">Still need help? <a href="{% url 'Otoosin:contact' %}">Contact O’TOOSIN Farms</a>.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

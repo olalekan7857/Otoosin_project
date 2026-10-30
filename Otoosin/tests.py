@@ -1071,6 +1071,16 @@ class SettingsEnvironmentTests(SimpleTestCase):
         "    'csrf_trusted_origins': settings.CSRF_TRUSTED_ORIGINS,\n"
         "    'time_zone': settings.TIME_ZONE,\n"
         "    'use_tz': settings.USE_TZ,\n"
+        "    'site_url': settings.SITE_URL,\n"
+        "    'middleware': settings.MIDDLEWARE,\n"
+        "    'static_backend': settings.STORAGES['staticfiles']['BACKEND'],\n"
+        "    'secure_ssl_redirect': settings.SECURE_SSL_REDIRECT,\n"
+        "    'session_cookie_secure': settings.SESSION_COOKIE_SECURE,\n"
+        "    'csrf_cookie_secure': settings.CSRF_COOKIE_SECURE,\n"
+        "    'hsts_seconds': settings.SECURE_HSTS_SECONDS,\n"
+        "    'x_frame_options': settings.X_FRAME_OPTIONS,\n"
+        "    'referrer_policy': settings.SECURE_REFERRER_POLICY,\n"
+        "    'whitenoise_finders': settings.WHITENOISE_USE_FINDERS,\n"
         "}))"
     )
 
@@ -1083,6 +1093,9 @@ class SettingsEnvironmentTests(SimpleTestCase):
                 "DEBUG": "True",
                 "ALLOWED_HOSTS": "localhost",
                 "CSRF_TRUSTED_ORIGINS": "http://localhost:8000",
+                "SITE_URL": "http://localhost:8000",
+                "RESEND_API_KEY": "test-resend-key",
+                "RESEND_FROM_EMAIL": "sender@example.com",
                 "PYTHONIOENCODING": "utf-8",
             }
         )
@@ -1105,6 +1118,9 @@ class SettingsEnvironmentTests(SimpleTestCase):
                 "https://farm.example.com/,"
                 "https://www.farm.example.com"
             ),
+            SITE_URL="https://farm.example.com",
+            RESEND_API_KEY="test-resend-key",
+            RESEND_FROM_EMAIL="sender@example.com",
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         data = json.loads(result.stdout.strip().splitlines()[-1])
@@ -1121,6 +1137,38 @@ class SettingsEnvironmentTests(SimpleTestCase):
         )
         self.assertEqual(data["time_zone"], "Africa/Lagos")
         self.assertTrue(data["use_tz"])
+        self.assertEqual(data["site_url"], "https://farm.example.com")
+        self.assertEqual(
+            data["static_backend"],
+            "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        )
+        self.assertEqual(
+            data["middleware"].index("whitenoise.middleware.WhiteNoiseMiddleware"),
+            data["middleware"].index("django.middleware.security.SecurityMiddleware") + 1,
+        )
+        self.assertFalse(data["whitenoise_finders"])
+        self.assertTrue(data["secure_ssl_redirect"])
+        self.assertTrue(data["session_cookie_secure"])
+        self.assertTrue(data["csrf_cookie_secure"])
+        self.assertEqual(data["hsts_seconds"], 0)
+        self.assertEqual(data["x_frame_options"], "DENY")
+        self.assertEqual(
+            data["referrer_policy"], "strict-origin-when-cross-origin"
+        )
+
+    def test_development_defaults_keep_local_static_and_security_safe(self):
+        result = self.run_settings(DEBUG="True")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout.strip().splitlines()[-1])
+        self.assertTrue(data["debug"])
+        self.assertEqual(
+            data["static_backend"],
+            "django.contrib.staticfiles.storage.StaticFilesStorage",
+        )
+        self.assertTrue(data["whitenoise_finders"])
+        self.assertFalse(data["secure_ssl_redirect"])
+        self.assertFalse(data["session_cookie_secure"])
+        self.assertFalse(data["csrf_cookie_secure"])
 
     def test_production_requires_a_secret_key(self):
         result = self.run_settings(
@@ -1152,3 +1200,67 @@ class SettingsEnvironmentTests(SimpleTestCase):
         self.assertIn(
             "CSRF_TRUSTED_ORIGINS entries must be", result.stderr
         )
+
+    def test_production_requires_csrf_origins(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS=" ",
+            SITE_URL="https://farm.example.com",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("CSRF_TRUSTED_ORIGINS must be set", result.stderr)
+
+    def test_production_requires_https_site_url(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS="https://farm.example.com",
+            SITE_URL="http://farm.example.com",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("SITE_URL must use https", result.stderr)
+
+    def test_production_requires_resend_configuration(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS="https://farm.example.com",
+            SITE_URL="https://farm.example.com",
+            RESEND_API_KEY=" ",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("RESEND_API_KEY", result.stderr)
+
+    def test_collectstatic_succeeds_with_production_storage(self):
+        with tempfile.TemporaryDirectory() as static_root:
+            environment = os.environ.copy()
+            environment.update(
+                {
+                    "DJANGO_SETTINGS_MODULE": "Otoosin_project.settings",
+                    "SECRET_KEY": "collectstatic-test-secret",
+                    "DEBUG": "False",
+                    "ALLOWED_HOSTS": "farm.example.com",
+                    "CSRF_TRUSTED_ORIGINS": "https://farm.example.com",
+                    "SITE_URL": "https://farm.example.com",
+                    "RESEND_API_KEY": "test-resend-key",
+                    "RESEND_FROM_EMAIL": "sender@example.com",
+                    "STATIC_ROOT": static_root,
+                    "PYTHONIOENCODING": "utf-8",
+                }
+            )
+            result = subprocess.run(
+                [sys.executable, "manage.py", "collectstatic", "--noinput"],
+                cwd=settings.BASE_DIR,
+                env=environment,
+                capture_output=True,
+                text=True,
+                timeout=180,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr[-2000:])
+            self.assertTrue(
+                os.path.exists(os.path.join(static_root, "staticfiles.json"))
+            )

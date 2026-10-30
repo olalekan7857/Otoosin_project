@@ -53,6 +53,7 @@ media/
 *.mo
 *.md
 *.txt
+!DEPLOYMENT.md
 
 
 # ========================

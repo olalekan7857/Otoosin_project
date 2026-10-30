@@ -115,6 +115,101 @@ class ResendEmailServiceTests(TestCase):
         self.assertIn("timed out", delivery.last_error)
 
 
+class BrandedStaffEmailTests(TestCase):
+    site_url = "https://otoosinfarms.com.ng"
+    logo_url = (
+        "https://otoosinfarms.com.ng/static/assets/img/harvest_castle/"
+        "of_favicon.png"
+    )
+
+    def _user(self, **kwargs):
+        User = get_user_model()
+        defaults = {
+            "username": "branded-staff",
+            "email": "branded@example.com",
+            "first_name": "Ada",
+            "last_name": "Okafor",
+            "is_staff": True,
+        }
+        defaults.update(kwargs)
+        return User.objects.create_user(password="strong-pass-123", **defaults)
+
+    @override_settings(
+        SITE_URL=site_url,
+        STAFF_INVITATION_HOURS=72,
+        SUPPORT_EMAIL="support@otoosinfarms.com.ng",
+    )
+    def test_staff_invitation_email_is_branded_and_has_absolute_logo(self):
+        from .transactional_emails import staff_invitation_email
+
+        user = self._user()
+        invitation = StaffInvitation.objects.create(
+            user=user,
+            email=user.email,
+            role=StaffInvitation.Role.MANAGER,
+            token_hash=StaffInvitation.hash_token("invite-token"),
+            expires_at=timezone.now() + timezone.timedelta(hours=72),
+        )
+        message = staff_invitation_email(
+            invitation, f"{self.site_url}/staff/activate/uid/invite-token/"
+        )
+        self.assertIn("invited", message["subject"].lower())
+        self.assertIn("Ada Okafor", message["html"])
+        self.assertIn("Manager", message["html"])
+        self.assertIn(self.logo_url, message["html"])
+        self.assertIn("invitation expires", message["text"].lower())
+        self.assertIn("/staff/activate/uid/invite-token/", message["html"])
+        self.assertIn("ignore", message["html"].lower())
+        self.assertIn("O’Toosin Farms", message["text"])
+        self.assertNotIn("<script", message["html"].lower())
+
+    @override_settings(
+        SITE_URL=site_url,
+        PASSWORD_RESET_TIMEOUT=86400,
+        SUPPORT_EMAIL="support@otoosinfarms.com.ng",
+    )
+    def test_password_reset_email_is_branded_and_has_absolute_logo(self):
+        from .transactional_emails import staff_password_reset_email
+
+        user = self._user()
+        message = staff_password_reset_email(
+            user, f"{self.site_url}/staff/password-reset/uid/token/"
+        )
+        self.assertIn("password", message["subject"].lower())
+        self.assertIn("Ada Okafor", message["html"])
+        self.assertIn(self.logo_url, message["html"])
+        self.assertIn("24 hours", message["text"].lower())
+        self.assertIn("/staff/password-reset/uid/token/", message["html"])
+        self.assertIn("did not request", message["html"].lower())
+        self.assertIn("O’Toosin Farms", message["text"])
+
+    @override_settings(
+        SITE_URL=site_url,
+        RESEND_API_KEY="test-resend-key",
+        RESEND_FROM_EMAIL="O’Toosin Farms <no-reply@otoosinfarms.com.ng>",
+    )
+    def test_send_email_includes_html_and_text_alternative(self):
+        from .email_service import send_email
+
+        captured = {}
+
+        def fake_send(payload):
+            captured.update(payload)
+            return 200, '{"id":"email-html-1"}'
+
+        with mock.patch("Otoosin.email_service._send_request", side_effect=fake_send):
+            delivery = send_email(
+                category=EmailDelivery.Category.STAFF_INVITE,
+                recipient="staff@example.com",
+                subject="Invitation",
+                text="Plain alternative",
+                html="<p>HTML alternative</p>",
+            )
+        self.assertEqual(delivery.status, EmailDelivery.Status.SENT)
+        self.assertEqual(captured["html"], "<p>HTML alternative</p>")
+        self.assertEqual(captured["text"], "Plain alternative")
+
+
 class StaffRoleAndTeamTests(TestCase):
     def setUp(self):
         cache.clear()

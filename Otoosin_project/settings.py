@@ -52,6 +52,28 @@ def _env_list(name, default=""):
     ]
 
 
+def _env_int(name, default, *, minimum=None):
+    try:
+        value = int(str(config(name, default=str(default))).strip())
+    except (TypeError, ValueError) as error:
+        raise ImproperlyConfigured(
+            f"{name} must be an integer value."
+        ) from error
+    if minimum is not None and value < minimum:
+        raise ImproperlyConfigured(
+            f"{name} must be greater than or equal to {minimum}."
+        )
+    return value
+
+
+def _env_path(name, default):
+    raw = str(config(name, default=str(default))).strip()
+    path = Path(raw or default)
+    if not path.is_absolute():
+        path = BASE_DIR / path
+    return path
+
+
 def _validated_hosts(hosts):
     for host in hosts:
         if host == "*":
@@ -127,6 +149,10 @@ _default_origins = (
 CSRF_TRUSTED_ORIGINS = _validated_origins(
     _env_list("CSRF_TRUSTED_ORIGINS", default=_default_origins)
 )
+if not DEBUG and not CSRF_TRUSTED_ORIGINS:
+    raise ImproperlyConfigured(
+        "CSRF_TRUSTED_ORIGINS must be set in the environment when DEBUG=False."
+    )
 
 
 # Application definition
@@ -144,6 +170,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -180,7 +207,7 @@ WSGI_APPLICATION = 'Otoosin_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': _env_path('SQLITE_PATH', BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -209,7 +236,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Africa/Lagos'
+TIME_ZONE = config('TIME_ZONE', default='Africa/Lagos').strip() or 'Africa/Lagos'
 
 USE_I18N = True
 
@@ -219,21 +246,70 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-
+STATIC_URL = config('STATIC_URL', default='/static/').strip() or '/static/'
+if not STATIC_URL.endswith('/'):
+    STATIC_URL += '/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = _env_path('STATIC_ROOT', BASE_DIR / 'staticfiles')
 
+MEDIA_URL = config('MEDIA_URL', default='/media/').strip() or '/media/'
+if not MEDIA_URL.endswith('/'):
+    MEDIA_URL += '/'
+MEDIA_ROOT = _env_path('MEDIA_ROOT', BASE_DIR / 'media')
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# WhiteNoise serves collected static files in production. In development,
+# Django's runserver static handler remains authoritative while WhiteNoise
+# can still use the static finders if it is reached.
+WHITENOISE_USE_FINDERS = DEBUG
+WHITENOISE_MAX_AGE = _env_int('WHITENOISE_MAX_AGE', 31536000, minimum=0)
+
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': (
+            'django.contrib.staticfiles.storage.StaticFilesStorage'
+            if DEBUG
+            else 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+        ),
+    },
+}
 
 # Authentication redirects for the custom staff admin.
 LOGIN_URL = '/staff/login/'
 LOGIN_REDIRECT_URL = '/staff/products/'
 LOGOUT_REDIRECT_URL = '/staff/login/'
+
+# ---------------------------------------------------------------------------
+# Security and cookies
+# ---------------------------------------------------------------------------
+# Production defaults are deliberately conservative. HSTS is opt-in so a
+# deployment is never locked into HTTPS before the domain and subdomains are
+# verified. Every value remains environment-controlled for hosting platforms
+# that terminate TLS or use a different proxy header.
+SECURE_SSL_REDIRECT = _env_bool('SECURE_SSL_REDIRECT', not DEBUG)
+SESSION_COOKIE_SECURE = _env_bool('SESSION_COOKIE_SECURE', not DEBUG)
+CSRF_COOKIE_SECURE = _env_bool('CSRF_COOKIE_SECURE', not DEBUG)
+SESSION_COOKIE_SAMESITE = config('SESSION_COOKIE_SAMESITE', default='Lax').strip() or 'Lax'
+CSRF_COOKIE_SAMESITE = config('CSRF_COOKIE_SAMESITE', default='Lax').strip() or 'Lax'
+SESSION_COOKIE_AGE = _env_int('SESSION_COOKIE_AGE', 28800, minimum=300)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = _env_bool('SESSION_EXPIRE_AT_BROWSER_CLOSE', False)
+SECURE_CONTENT_TYPE_NOSNIFF = _env_bool('SECURE_CONTENT_TYPE_NOSNIFF', True)
+SECURE_REFERRER_POLICY = (
+    config('SECURE_REFERRER_POLICY', default='strict-origin-when-cross-origin').strip()
+    or 'strict-origin-when-cross-origin'
+)
+X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='DENY').strip() or 'DENY'
+SECURE_HSTS_SECONDS = _env_int('SECURE_HSTS_SECONDS', 0, minimum=0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = _env_bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
+SECURE_HSTS_PRELOAD = _env_bool('SECURE_HSTS_PRELOAD', False)
+if _env_bool('USE_X_FORWARDED_PROTO', False):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+PASSWORD_RESET_TIMEOUT = _env_int('PASSWORD_RESET_TIMEOUT', 86400, minimum=3600)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -253,12 +329,16 @@ RESEND_FROM_EMAIL = config(
     "RESEND_FROM_EMAIL", default=config("DEFAULT_FROM_EMAIL", default="")
 ).strip()
 DEFAULT_FROM_EMAIL = RESEND_FROM_EMAIL
-RESEND_TIMEOUT_SECONDS = config(
-    "RESEND_TIMEOUT_SECONDS", default=30, cast=int
-)
-STAFF_INVITATION_HOURS = config(
-    "STAFF_INVITATION_HOURS", default=72, cast=int
-)
+RESEND_TIMEOUT_SECONDS = _env_int("RESEND_TIMEOUT_SECONDS", 30, minimum=1)
+STAFF_INVITATION_HOURS = _env_int("STAFF_INVITATION_HOURS", 72, minimum=1)
+SUPPORT_EMAIL = config(
+    "SUPPORT_EMAIL", default=RESEND_FROM_EMAIL
+).strip()
+if not DEBUG and (not RESEND_API_KEY or not RESEND_FROM_EMAIL):
+    raise ImproperlyConfigured(
+        "RESEND_API_KEY and RESEND_FROM_EMAIL must be set in the environment "
+        "when DEBUG=False so staff invitations and password resets can be sent."
+    )
 
 # ---------------------------------------------------------------------------
 # Paystack (server-side only). The secret key is never exposed to templates
@@ -269,9 +349,30 @@ PAYSTACK_PUBLIC_KEY = config("PAYSTACK_PUBLIC_KEY", default="").strip()
 PAYSTACK_BASE_URL = config(
     "PAYSTACK_BASE_URL", default="https://api.paystack.co"
 ).strip().rstrip("/")
-PAYSTACK_TIMEOUT_SECONDS = config(
-    "PAYSTACK_TIMEOUT_SECONDS", default=30, cast=int
-)
+PAYSTACK_TIMEOUT_SECONDS = _env_int("PAYSTACK_TIMEOUT_SECONDS", 30, minimum=1)
+
+_log_level = config("DJANGO_LOG_LEVEL", default="INFO").strip().upper() or "INFO"
+_log_handlers = ["console"]
+_logging_handlers = {
+    "console": {
+        "class": "logging.StreamHandler",
+        "formatter": "standard",
+    }
+}
+_log_file = str(config("DJANGO_LOG_FILE", default="")).strip()
+if _log_file:
+    _log_path = Path(_log_file)
+    if not _log_path.is_absolute():
+        _log_path = BASE_DIR / _log_path
+    _log_path.parent.mkdir(parents=True, exist_ok=True)
+    _logging_handlers["file"] = {
+        "class": "logging.handlers.RotatingFileHandler",
+        "formatter": "standard",
+        "filename": str(_log_path),
+        "maxBytes": _env_int("DJANGO_LOG_MAX_BYTES", 5 * 1024 * 1024, minimum=1024),
+        "backupCount": _env_int("DJANGO_LOG_BACKUP_COUNT", 5, minimum=1),
+    }
+    _log_handlers.append("file")
 
 LOGGING = {
     "version": 1,
@@ -281,22 +382,28 @@ LOGGING = {
             "format": "%(asctime)s %(levelname)s %(name)s %(message)s",
         }
     },
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-            "formatter": "standard",
-        }
-    },
+    "handlers": _logging_handlers,
     "loggers": {
         "Otoosin": {
-            "handlers": ["console"],
-            "level": "INFO",
+            "handlers": _log_handlers,
+            "level": _log_level,
             "propagate": False,
-        }
+        },
+        "django.security": {
+            "handlers": _log_handlers,
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "django.request": {
+            "handlers": _log_handlers,
+            "level": "WARNING",
+            "propagate": False,
+        },
     },
 }
 
-SITE_URL = config("SITE_URL", default="http://localhost:8000").strip().rstrip("/")
+_site_default = "http://localhost:8000" if DEBUG else ""
+SITE_URL = config("SITE_URL", default=_site_default).strip().rstrip("/")
 if SITE_URL:
     _site_parts = urlsplit(SITE_URL)
     if (
@@ -308,4 +415,13 @@ if SITE_URL:
     ):
         raise ImproperlyConfigured(
             "SITE_URL must be an http(s) origin without a path or query."
+        )
+if not DEBUG:
+    if not SITE_URL:
+        raise ImproperlyConfigured(
+            "SITE_URL must be set in the environment when DEBUG=False."
+        )
+    if urlsplit(SITE_URL).scheme != "https":
+        raise ImproperlyConfigured(
+            "SITE_URL must use https when DEBUG=False."
         )

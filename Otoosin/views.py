@@ -43,6 +43,10 @@ from .cart import (
 )
 from .catalogue import public_products
 from .email_service import send_email
+from .transactional_emails import (
+    staff_invitation_email,
+    staff_password_reset_email,
+)
 from .forms import (
     CategoryForm,
     CheckoutForm,
@@ -214,15 +218,13 @@ def staff_password_reset(request):
                 kwargs={"uidb64": uid, "token": token},
             )
             reset_url = f"{settings.SITE_URL.rstrip('/')}{path}"
+            message = staff_password_reset_email(user, reset_url)
             delivery = send_email(
                 category=EmailDelivery.Category.PASSWORD_RESET,
                 recipient=user.email,
-                subject="Reset your O’Toosin Farms staff password",
-                text=(
-                    "A staff password reset was requested for your account.\n\n"
-                    f"Open this secure link to choose a new password:\n{reset_url}\n\n"
-                    "If you did not request this, you can ignore this email."
-                ),
+                subject=message["subject"],
+                text=message["text"],
+                html=message["html"],
             )
             record_audit(
                 actor=user,
@@ -325,17 +327,13 @@ def _invitation_url(raw_token, invitation):
 
 def _send_staff_invitation(invitation, raw_token, actor):
     url = _invitation_url(raw_token, invitation)
+    message = staff_invitation_email(invitation, url)
     delivery = send_email(
         category=EmailDelivery.Category.STAFF_INVITE,
         recipient=invitation.email,
-        subject="Your O’Toosin Farms staff invitation",
-        text=(
-            "You have been invited to the O’Toosin Farms staff admin as "
-            f"{invitation.get_role_display()}.\n\n"
-            f"Set your password and activate your account here:\n{url}\n\n"
-            "This link expires and can only be used once. If you were not "
-            "expecting this invitation, you can ignore this email."
-        ),
+        subject=message["subject"],
+        text=message["text"],
+        html=message["html"],
     )
     invitation.email_delivery = delivery
     invitation.save(update_fields=["email_delivery", "updated_at"])

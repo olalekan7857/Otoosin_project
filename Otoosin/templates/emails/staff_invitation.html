@@ -1,0 +1,22 @@
+{% extends "emails/base_email.html" %}
+{% block title %}Your O’Toosin Farms staff invitation{% endblock %}
+{% block preheader %}You have been invited to join the O’Toosin Farms administration team.{% endblock %}
+{% block heading %}You’re invited to join our team{% endblock %}
+{% block intro %}
+  <p style="margin:0 0 12px 0;">Hello {{ invited_name }},</p>
+  <p style="margin:0 0 12px 0;">You have been invited to join the O’Toosin Farms administration team as <strong style="color:#06411d;">{{ role_label }}</strong>.</p>
+  <p style="margin:0;">Use the button below to set your password and activate your staff account securely.</p>
+{% endblock %}
+{% block details %}
+  <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color:#f8f5ed;border:1px solid #e3ded0;border-radius:12px;">
+    <tr>
+      <td style="padding:16px 18px;color:#3b463f;font-size:13px;line-height:1.6;">
+        <strong style="color:#06411d;">Assigned role:</strong> {{ role_label }}<br>
+        <strong style="color:#06411d;">Invitation expires:</strong> {{ expiry_text }}
+      </td>
+    </tr>
+  </table>
+{% endblock %}
+{% block note %}
+  This invitation link can only be used once. If you were not expecting this invitation, you can safely ignore this email and no account changes will be made.
+{% endblock %}
