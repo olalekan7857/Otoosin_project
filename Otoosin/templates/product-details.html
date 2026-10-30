@@ -7,7 +7,7 @@
 
 {% block extra_head %}
     <link rel="stylesheet" href="{% static 'assets/css/otoosin-shop.css' %}?v=8.0">
-    <link rel="stylesheet" href="{% static 'assets/css/otoosin-product-details.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-product-details.css' %}?v=1.1">
     {% if product %}<script type="application/ld+json" id="fd-pdp-jsonld">{{ product_jsonld_json|safe }}</script>{% endif %}
 {% endblock extra_head %}
 

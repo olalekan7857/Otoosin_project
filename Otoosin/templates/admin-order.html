@@ -58,6 +58,7 @@
 
 <section class="fd-dash-section" aria-labelledby="fd-order-items-title">
     <h2 id="fd-order-items-title">Items</h2>
+    <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every item column.</p>
     <div class="fd-dash-table-scroll fd-order-items-scroll" role="region" aria-label="Ordered items table" tabindex="0">
         <table class="fd-dash-table fd-order-items-table">
             <caption class="fd-dash-caption">Every item as ordered, at the price and unit recorded at order time.</caption>
@@ -65,11 +66,11 @@
             <tbody>
                 {% for item in order.items.all %}
                 <tr>
-                    <td><strong>{{ item.product_name }}</strong><span class="fd-orders-sub">{{ item.category_name }}{% if item.condition %} &middot; {{ item.condition }}{% endif %}</span></td>
-                    <td>{{ item.variant_label }}{% if item.sku %}<span class="fd-orders-sub">{{ item.sku }}</span>{% endif %}</td>
-                    <td>{{ item.quantity_label|default:item.quantity }}</td>
-                    <td class="is-amount">&#8358;{{ item.unit_price|floatformat:2|intcomma }}</td>
-                    <td class="is-amount">&#8358;{{ item.line_total|floatformat:2|intcomma }}</td>
+                    <td data-label="Product"><strong>{{ item.product_name }}</strong><span class="fd-orders-sub">{{ item.category_name }}{% if item.condition %} &middot; {{ item.condition }}{% endif %}</span></td>
+                    <td data-label="Variant / SKU">{{ item.variant_label }}{% if item.sku %}<span class="fd-orders-sub">{{ item.sku }}</span>{% endif %}</td>
+                    <td data-label="Quantity">{{ item.quantity_label|default:item.quantity }}</td>
+                    <td class="is-amount" data-label="Unit price">&#8358;{{ item.unit_price|floatformat:2|intcomma }}</td>
+                    <td class="is-amount" data-label="Line total">&#8358;{{ item.line_total|floatformat:2|intcomma }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -86,23 +87,24 @@
     <section class="fd-dash-section" aria-labelledby="fd-order-payment-title">
         <h2 id="fd-order-payment-title">Payment</h2>
         {% if payment_attempts %}
+        <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every payment column.</p>
         <div class="fd-dash-table-scroll">
-            <table class="fd-dash-table">
+            <table class="fd-dash-table fd-stack-table">
                 <caption class="fd-dash-caption">Payment attempts for this order. Paid is only shown after server verification.</caption>
                 <thead><tr><th scope="col">Reference</th><th scope="col">Amount</th><th scope="col">Status</th><th scope="col">Created</th><th scope="col">Verified</th></tr></thead>
                 <tbody>
                     {% for payment in payment_attempts %}
                     <tr>
-                        <td>{{ payment.provider_reference }}{% if payment.failure_category %}<span class="fd-orders-sub">{{ payment.failure_category }}{% if payment.failure_message %}: {{ payment.failure_message }}{% endif %}</span>{% endif %}</td>
-                        <td class="is-amount">&#8358;{{ payment.amount|floatformat:2|intcomma }}</td>
-                        <td>
+                        <td data-label="Reference">{{ payment.provider_reference }}{% if payment.failure_category %}<span class="fd-orders-sub">{{ payment.failure_category }}{% if payment.failure_message %}: {{ payment.failure_message }}{% endif %}</span>{% endif %}</td>
+                        <td class="is-amount" data-label="Amount">&#8358;{{ payment.amount|floatformat:2|intcomma }}</td>
+                        <td data-label="Status">
                             {% if payment.status == 'paid' and payment.verified_at %}<span class="fd-dash-pill is-ok">Paid / verified</span>
                             {% elif payment.status == 'pending' or payment.status == 'initiated' %}<span class="fd-dash-pill is-warn">{{ payment.get_status_display }}</span>
                             {% elif payment.status == 'failed' %}<span class="fd-dash-pill is-bad">Failed</span>
                             {% else %}<span class="fd-dash-pill is-muted">{{ payment.get_status_display }}</span>{% endif %}
                         </td>
-                        <td>{{ payment.created_at|date:"j M Y H:i" }}</td>
-                        <td>{% if payment.status == 'paid' and payment.verified_at %}{{ payment.verified_at|date:"j M Y H:i" }}{% else %}—{% endif %}</td>
+                        <td data-label="Created">{{ payment.created_at|date:"j M Y H:i" }}</td>
+                        <td data-label="Verified">{% if payment.status == 'paid' and payment.verified_at %}{{ payment.verified_at|date:"j M Y H:i" }}{% else %}—{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -144,17 +146,18 @@
 <section class="fd-dash-section" aria-labelledby="fd-order-history-title">
     <h2 id="fd-order-history-title">Status history</h2>
     {% if status_events %}
+    <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every history column.</p>
     <div class="fd-dash-table-scroll">
-        <table class="fd-dash-table">
+        <table class="fd-dash-table fd-stack-table">
             <caption class="fd-dash-caption">Audited order status history.</caption>
             <thead><tr><th scope="col">When</th><th scope="col">Change</th><th scope="col">Actor</th><th scope="col">Note</th></tr></thead>
             <tbody>
                 {% for event in status_events %}
                 <tr>
-                    <td>{{ event.created_at|date:"j M Y H:i" }}</td>
-                    <td>{{ event.from_status|default:"Created" }} &rarr; {{ event.to_status }}</td>
-                    <td>{% if event.actor %}{{ event.actor.get_username }}{% else %}System / customer{% endif %}</td>
-                    <td>{{ event.note|default:"—" }}</td>
+                    <td data-label="When">{{ event.created_at|date:"j M Y H:i" }}</td>
+                    <td data-label="Change">{{ event.from_status|default:"Created" }} &rarr; {{ event.to_status }}</td>
+                    <td data-label="Actor">{% if event.actor %}{{ event.actor.get_username }}{% else %}System / customer{% endif %}</td>
+                    <td data-label="Note">{{ event.note|default:"—" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

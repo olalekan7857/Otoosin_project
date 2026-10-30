@@ -485,3 +485,10 @@ html[data-theme="dark"] .oto-pdp-know-icon {
     padding-bottom: 44px;
   }
 }
+
+/* Related product cards show the product name on its own: the variant/SKU
+   line is intentionally omitted in this recommendation rail so a code-like
+   variant label never reads as part of the product name. */
+.oto-pdp-related .fd-product-unit {
+  display: none;
+}

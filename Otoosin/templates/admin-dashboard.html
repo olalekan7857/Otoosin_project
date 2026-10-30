@@ -48,17 +48,18 @@
         <li class="fd-dash-card"><span class="fd-dash-card-label">New / unread</span><span class="fd-dash-card-value">{{ contact_summary.new }}</span><span class="fd-dash-card-context">Waiting for staff attention.</span></li>
     </ul>
     {% if recent_messages %}
+    <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every enquiry column.</p>
     <div class="fd-dash-table-scroll">
-        <table class="fd-dash-table">
+        <table class="fd-dash-table fd-stack-table">
             <caption class="fd-dash-caption">Recent customer enquiries.</caption>
             <thead><tr><th scope="col">Status</th><th scope="col">Enquiry</th><th scope="col">Sender</th><th scope="col">Received</th></tr></thead>
             <tbody>
                 {% for enquiry in recent_messages %}
                 <tr>
-                    <td><span class="fd-dash-pill{% if enquiry.status == 'new' %} is-new{% elif enquiry.status == 'closed' %} is-muted{% endif %}">{{ enquiry.get_status_display }}</span></td>
-                    <td><a href="{% url 'Otoosin:staff_message_detail' enquiry.pk %}">{{ enquiry.get_subject_display }}</a></td>
-                    <td>{{ enquiry.name }}</td>
-                    <td>{{ enquiry.created_at|date:"j M Y H:i" }}</td>
+                    <td data-label="Status"><span class="fd-dash-pill{% if enquiry.status == 'new' %} is-new{% elif enquiry.status == 'closed' %} is-muted{% endif %}">{{ enquiry.get_status_display }}</span></td>
+                    <td data-label="Enquiry"><a href="{% url 'Otoosin:staff_message_detail' enquiry.pk %}">{{ enquiry.get_subject_display }}</a></td>
+                    <td data-label="Sender">{{ enquiry.name }}</td>
+                    <td data-label="Received">{{ enquiry.created_at|date:"j M Y H:i" }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -96,17 +97,18 @@
         <a href="{% url 'Otoosin:staff_products' %}" class="fd-ghost-btn fd-dash-btn">View all products</a>
     </div>
     {% if recent_products %}
+    <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every product column.</p>
     <div class="fd-dash-table-scroll">
-        <table class="fd-dash-table">
+        <table class="fd-dash-table fd-stack-table">
             <caption class="fd-dash-caption">Newest products first.</caption>
             <thead><tr><th scope="col">Product</th><th scope="col">Category</th><th scope="col">Condition</th><th scope="col">Availability</th></tr></thead>
             <tbody>
                 {% for product in recent_products %}
                 <tr>
-                    <td><a href="{% url 'Otoosin:staff_product_edit' product.pk %}">{{ product.name }}</a></td>
-                    <td>{{ product.category.name }}</td>
-                    <td>{{ product.get_condition_display }}</td>
-                    <td>{{ product.get_availability_status_display }}</td>
+                    <td data-label="Product"><a href="{% url 'Otoosin:staff_product_edit' product.pk %}">{{ product.name }}</a></td>
+                    <td data-label="Category">{{ product.category.name }}</td>
+                    <td data-label="Condition">{{ product.get_condition_display }}</td>
+                    <td data-label="Availability">{{ product.get_availability_status_display }}</td>
                 </tr>
                 {% endfor %}
             </tbody>

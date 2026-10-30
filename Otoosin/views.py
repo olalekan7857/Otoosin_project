@@ -770,6 +770,10 @@ def _product_form_view(request, product=None):
                 request,
                 f"{saved_product.name} was {'created' if is_create else 'updated'}.",
             )
+            if is_create:
+                # Return to a blank add form so staff can keep adding products
+                # without reopening the product they just created.
+                return redirect("Otoosin:staff_product_create")
             return redirect(
                 "Otoosin:staff_product_edit", pk=saved_product.pk
             )

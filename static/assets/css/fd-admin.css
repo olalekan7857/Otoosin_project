@@ -34,7 +34,7 @@
   width: 264px;
   flex: 0 0 264px;
   background: var(--white-color);
-  border-right: 1px solid #ececec;
+  border-right: 1px solid var(--fd-hairline, #ececec);
   display: flex;
   flex-direction: column;
   position: sticky;
@@ -158,7 +158,7 @@
 
 .fd-admin-side-foot {
   padding: 16px 20px 20px 20px;
-  border-top: 1px solid #ececec;
+  border-top: 1px solid var(--fd-hairline, #ececec);
 }
 
 .fd-admin-logout {
@@ -212,7 +212,7 @@
   align-items: center;
   gap: 12px;
   background: var(--white-color);
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--fd-hairline, #ececec);
   padding: 12px 24px;
   min-height: 68px;
 }
@@ -641,7 +641,7 @@ html[data-theme="dark"] .fd-auth-context > div {
 
 .fd-admin-card {
   background: var(--white-color);
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: var(--fd-radius, 18px);
   padding: 32px 30px;
 }
@@ -1003,7 +1003,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
 /* ---------- Sections ---------- */
 .fd-dash-section {
   background: var(--white-color);
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: var(--fd-radius, 18px);
   padding: 24px 22px;
   margin: 0 0 20px 0;
@@ -1063,7 +1063,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
 }
 
 .fd-dash-card {
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: var(--fd-radius, 18px);
   padding: 20px 18px;
   display: flex;
@@ -1162,7 +1162,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
    so the PAGE never overflows and text never shrinks. */
 .fd-dash-table-scroll {
   overflow-x: auto;
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: 12px;
   max-width: 100%;
 }
@@ -1189,7 +1189,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
 .fd-dash-table td {
   text-align: left;
   padding: 12px 16px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--fd-hairline, #ececec);
   vertical-align: middle;
 }
 
@@ -1316,7 +1316,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 2px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--fd-hairline, #ececec);
 }
 
 .fd-dash-products li:last-child {
@@ -1362,7 +1362,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   align-items: flex-start;
   gap: 12px;
   padding: 12px 2px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--fd-hairline, #ececec);
 }
 
 .fd-dash-attention li:last-child {
@@ -1948,7 +1948,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 
   .fd-prod-table tbody tr {
-    border: 1px solid #ececec;
+    border: 1px solid var(--fd-hairline, #ececec);
     border-radius: 12px;
     padding: 20px 20px 24px 20px;
     margin-bottom: 14px;
@@ -1966,7 +1966,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
      gives every divider generous breathing room above and below, so no
      line ever touches text, images, or pills. */
   .fd-prod-table td {
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
     padding: 20px 0;
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -2408,7 +2408,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
 }
 
 .fd-admin .fd-edit-variant {
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: 12px;
   padding: 18px 16px;
   min-width: 0;
@@ -2579,7 +2579,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: 12px;
   padding: 14px;
   cursor: pointer;
@@ -2658,7 +2658,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   display: flex;
   gap: 16px;
   align-items: flex-start;
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: 12px;
   padding: 18px 16px;
   min-width: 0;
@@ -3152,7 +3152,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   justify-content: space-between;
   gap: 12px;
   padding: 10px 2px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: 1px solid var(--fd-hairline, #ececec);
   min-width: 0;
 }
 
@@ -3294,7 +3294,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   .fd-admin .fd-orders-table tbody th[scope="row"] {
     display: block;
     width: 100%;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
     padding: 20px 0;
     text-align: left;
     min-width: 0;
@@ -3357,7 +3357,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 
   .fd-admin .fd-order-items-table tbody tr {
-    border: 1px solid #ececec;
+    border: 1px solid var(--fd-hairline, #ececec);
     border-radius: 12px;
     padding: 20px 20px 24px 20px;
     margin-bottom: 14px;
@@ -3369,7 +3369,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 
   .fd-admin .fd-order-items-table td {
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
     border-top: none;
     padding: 20px 0;
     display: grid;
@@ -3387,7 +3387,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   .fd-admin .fd-order-items-table tbody th[scope="row"] {
     display: block;
     width: 100%;
-    border-bottom: 1px solid #ececec;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
     border-top: none;
     padding: 20px 0;
     text-align: left;
@@ -3621,7 +3621,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
 }
 
 .fd-admin .fd-set-delivery-card {
-  border: 1px solid #ececec;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: 12px;
   padding: 18px 16px;
   min-width: 0;
@@ -3875,7 +3875,10 @@ html[data-theme="dark"] .fd-dash-card-icon {
 
   .fd-admin-base-nav ul {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-template-columns: none;
+    width: 100%;
     gap: 2px;
     margin: 0;
     padding: 0;
@@ -3883,6 +3886,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 
   .fd-admin-base-nav li {
+    width: 100%;
     min-width: 0;
     margin: 0;
     padding: 0;
@@ -3894,6 +3898,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
     align-items: center;
     justify-content: center;
     gap: 3px;
+    width: 100%;
     min-width: 0;
     min-height: 54px;
     padding: 6px 2px;
@@ -4040,7 +4045,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   display: grid;
   gap: 14px;
   padding: 16px;
-  border: 1px solid #e6e6e6;
+  border: 1px solid var(--fd-hairline, #ececec);
   border-radius: 16px;
   background: var(--white-color, #fff);
 }
@@ -4674,5 +4679,335 @@ html[data-theme="dark"] .fd-dash-card-icon {
 
   .fd-msg-snippet {
     max-width: none;
+  }
+}
+
+/* ==========================================================================
+   Shared admin table hardening — generic stack tables + scroll affordance
+   --------------------------------------------------------------------------
+   Some admin tables (dashboard recents, order payment attempts and status
+   history) are plain .fd-dash-table instances. On phones they now use the
+   same card language as the order and enquiry tables: every cell keeps its
+   column heading via data-label, so no status or amount is ever clipped.
+   Wide tables that still scroll on tablets show an explicit swipe/scroll
+   cue. Colors use the existing --fd-* tokens so Dark mode follows the rest
+   of the admin surface without new palette values.
+   ========================================================================== */
+
+.fd-table-scroll-note {
+  display: none;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .fd-table-scroll-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--body-color);
+  }
+
+  .fd-table-scroll-note i {
+    color: var(--secondary-color);
+  }
+
+  .fd-dash-table-scroll {
+    box-shadow: inset -18px 0 18px -18px rgba(0, 0, 0, 0.32);
+  }
+
+  html[data-theme="dark"] .fd-dash-table-scroll {
+    box-shadow: inset -18px 0 18px -18px rgba(0, 0, 0, 0.65);
+  }
+}
+
+@media (max-width: 767px) {
+  .fd-dash-table-scroll:has(.fd-stack-table) {
+    border: none;
+    overflow: visible;
+  }
+
+  .fd-dash-section:has(.fd-stack-table) {
+    padding: 16px 12px;
+  }
+
+  .fd-stack-table {
+    min-width: 0;
+  }
+
+  .fd-stack-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .fd-stack-table,
+  .fd-stack-table tbody,
+  .fd-stack-table tr,
+  .fd-stack-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .fd-stack-table caption {
+    display: block;
+    width: 100%;
+    padding: 0 0 12px;
+  }
+
+  .fd-stack-table tbody tr {
+    margin-bottom: 14px;
+    padding: 16px 20px;
+    border: 1px solid var(--fd-hairline, #ececec);
+    border-radius: 12px;
+    background: var(--fd-surface, var(--white-color));
+    min-width: 0;
+  }
+
+  .fd-stack-table tbody tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .fd-stack-table td {
+    display: grid;
+    grid-template-columns: minmax(90px, auto) minmax(0, 1fr);
+    align-items: start;
+    gap: 6px 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .fd-stack-table td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .fd-stack-table td::before {
+    content: attr(data-label);
+    font-family: var(--title-font);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--body-color);
+    text-align: left;
+  }
+
+  .fd-stack-table td .fd-dash-pill {
+    justify-self: end;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .fd-stack-table td.is-amount {
+    white-space: normal;
+  }
+}
+
+/* ==========================================================================
+   Orders list refinement — compact phone cards + two-up filter grid
+   --------------------------------------------------------------------------
+   The order list is the one admin table viewed with 20+ records at a time.
+   On phones it now uses a dense two-column card (reference/status,
+   customer/payment, items/total, fulfilment/action) instead of one full
+   row per field, with smaller type and controls so the list stays
+   scannable. Every card keeps a distinct bottom edge, including the last
+   one, and desktop rows keep their record divider too. Colors follow the
+   shared --fd-* tokens for Dark mode.
+   ========================================================================== */
+
+@media (min-width: 768px) {
+  .fd-admin .fd-orders-table tbody tr:last-child th,
+  .fd-admin .fd-orders-table tbody tr:last-child td {
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
+  }
+}
+
+@media (max-width: 767px) {
+  /* Filters: search owns the first row, everything else sits two-up. */
+  .fd-admin .fd-orders-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .fd-admin .fd-orders-toolbar .fd-prod-search {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .fd-admin .fd-orders-toolbar .fd-shop-select {
+    flex: 1 1 calc(50% - 5px);
+    width: calc(50% - 5px);
+    min-width: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    margin: 0;
+    white-space: normal;
+    font-size: 12.5px;
+    line-height: 1.25;
+  }
+
+  .fd-admin .fd-orders-toolbar .fd-shop-select .form-select,
+  .fd-admin .fd-orders-toolbar .fd-shop-select .form-control {
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+    height: 40px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  .fd-admin .fd-orders-toolbar .fd-dash-btn {
+    flex: 1 1 calc(50% - 5px);
+    width: calc(50% - 5px);
+    min-height: 40px;
+    height: 40px;
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .fd-admin .fd-orders-toolbar #fd-orders-clear {
+    height: 40px;
+    min-height: 40px;
+    line-height: 18px;
+  }
+
+  /* Cards: one tight two-column record instead of eight stacked rows. */
+  .fd-admin .fd-orders-table-scroll {
+    border: 0;
+    overflow: visible;
+  }
+
+  .fd-admin .fd-orders-table {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .fd-admin .fd-orders-table caption {
+    display: block;
+    width: 100%;
+    padding: 0 0 10px;
+  }
+
+  .fd-admin .fd-orders-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .fd-admin .fd-orders-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .fd-admin .fd-orders-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 7px 12px;
+    padding: 11px 14px 12px;
+    margin: 0;
+    min-width: 0;
+    border: 1px solid var(--fd-hairline, #ececec);
+    border-bottom: 2px solid var(--fd-hairline, #ececec);
+    border-radius: 10px;
+    background: var(--fd-surface, var(--white-color));
+  }
+
+  .fd-admin .fd-orders-table tbody tr:last-child {
+    margin-bottom: 0;
+    border-bottom-color: var(--fd-hairline, #ececec);
+  }
+
+  .fd-admin .fd-orders-table td {
+    display: block;
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .fd-admin .fd-orders-table td::before {
+    display: none;
+  }
+
+  .fd-admin .fd-orders-table td:nth-child(1) { grid-column: 1; grid-row: 1; }
+  .fd-admin .fd-orders-table td:nth-child(7) { grid-column: 2; grid-row: 1; justify-self: end; }
+  .fd-admin .fd-orders-table td:nth-child(2) { grid-column: 1; grid-row: 2; }
+  .fd-admin .fd-orders-table td:nth-child(6) { grid-column: 2; grid-row: 2; justify-self: end; }
+  .fd-admin .fd-orders-table td:nth-child(3) { grid-column: 1; grid-row: 3; }
+  .fd-admin .fd-orders-table td:nth-child(5) { grid-column: 2; grid-row: 3; justify-self: end; text-align: right; }
+  .fd-admin .fd-orders-table td:nth-child(4) { grid-column: 1; grid-row: 4; }
+  .fd-admin .fd-orders-table td:nth-child(8) { grid-column: 2; grid-row: 4; justify-self: end; align-self: center; }
+
+  .fd-admin .fd-orders-table a.fd-orders-ref {
+    display: inline;
+    min-height: 0;
+    font-size: 13.5px;
+  }
+
+  .fd-admin .fd-orders-table .fd-orders-date {
+    margin-top: 1px;
+    font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .fd-admin .fd-orders-table .fd-orders-cust {
+    font-size: 13.5px;
+    line-height: 1.3;
+  }
+
+  .fd-admin .fd-orders-table .fd-orders-sub {
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+
+  .fd-admin .fd-orders-table .fd-orders-items {
+    font-size: 12.5px;
+  }
+
+  .fd-admin .fd-orders-table .fd-orders-receive-method {
+    font-size: 12.5px;
+  }
+
+  .fd-admin .fd-orders-table .fd-orders-receive-place {
+    font-size: 11.5px;
+  }
+
+  .fd-admin .fd-orders-table td.is-amount {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .fd-admin .fd-orders-table .fd-dash-pill {
+    padding: 3px 8px;
+    border-width: 1px;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+  }
+
+  .fd-admin .fd-orders-table .fd-prod-btn {
+    min-height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    gap: 5px;
   }
 }

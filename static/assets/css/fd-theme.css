@@ -145,6 +145,15 @@ html[data-theme="dark"] .fd-theme-toggle [data-theme-icon="sun"] {
 }
 
 /* ============ 4. Storefront: template shared surfaces ================== */
+/* Announcement bar: keep the Delivery · Pickup copy and its icon white in
+   Dark mode instead of inheriting a coloured/remapped token. */
+html[data-theme="dark"] .oto-announcement-inner,
+html[data-theme="dark"] .oto-announcement-inner p,
+html[data-theme="dark"] .oto-announcement-inner p i,
+html[data-theme="dark"] .oto-announcement-inner a {
+  color: #ffffff;
+}
+
 /* Header canvas (Light: white). */
 html[data-theme="dark"] .header-layout1 .menu-area,
 html[data-theme="dark"] .will-sticky .sticky-active {
@@ -415,7 +424,8 @@ html[data-theme="dark"] .fd-admin-forgot {
 }
 html[data-theme="dark"] .fd-settings-eyebrow,
 html[data-theme="dark"] .fd-settings-index,
-html[data-theme="dark"] .fd-settings-preview-label {
+html[data-theme="dark"] .fd-settings-preview-label,
+html[data-theme="dark"] .fd-table-scroll-note i {
   color: var(--fd-brand-green-text);
 }
 

@@ -1724,7 +1724,7 @@
 
     // Supporting facts.
     setText("fd-pdp-fact-cat", product.group || product.category);
-    setText("fd-pdp-fact-type", product.name);
+    setText("fd-pdp-fact-type", product.category);
     setText("fd-pdp-fact-type-label", pdpTypeLabel(product.category));
     setText("fd-pdp-fact-condition", product.condition || product.badge || meta.badge);
     setText("fd-pdp-fact-cut", product.cut || "");

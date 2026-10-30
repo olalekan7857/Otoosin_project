@@ -86,6 +86,7 @@
     </form>
 
     {% if orders %}
+    <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every order column.</p>
     <div class="fd-dash-table-scroll fd-prod-table-scroll fd-orders-table-scroll" role="region" aria-label="Order list table" tabindex="0">
         <table class="fd-dash-table fd-prod-table fd-orders-table">
             <caption class="fd-dash-caption">Order list. Open an order for customer, item, fulfilment and payment details.</caption>
@@ -104,18 +105,18 @@
             <tbody>
                 {% for order in orders %}
                 <tr>
-                    <td>
+                    <td data-label="Order">
                         <a class="fd-orders-ref" href="{% url 'Otoosin:staff_order_detail' order.reference %}">{{ order.reference }}</a>
                         <span class="fd-orders-date">{{ order.placed_at|date:"j M Y H:i" }}</span>
                     </td>
-                    <td>
+                    <td data-label="Customer">
                         <strong>{{ order.customer_name }}</strong>
                         <span class="fd-orders-sub">{{ order.customer_phone }}</span>
                     </td>
-                    <td>{{ order.line_count }} line{{ order.line_count|pluralize }}</td>
-                    <td>{{ order.get_receive_method_display }}{% if order.location_name %}<span class="fd-orders-sub">{{ order.location_name }}</span>{% endif %}</td>
-                    <td class="is-amount">&#8358;{{ order.total|floatformat:2 }}</td>
-                    <td>
+                    <td data-label="Items">{{ order.line_count }} line{{ order.line_count|pluralize }}</td>
+                    <td data-label="Fulfilment">{{ order.get_receive_method_display }}{% if order.location_name %}<span class="fd-orders-sub">{{ order.location_name }}</span>{% endif %}</td>
+                    <td class="is-amount" data-label="Order total">&#8358;{{ order.total|floatformat:2 }}</td>
+                    <td data-label="Payment">
                         {% if order.has_paid %}
                             <span class="fd-dash-pill is-ok">Paid / verified</span>
                         {% elif order.latest_payment_status == 'pending' or order.latest_payment_status == 'initiated' %}
@@ -130,7 +131,7 @@
                             <span class="fd-dash-pill is-muted">Unpaid</span>
                         {% endif %}
                     </td>
-                    <td>
+                    <td data-label="Order status">
                         {% if order.status == 'completed' %}
                             <span class="fd-dash-pill is-ok">Completed</span>
                         {% elif order.status == 'cancelled' %}
@@ -139,7 +140,7 @@
                             <span class="fd-dash-pill is-warn">Pending</span>
                         {% endif %}
                     </td>
-                    <td><a class="fd-prod-btn" href="{% url 'Otoosin:staff_order_detail' order.reference %}"><i class="far fa-eye" aria-hidden="true"></i>Open</a></td>
+                    <td data-label="Action"><a class="fd-prod-btn" href="{% url 'Otoosin:staff_order_detail' order.reference %}"><i class="far fa-eye" aria-hidden="true"></i>Open</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
