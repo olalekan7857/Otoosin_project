@@ -2,9 +2,6 @@
 
 import logging
 
-from django.conf import settings
-
-from . import whatsapp
 from .email_service import send_email
 from .models import EmailDelivery, OrderNotificationRecipient
 from .transactional_emails import order_notification_email
@@ -17,44 +14,6 @@ def _masked_email(email):
     if not separator:
         return "***"
     return f"{local[:1]}***@{domain}"
-
-
-def _notify_order_whatsapp(order):
-    """Preserved WhatsApp hook, deliberately gated off by default."""
-    if not (
-        getattr(settings, "WHATSAPP_ORDER_NOTIFICATIONS_ENABLED", False)
-        and getattr(settings, "WHATSAPP_ENABLED", False)
-    ):
-        return
-    try:
-        result = whatsapp.send_order_notification(order)
-    except Exception:
-        logger.exception(
-            "Unexpected WhatsApp notification failure for order %s.",
-            order.reference,
-        )
-        return
-    if result.accepted:
-        logger.info(
-            "WhatsApp notification accepted by Meta for order %s "
-            "(wamid %s); delivery receipt is not implemented.",
-            order.reference,
-            result.message_id or "not returned",
-        )
-    elif result.category == "disabled":
-        logger.info(
-            "WhatsApp notifications are disabled; order %s was not sent.",
-            order.reference,
-        )
-    else:
-        logger.warning(
-            "WhatsApp notification was not accepted for order %s "
-            "(category %s, HTTP %s): %s",
-            order.reference,
-            result.category,
-            result.status_code,
-            result.message,
-        )
 
 
 def _notify_order_email(order):
@@ -122,18 +81,15 @@ def payment_verified(order, payment):
         order.reference,
         payment.provider_reference,
     )
-    # Email is the active administrative notification channel. WhatsApp is
-    # preserved but gated off by default and is never required by email.
     try:
         _notify_order_email(order)
     except Exception:
-        # A secondary provider must never turn a committed payment into a
+        # A notification provider must never turn a committed payment into a
         # failed checkout response.
         logger.exception(
             "Unexpected paid-order email failure for order %s.",
             order.reference,
         )
-    _notify_order_whatsapp(order)
 
 
 def order_status_changed(order, old_status, new_status, actor=None):

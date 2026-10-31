@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% load static humanize %}
 
-{% block title %}{% if product %}{{ product.name }}{% else %}Product not found{% endif %} | O’TOOSIN Farms{% endblock title %}
+{% block title %}{% if product %}{% if product.meta_title %}{{ product.meta_title }}{% else %}{{ product.name }} | O’TOOSIN Farms{% endif %}{% else %}Product not found | O’TOOSIN Farms{% endif %}{% endblock title %}
 
 {% block body_class %}otoosin-shop otoosin-product-details{% endblock body_class %}
 

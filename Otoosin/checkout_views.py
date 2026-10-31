@@ -33,6 +33,7 @@ from .orders import (
     expected_delivery_date,
 )
 from .payments import process_webhook, verify_payment
+from .seo import seo_context
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +109,7 @@ def checkout(request):
     delivery_locations, pickup_locations = _checkout_locations()
     config = SiteConfiguration.load()
     cutoff = config.delivery_cutoff_time
-    return render(
+    response = render(
         request,
         "checkout.html",
         {
@@ -119,8 +120,16 @@ def checkout(request):
             "cutoff_time": cutoff.strftime("%I:%M %p").lstrip("0")
             if cutoff
             else "",
+            **seo_context(
+                title="Checkout | O’TOOSIN Farms",
+                description="Complete your O’Toosin Farms order.",
+                path="/checkout/",
+                robots="noindex,nofollow",
+            ),
         },
     )
+    response["X-Robots-Tag"] = "noindex, nofollow"
+    return response
 
 
 def _checkout_error(message, *, field="", status=400):
@@ -496,6 +505,16 @@ def order_confirmation(request, reference=None):
             "verified_paid": verified_paid,
             "display_payment": verified_paid or latest_payment,
             "clear_payload": clear_payload,
+            **seo_context(
+                title="Order Confirmation | O’TOOSIN Farms",
+                description="Private O’Toosin Farms order confirmation.",
+                path=(
+                    f"/order-confirmation/{order.reference}/"
+                    if order
+                    else "/order-confirmation/"
+                ),
+                robots="noindex,nofollow",
+            ),
         },
         status=200 if order else 404,
     )
@@ -518,7 +537,15 @@ def payment_callback(request):
         return render(
             request,
             "payment-result.html",
-            {"message": "We could not find that payment reference."},
+            {
+                "message": "We could not find that payment reference.",
+                **seo_context(
+                    title="Payment Status | O’TOOSIN Farms",
+                    description="Private O’Toosin Farms payment status.",
+                    path=None,
+                    robots="noindex,nofollow",
+                ),
+            },
             status=404,
         )
     _bind_order_to_session(request, payment.order)

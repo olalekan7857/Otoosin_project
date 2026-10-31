@@ -6,14 +6,22 @@
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token }}">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}{% endblock title %}</title>
+    <title>{% block title %}{{ seo.title|default:site_config.business_name|default:'O’Toosin Farms' }}{% endblock title %}</title>
     <meta name="author" content="{{ site_config.business_name|default:'O’Toosin Farms' }}">
-    <meta name="description" content="{{ site_config.description|default:'O’Toosin Farms delivers safe, healthy and nutritious foods to your doorstep. Shop pork, chicken, turkey, beef, goat meat, fish, live animals, eggs, veggies and fruits.' }}">
+    <meta name="description" content="{{ seo.description|default:site_config.description|default:'O’Toosin Farms delivers safe, healthy and nutritious foods to your doorstep. Shop pork, chicken, turkey, beef, goat meat, fish, live animals, eggs, veggies and fruits.' }}">
     <meta name="keywords" content="{{ site_config.business_name|default:'O’Toosin Farms' }}, farm products, pork, chicken, turkey, beef, goat meat, fish, catfish, tilapia, live animals, eggs, veggies, fruits, Abeokuta delivery">
-    <meta name="robots" content="INDEX,FOLLOW">
-    <meta property="og:title" content="{{ site_config.business_name|default:'O’Toosin Farms' }} | Safe, Healthy and Nutritious Foods">
-    <meta property="og:description" content="{{ site_config.description|default:'Delivering safe, healthy, and nutritious foods at your doorstep. Shop O’Toosin Meats, Fish, Live Animals, Eggs, Veggies and Fruits.' }}">
-    <meta property="og:type" content="website">
+    <meta name="robots" content="{{ seo.robots|default:'index,follow' }}">
+    {% if seo.canonical %}<link rel="canonical" href="{{ seo.canonical }}">{% endif %}
+    <meta property="og:site_name" content="{{ site_config.business_name|default:'O’Toosin Farms' }}">
+    <meta property="og:title" content="{{ seo.title|default:site_config.business_name|default:'O’Toosin Farms' }}">
+    <meta property="og:description" content="{{ seo.description|default:site_config.description|default:'Delivering safe, healthy, and nutritious foods at your doorstep. Shop O’Toosin Meats, Fish, Live Animals, Eggs, Veggies and Fruits.' }}">
+    <meta property="og:type" content="{{ seo.og_type|default:'website' }}">
+    {% if seo.canonical %}<meta property="og:url" content="{{ seo.canonical }}">{% endif %}
+    {% if seo.image %}<meta property="og:image" content="{{ seo.image }}">{% endif %}
+    <meta name="twitter:card" content="{% if seo.image %}summary_large_image{% else %}summary{% endif %}">
+    <meta name="twitter:title" content="{{ seo.title|default:site_config.business_name|default:'O’Toosin Farms' }}">
+    <meta name="twitter:description" content="{{ seo.description|default:site_config.description|default:'Delivering safe, healthy, and nutritious foods at your doorstep.' }}">
+    {% if seo.image %}<meta name="twitter:image" content="{{ seo.image }}">{% endif %}
 
     <link rel="shortcut icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
     <link rel="icon" href="{% static 'assets/img/harvest_castle/of_favicon.png' %}" type="image/png">
@@ -253,7 +261,7 @@
                     <div class="col-lg-4">
                         <div class="widget footer-widget">
                             <a href="{% url 'Otoosin:index' %}" class="fd-logo oto-logo oto-footer-logo" aria-label="O’TOOSIN Farms home"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img oto-logo-img" width="78" height="56" decoding="async" loading="lazy"></a>
-                            <p class="footer-text oto-footer-text">Delivering safe, healthy, and nutritious foods at your doorstep . . . Shop meats, fish, live animals, eggs, veggies and fruits.</p>
+                            <p class="footer-text oto-footer-text">{{ site_config.description|default:"Delivering safe, healthy, and nutritious foods at your doorstep . . . Shop meats, fish, live animals, eggs, veggies and fruits." }}</p>
                         </div>
                     </div>
                     <div class="col-6 col-lg-2">
@@ -298,7 +306,7 @@
         </div>
         <div class="container">
             <div class="copyright-wrap oto-copyright">
-                <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="{% url 'Otoosin:index' %}">O’TOOSIN Farms</a>. All Rights Reserved.</p>
+                <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="{% url 'Otoosin:index' %}">{{ site_config.business_name|default:"O’TOOSIN Farms" }}</a>. All Rights Reserved.</p>
                 <ul class="oto-legal-links">
                     <li><a href="{% url 'Otoosin:privacy' %}">Privacy Policy</a></li>
                     <li><a href="{% url 'Otoosin:terms' %}">Terms &amp; Conditions</a></li>

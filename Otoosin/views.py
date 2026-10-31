@@ -43,6 +43,7 @@ from .cart import (
 )
 from .catalogue import public_products
 from .email_service import send_email
+from .seo import absolute_url, seo_context
 from .transactional_emails import (
     staff_invitation_email,
     staff_password_reset_email,
@@ -1685,12 +1686,36 @@ def index(request):
     return render(
         request,
         "index.html",
-        {"featured_products": featured},
+        {
+            "featured_products": featured,
+            **seo_context(
+                title=(
+                    "O’TOOSIN Farms | Meats, Fish, Live Animals, Eggs, "
+                    "Veggies and Fruits"
+                ),
+                description=(
+                    "Shop meats, fish, live animals, eggs, veggies and fruits "
+                    "from O’Toosin Farms, with delivery or pickup at checkout."
+                ),
+                path="/",
+            ),
+        },
     )
 
 
 def about(request):
-    return render(request, "about.html")
+    return render(
+        request,
+        "about.html",
+        seo_context(
+            title="About O’TOOSIN Farms | A Complete Farm Shop",
+            description=(
+                "Learn how O’Toosin Farms brings meats, fish, live animals, "
+                "eggs, veggies and fruits together in one farm shop."
+            ),
+            path="/about/",
+        ),
+    )
 
 
 def contact(request):
@@ -1737,7 +1762,21 @@ def contact(request):
     return render(
         request,
         "contact.html",
-        {"form": form, "submitted": submitted},
+        {
+            "form": form,
+            "submitted": submitted,
+            **seo_context(
+                title=(
+                    f"Contact {SiteConfiguration.load().business_name} | "
+                    "Products, Orders and Pickup"
+                ),
+                description=(
+                    "Contact O’Toosin Farms about a product, an existing "
+                    "order, delivery or pickup."
+                ),
+                path="/contact/",
+            ),
+        },
         status=status,
     )
 
@@ -1745,6 +1784,16 @@ def contact(request):
 def product(request):
     category = _resolve_public_category(request.GET.get("category"))
     context = _catalogue_context(request, category=category)
+    context.update(
+        seo_context(
+            title="Shop All Products | O’TOOSIN Farms",
+            description=(
+                "Browse meats, fish, live animals, eggs, veggies and fruits "
+                "from O’Toosin Farms and add what you need to your cart."
+            ),
+            path="/shop/",
+        )
+    )
     return render(request, "product.html", context)
 
 
@@ -1771,6 +1820,32 @@ def product_category(request):
     context["page_image"] = (
         category.image if category and category.image else None
     )
+    if category:
+        seo = seo_context(
+            title=category.meta_title or f"{category.name} | O’TOOSIN Farms",
+            description=(
+                category.meta_description
+                or category.description
+                or (
+                    f"Browse {category.name} products from O’Toosin Farms, "
+                    "with delivery or pickup at checkout."
+                )
+            ),
+            path=reverse("Otoosin:product_category"),
+            params={"category": category.slug},
+            image=(
+                absolute_url(category.image.url) if category.image else None
+            ),
+        )
+    else:
+        seo = seo_context(
+            title="Shop All Products | O’TOOSIN Farms",
+            description=(
+                "Browse all farm products from O’Toosin Farms by category."
+            ),
+            path=reverse("Otoosin:product"),
+        )
+    context.update(seo)
     return render(request, "product-category.html", context)
 
 
@@ -1791,7 +1866,15 @@ def product_details(request):
         return render(
             request,
             "product-details.html",
-            {"product": None},
+            {
+                "product": None,
+                **seo_context(
+                    title="Product not found | O’TOOSIN Farms",
+                    description="The requested product could not be found.",
+                    path=None,
+                    robots="noindex,nofollow",
+                ),
+            },
             status=404,
         )
 
@@ -1828,9 +1911,15 @@ def product_details(request):
         "@context": "https://schema.org",
         "@type": "Product",
         "name": product.name,
+        "sku": default_variant.sku,
         "category": product.category.name,
         "description": product.description,
         "image": image_url,
+        "url": absolute_url(
+            reverse("Otoosin:product_details")
+            + "?"
+            + urlencode({"id": product.slug})
+        ),
         "brand": {"@type": "Brand", "name": "O’TOOSIN Farms"},
         "offers": {
             "@type": "Offer",
@@ -1857,12 +1946,39 @@ def product_details(request):
             "product_jsonld_json": json.dumps(product_jsonld).replace(
                 "</", "<\\/"
             ),
+            **seo_context(
+                title=(
+                    product.meta_title
+                    or f"{product.name} | O’TOOSIN Farms"
+                ),
+                description=(
+                    product.meta_description
+                    or product.description[:300]
+                ),
+                path=reverse("Otoosin:product_details"),
+                params={"id": product.slug},
+                og_type="product",
+                image=absolute_url(primary_image.image.url)
+                if primary_image
+                else None,
+            ),
         },
     )
 
 
 def cart(request):
-    return render(request, "cart.html")
+    response = render(
+        request,
+        "cart.html",
+        seo_context(
+            title="Your Cart | O’TOOSIN Farms",
+            description="Review the farm products in your cart.",
+            path="/cart/",
+            robots="noindex,nofollow",
+        ),
+    )
+    response["X-Robots-Tag"] = "noindex, nofollow"
+    return response
 
 
 def _invalid_cart_response(error, status=400):
@@ -1901,15 +2017,121 @@ def checkout_validate(request):
 
 
 def privacy(request):
-    return render(request, "privacy.html")
+    return render(
+        request,
+        "privacy.html",
+        seo_context(
+            title="Privacy Policy | O’TOOSIN Farms",
+            description=(
+                "Read how O’Toosin Farms handles personal information for "
+                "orders, payments and enquiries."
+            ),
+            path="/privacy/",
+        ),
+    )
 
 
 def terms(request):
-    return render(request, "terms.html")
+    return render(
+        request,
+        "terms.html",
+        seo_context(
+            title="Terms & Conditions | O’TOOSIN Farms",
+            description=(
+                "Read the terms that apply to using the O’Toosin Farms "
+                "website, placing orders, delivery, pickup and payment."
+            ),
+            path="/terms/",
+        ),
+    )
 
 
 def not_found(request, exception):
-    return render(request, "404.html", status=404)
+    return render(
+        request,
+        "404.html",
+        seo_context(
+            title="Page Not Found | O’TOOSIN Farms",
+            description="The requested O’Toosin Farms page could not be found.",
+            path=None,
+            robots="noindex,nofollow",
+        ),
+        status=404,
+    )
+
+
+LEGACY_PUBLIC_REDIRECTS = {
+    "index.html": ("Otoosin:index", ()),
+    "product.html": (
+        "Otoosin:product",
+        ("q", "category", "state", "sort", "page"),
+    ),
+    "product-category.html": (
+        "Otoosin:product_category",
+        ("q", "category", "state", "sort", "page"),
+    ),
+    "product-details.html": ("Otoosin:product_details", ("id",)),
+    "cart.html": ("Otoosin:cart", ()),
+    "checkout.html": ("Otoosin:checkout", ()),
+    "contact.html": ("Otoosin:contact", ("sent",)),
+    "about.html": ("Otoosin:about", ()),
+    "privacy.html": ("Otoosin:privacy", ()),
+    "terms.html": ("Otoosin:terms", ()),
+}
+
+
+def legacy_public_redirect(request, legacy):
+    if legacy == "order-confirmation.html":
+        reference = (request.GET.get("order") or "").strip()
+        if reference:
+            target = reverse(
+                "Otoosin:order_confirmation_detail",
+                kwargs={"reference": reference},
+            )
+        else:
+            target = reverse("Otoosin:order_confirmation")
+        return redirect(target, permanent=True)
+
+    target_name, allowed = LEGACY_PUBLIC_REDIRECTS.get(
+        legacy, (None, ())
+    )
+    if not target_name:
+        raise Http404
+    params = {
+        key: request.GET[key]
+        for key in allowed
+        if key in request.GET and request.GET[key] != ""
+    }
+    target = reverse(target_name)
+    if params:
+        target = f"{target}?{urlencode(params)}"
+    return redirect(target, permanent=True)
+
+
+def robots_txt(request):
+    base = (settings.SITE_URL or "").rstrip("/")
+    sitemap_url = (
+        f"{base}{reverse('sitemap')}"
+        if base
+        else request.build_absolute_uri(reverse("sitemap"))
+    )
+    lines = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /staff/",
+        "Disallow: /admin/",
+        "Disallow: /cart/",
+        "Disallow: /checkout/",
+        "Disallow: /order-confirmation/",
+        "Disallow: /payments/",
+        "Disallow: /api/",
+        "",
+        f"Sitemap: {sitemap_url}",
+        "",
+    ]
+    return HttpResponse(
+        "\n".join(lines), content_type="text/plain; charset=utf-8"
+    )
 
 
 @_staff_permission("Otoosin.view_order")

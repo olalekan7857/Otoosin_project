@@ -164,6 +164,50 @@
                             {% endif %}
                             <a class="oto-contact-link" href="{% url 'Otoosin:index' %}#delivery-pickup">Delivery &amp; Pickup details <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
 
+                            {% if site_config.contact_phone or site_config.whatsapp_digits or site_config.support_email or site_config.address %}
+                            <hr class="oto-contact-aside-divider">
+
+                            <h3>Contact details</h3>
+                            <ul class="oto-contact-topics">
+                                {% if site_config.contact_phone %}
+                                <li>
+                                    <span class="oto-contact-topic-icon"><i class="fas fa-phone" aria-hidden="true"></i></span>
+                                    <div>
+                                        <strong>Phone</strong>
+                                        <span><a href="tel:{{ site_config.contact_phone }}">{{ site_config.contact_phone }}</a></span>
+                                    </div>
+                                </li>
+                                {% endif %}
+                                {% if site_config.whatsapp_digits %}
+                                <li>
+                                    <span class="oto-contact-topic-icon"><i class="fab fa-whatsapp" aria-hidden="true"></i></span>
+                                    <div>
+                                        <strong>WhatsApp</strong>
+                                        <span><a href="https://wa.me/{{ site_config.whatsapp_digits }}" target="_blank" rel="noopener">Chat with {{ site_config.business_name|default:"O’Toosin Farms" }}</a></span>
+                                    </div>
+                                </li>
+                                {% endif %}
+                                {% if site_config.support_email %}
+                                <li>
+                                    <span class="oto-contact-topic-icon"><i class="fas fa-envelope" aria-hidden="true"></i></span>
+                                    <div>
+                                        <strong>Email</strong>
+                                        <span><a href="mailto:{{ site_config.support_email }}">{{ site_config.support_email }}</a></span>
+                                    </div>
+                                </li>
+                                {% endif %}
+                                {% if site_config.address %}
+                                <li>
+                                    <span class="oto-contact-topic-icon"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></span>
+                                    <div>
+                                        <strong>Business address</strong>
+                                        <span>{{ site_config.address|linebreaksbr }}</span>
+                                    </div>
+                                </li>
+                                {% endif %}
+                            </ul>
+                            {% endif %}
+
                             <hr class="oto-contact-aside-divider">
 
                             <h3>What you can ask about</h3>

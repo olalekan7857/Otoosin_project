@@ -165,6 +165,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sitemaps',
     'Otoosin'
 ]
 
@@ -350,49 +351,6 @@ PAYSTACK_BASE_URL = config(
     "PAYSTACK_BASE_URL", default="https://api.paystack.co"
 ).strip().rstrip("/")
 PAYSTACK_TIMEOUT_SECONDS = _env_int("PAYSTACK_TIMEOUT_SECONDS", 30, minimum=1)
-
-# ---------------------------------------------------------------------------
-# WhatsApp Cloud API (secondary staff notification)
-# ---------------------------------------------------------------------------
-# WhatsApp remains disabled unless explicitly enabled. Credentials are kept
-# server-side and are never exposed to templates or browser JavaScript.
-WHATSAPP_ENABLED = _env_bool("WHATSAPP_ENABLED", False)
-# Order notifications are now driven by the database-backed email recipient
-# list. The preserved WhatsApp hook stays off unless both switches are true.
-WHATSAPP_ORDER_NOTIFICATIONS_ENABLED = _env_bool(
-    "WHATSAPP_ORDER_NOTIFICATIONS_ENABLED", False
-)
-WHATSAPP_ACCESS_TOKEN = config("WHATSAPP_ACCESS_TOKEN", default="").strip()
-WHATSAPP_PHONE_NUMBER_ID = config(
-    "WHATSAPP_PHONE_NUMBER_ID", default=""
-).strip()
-WHATSAPP_BUSINESS_ACCOUNT_ID = config(
-    "WHATSAPP_BUSINESS_ACCOUNT_ID", default=""
-).strip()
-WHATSAPP_APP_ID = config("WHATSAPP_APP_ID", default="").strip()
-WHATSAPP_GRAPH_API_VERSION = config(
-    "WHATSAPP_GRAPH_API_VERSION", default="v25.0"
-).strip() or "v25.0"
-WHATSAPP_ADMIN_RECIPIENTS = _env_list("WHATSAPP_ADMIN_RECIPIENTS")
-WHATSAPP_MESSAGE_TEMPLATE = config(
-    "WHATSAPP_MESSAGE_TEMPLATE", default=""
-).strip()
-WHATSAPP_TEMPLATE_LANGUAGE = config(
-    "WHATSAPP_TEMPLATE_LANGUAGE", default="en_US"
-).strip() or "en_US"
-WHATSAPP_TEMPLATE_BODY_FIELDS = _env_list(
-    "WHATSAPP_TEMPLATE_BODY_FIELDS"
-)
-WHATSAPP_TEMPLATE_HEADER_FIELDS = _env_list("WHATSAPP_TEMPLATE_HEADER_FIELDS")
-WHATSAPP_TEMPLATE_URL_BUTTON_FIELD = config(
-    "WHATSAPP_TEMPLATE_URL_BUTTON_FIELD", default=""
-).strip()
-WHATSAPP_TEMPLATE_URL_BUTTON_INDEX = _env_int(
-    "WHATSAPP_TEMPLATE_URL_BUTTON_INDEX", 0, minimum=0
-)
-WHATSAPP_TIMEOUT_SECONDS = _env_int(
-    "WHATSAPP_TIMEOUT_SECONDS", 10, minimum=1
-)
 
 _log_level = config("DJANGO_LOG_LEVEL", default="INFO").strip().upper() or "INFO"
 _log_handlers = ["console"]

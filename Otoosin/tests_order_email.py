@@ -454,32 +454,3 @@ class OrderEmailTriggerTests(TestCase):
             calls, ["manager@example.com", "owner@example.com"]
         )
 
-    @override_settings(
-        **(
-            RESEND_OK
-            | {
-                "WHATSAPP_ENABLED": False,
-                "WHATSAPP_ORDER_NOTIFICATIONS_ENABLED": False,
-                "WHATSAPP_ACCESS_TOKEN": "",
-                "WHATSAPP_PHONE_NUMBER_ID": "",
-                "WHATSAPP_MESSAGE_TEMPLATE": "",
-            }
-        )
-    )
-    @mock.patch(
-        "Otoosin.email_service._send_request",
-        return_value=(200, '{"id":"email-123"}'),
-    )
-    @mock.patch("Otoosin.notifications.whatsapp.send_order_notification")
-    def test_email_is_independent_of_whatsapp(self, whatsapp_notify, request):
-        order, payment = make_order(paid=False)
-        with self.captureOnCommitCallbacks(execute=True):
-            verify_payment(payment, provider_data=self.provider_data(payment))
-        self.assertEqual(
-            EmailDelivery.objects.filter(
-                category=EmailDelivery.Category.ORDER_NOTIFICATION,
-                status=EmailDelivery.Status.SENT,
-            ).count(),
-            2,
-        )
-        whatsapp_notify.assert_not_called()

@@ -14,8 +14,8 @@ from .models import Category
 class AbsoluteSitemap(Sitemap):
     """Build locations from the configured public SITE_URL."""
 
-    def get_urls(self, site=None, protocol=None):
-        urls = super().get_urls(site=site, protocol=protocol)
+    def get_urls(self, page=1, site=None, protocol=None):
+        urls = super().get_urls(page=page, site=site, protocol=protocol)
         base = (getattr(settings, "SITE_URL", "") or "").rstrip("/")
         if not base:
             return urls

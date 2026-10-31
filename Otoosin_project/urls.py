@@ -15,9 +15,22 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
+
+from Otoosin.sitemaps import SITEMAPS
+from Otoosin.views import robots_txt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': SITEMAPS},
+        name='sitemap',
+    ),
+    path('robots.txt', robots_txt, name='robots'),
     path('', include('Otoosin.urls', namespace='Otoosin')),
 ]
+
+handler404 = 'Otoosin.views.not_found'
