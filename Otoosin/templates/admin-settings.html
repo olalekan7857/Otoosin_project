@@ -51,4 +51,87 @@
         </div>
     </form>
 </section>
+
+<section class="fd-dash-section fd-settings-section" aria-labelledby="fd-settings-notify-title">
+    <div class="fd-settings-section-head">
+        <span class="fd-settings-index" aria-hidden="true">02</span>
+        <div class="fd-settings-section-copy">
+            <h2 id="fd-settings-notify-title">Order Email Notifications</h2>
+            <p class="fd-settings-section-lead">Manage the email addresses that receive notifications whenever a customer's order payment is successfully verified.</p>
+        </div>
+    </div>
+
+    {% if missing_email_config %}
+    <div class="fd-admin-notice is-error" role="alert">
+        <strong>Resend is not fully configured.</strong>
+        Missing: {{ missing_email_config|join:", " }}. Paid-order emails will be recorded as failed until these environment values are set.
+    </div>
+    {% endif %}
+
+    {% if not active_recipient_count %}
+    <div class="fd-admin-notice is-dev" role="status">
+        <strong>No active order notification email addresses are configured.</strong>
+        New paid orders will not generate admin email notifications until at least one recipient is activated.
+    </div>
+    {% endif %}
+
+    <form method="post" class="fd-settings-form fd-notify-add" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="recipient_add">
+        {% if recipient_form.non_field_errors %}
+        <div class="fd-admin-notice is-error" role="alert">{% for error in recipient_form.non_field_errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+        <div class="fd-notify-add-grid">
+            <div class="fd-field">
+                <label for="{{ recipient_form.email.id_for_label }}">Email address <span class="fd-required" aria-hidden="true">*</span></label>
+                {{ recipient_form.email }}
+                <p class="fd-dash-hint">External addresses are allowed. The recipient does not get an admin account or dashboard access.</p>
+                {% for error in recipient_form.email.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            <div class="fd-notify-add-action">
+                <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-plus" aria-hidden="true"></i>Add recipient</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="fd-notify-list-head">
+        <h3>Configured recipients</h3>
+        <span class="fd-dash-pill {% if active_recipient_count %}is-ok{% else %}is-muted{% endif %}">{{ active_recipient_count }} active</span>
+    </div>
+
+    {% if notification_recipients %}
+    <ul class="fd-notify-list">
+        {% for recipient in notification_recipients %}
+        <li class="fd-notify-item{% if not recipient.is_active %} is-disabled{% endif %}">
+            <div class="fd-notify-identity">
+                <span class="fd-notify-status {% if recipient.is_active %}is-active{% else %}is-disabled{% endif %}">{{ recipient.is_active|yesno:"Active,Disabled" }}</span>
+                <span class="fd-notify-email">{{ recipient.email }}</span>
+                <span class="fd-notify-meta">Added {{ recipient.created_at|date:"j M Y" }}</span>
+            </div>
+            <div class="fd-notify-actions">
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="recipient_toggle">
+                    <input type="hidden" name="recipient_id" value="{{ recipient.pk }}">
+                    <button type="submit" class="fd-ghost-btn fd-notify-btn">
+                        {% if recipient.is_active %}<i class="fas fa-pause" aria-hidden="true"></i>Disable{% else %}<i class="fas fa-play" aria-hidden="true"></i>Enable{% endif %}
+                    </button>
+                </form>
+                <form method="post" onsubmit="return confirm('Remove {{ recipient.email|escapejs }} from paid-order notifications? This cannot be undone.');">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="recipient_remove">
+                    <input type="hidden" name="recipient_id" value="{{ recipient.pk }}">
+                    <button type="submit" class="fd-ghost-btn fd-notify-btn is-danger"><i class="fas fa-trash" aria-hidden="true"></i>Remove</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <div class="fd-notify-empty">
+        <i class="fas fa-envelope-open-text" aria-hidden="true"></i>
+        <p>No notification recipients yet. Add the farm owner, manager or accountant email above.</p>
+    </div>
+    {% endif %}
+</section>
 {% endblock %}

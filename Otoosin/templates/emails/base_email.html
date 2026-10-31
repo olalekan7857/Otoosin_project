@@ -50,7 +50,7 @@
           </tr>
           <tr>
             <td style="padding:8px 34px 30px 34px;">
-              <p style="margin:0 0 12px 0;color:#68736b;font-size:13px;line-height:1.6;">If the button does not work, copy and paste this secure link into your browser:</p>
+              <p style="margin:0 0 12px 0;color:#68736b;font-size:13px;line-height:1.6;">{% block link_intro %}If the button does not work, copy and paste this secure link into your browser:{% endblock %}</p>
               <p style="margin:0;color:#06411d;font-size:12px;line-height:1.6;word-break:break-all;">
                 <a href="{{ action_url }}" style="color:#06411d;text-decoration:underline;">{{ action_url }}</a>
               </p>
@@ -63,7 +63,7 @@
             <td style="background-color:#f8f5ed;border-top:1px solid #e3ded0;padding:22px 34px;text-align:center;">
               <p style="margin:0 0 6px 0;color:#06411d;font-size:13px;line-height:1.5;font-weight:700;">O’Toosin Farms</p>
               <p style="margin:0;color:#68736b;font-size:12px;line-height:1.6;">Farm-fresh food, delivered with care.</p>
-              <p style="margin:8px 0 0 0;color:#68736b;font-size:11px;line-height:1.6;">This is a transactional message from the O’Toosin Farms administration team. Please do not reply to this email.</p>
+              <p style="margin:8px 0 0 0;color:#68736b;font-size:11px;line-height:1.6;">{% block footer_text %}This is a transactional message from the O’Toosin Farms administration team. Please do not reply to this email.{% endblock %}</p>
             </td>
           </tr>
         </table>

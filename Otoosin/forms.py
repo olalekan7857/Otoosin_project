@@ -15,6 +15,7 @@ from .models import (
     Product,
     ProductImage,
     ProductVariant,
+    OrderNotificationRecipient,
     SiteConfiguration,
     StaffInvitation,
     ALLOWED_IMAGE_EXTENSIONS,
@@ -797,6 +798,34 @@ STAFF_ROLE_CHOICES = [
         "Fulfilment — view orders and update permitted fulfilment statuses",
     ),
 ]
+
+
+class OrderNotificationRecipientForm(forms.ModelForm):
+    class Meta:
+        model = OrderNotificationRecipient
+        fields = ["email"]
+        widgets = {
+            "email": forms.EmailInput(
+                attrs={
+                    **TEXT_INPUT,
+                    "autocomplete": "email",
+                    "placeholder": "name@example.com",
+                }
+            )
+        }
+
+    def clean_email(self):
+        email = (self.cleaned_data.get("email") or "").strip().lower()
+        existing = OrderNotificationRecipient.objects.filter(
+            email__iexact=email
+        )
+        if self.instance.pk:
+            existing = existing.exclude(pk=self.instance.pk)
+        if existing.exists():
+            raise forms.ValidationError(
+                "This email address is already configured for order notifications."
+            )
+        return email
 
 
 class StaffInviteForm(forms.Form):

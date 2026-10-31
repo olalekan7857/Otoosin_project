@@ -55,6 +55,7 @@ from .forms import (
     ContactMessageStatusForm,
     DeliveryLocationForm,
     ImageFormSet,
+    OrderNotificationRecipientForm,
     OrderStatusUpdateForm,
     PickupLocationForm,
     ProductForm,
@@ -76,6 +77,7 @@ from .models import (
     EmailDelivery,
     Order,
     OrderItem,
+    OrderNotificationRecipient,
     OrderStatusEvent,
     Payment,
     PaymentWebhookEvent,
@@ -1199,11 +1201,27 @@ def _settings_redirect():
     return redirect("Otoosin:staff_settings")
 
 
-def _settings_context(request, *, business_form=None):
+def _settings_context(
+    request, *, business_form=None, recipient_form=None
+):
     config = SiteConfiguration.load()
+    recipients = list(
+        OrderNotificationRecipient.objects.order_by("-is_active", "email")
+    )
     return {
         "config": config,
-        "business_form": business_form or SiteConfigurationForm(instance=config),
+        "business_form": business_form
+        or SiteConfigurationForm(instance=config),
+        "recipient_form": recipient_form or OrderNotificationRecipientForm(),
+        "notification_recipients": recipients,
+        "active_recipient_count": sum(
+            1 for recipient in recipients if recipient.is_active
+        ),
+        "missing_email_config": [
+            name
+            for name in ("RESEND_API_KEY", "RESEND_FROM_EMAIL")
+            if not getattr(settings, name, "")
+        ],
     }
 
 
@@ -1236,6 +1254,79 @@ def staff_settings(request):
                 "admin-settings.html",
                 _settings_context(request, business_form=form),
             )
+
+        if action == "recipient_add":
+            form = OrderNotificationRecipientForm(request.POST)
+            if form.is_valid():
+                with transaction.atomic():
+                    recipient = form.save()
+                    record_audit(
+                        actor=request.user,
+                        action="order_notification_recipient_added",
+                        target=recipient,
+                        summary=(
+                            "Order notification recipient added: "
+                            f"{recipient.email}."
+                        ),
+                    )
+                messages.success(
+                    request,
+                    f"{recipient.email} will receive paid-order notifications.",
+                )
+                return _settings_redirect()
+            return render(
+                request,
+                "admin-settings.html",
+                _settings_context(request, recipient_form=form),
+            )
+
+        if action == "recipient_toggle":
+            recipient = get_object_or_404(
+                OrderNotificationRecipient,
+                pk=request.POST.get("recipient_id"),
+            )
+            recipient.is_active = not recipient.is_active
+            recipient.save(update_fields=["is_active", "updated_at"])
+            record_audit(
+                actor=request.user,
+                action=(
+                    "order_notification_recipient_enabled"
+                    if recipient.is_active
+                    else "order_notification_recipient_disabled"
+                ),
+                target=recipient,
+                summary=(
+                    f"Order notification recipient {recipient.email} was "
+                    f"{'enabled' if recipient.is_active else 'disabled'}."
+                ),
+            )
+            messages.success(
+                request,
+                f"{recipient.email} is now "
+                f"{'active' if recipient.is_active else 'disabled'}.",
+            )
+            return _settings_redirect()
+
+        if action == "recipient_remove":
+            recipient = get_object_or_404(
+                OrderNotificationRecipient,
+                pk=request.POST.get("recipient_id"),
+            )
+            email = recipient.email
+            recipient_pk = recipient.pk
+            with transaction.atomic():
+                recipient.delete()
+                record_audit(
+                    actor=request.user,
+                    action="order_notification_recipient_removed",
+                    target_type="OrderNotificationRecipient",
+                    target_id=str(recipient_pk),
+                    summary=f"Order notification recipient removed: {email}.",
+                )
+            messages.success(
+                request, f"{email} was removed from order notifications."
+            )
+            return _settings_redirect()
 
         messages.error(request, "Unknown settings action.")
         return _settings_redirect()

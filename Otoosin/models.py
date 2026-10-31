@@ -6,9 +6,10 @@ from decimal import Decimal
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.images import get_image_dimensions
-from django.core.validators import FileExtensionValidator, MinValueValidator
+from django.core.validators import FileExtensionValidator, MinValueValidator, validate_email
 from django.db import models
 from django.db.models import F, Q
+from django.db.models.functions import Lower
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -497,6 +498,42 @@ class SiteConfiguration(models.Model):
         return re.sub(r"\D", "", self.whatsapp_number or "")
 
 
+class OrderNotificationRecipient(models.Model):
+    """Independent email recipient for paid-order admin notifications.
+
+    This is deliberately not linked to the auth user table: external owners,
+    managers or accountants can receive notifications without dashboard access.
+    """
+
+    email = models.EmailField(max_length=254)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["email"]
+        verbose_name = "order notification recipient"
+        verbose_name_plural = "order notification recipients"
+        constraints = [
+            models.UniqueConstraint(
+                Lower("email"),
+                name="unique_order_notification_email_ci",
+            )
+        ]
+
+    def __str__(self):
+        return self.email
+
+    def clean(self):
+        super().clean()
+        self.email = (self.email or "").strip().lower()
+        validate_email(self.email)
+
+    def save(self, *args, **kwargs):
+        self.email = (self.email or "").strip().lower()
+        super().save(*args, **kwargs)
+
+
 class DeliveryLocation(models.Model):
     class LocationType(models.TextChoices):
         DOORSTEP = "doorstep", "Doorstep delivery"
@@ -940,6 +977,7 @@ class EmailDelivery(models.Model):
     class Category(models.TextChoices):
         STAFF_INVITE = "staff_invite", "Staff invitation"
         PASSWORD_RESET = "password_reset", "Password reset"
+        ORDER_NOTIFICATION = "order_notification", "Order notification"
 
     class Status(models.TextChoices):
         QUEUED = "queued", "Queued"

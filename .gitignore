@@ -17,6 +17,7 @@ venv/
 # Environment variables (single local file: .env; never commit it)
 .env
 .env.*
+!.env.example
 
 # Django migrations (generated files)
 # Keep __init__.py so migrations folders remain valid packages.
