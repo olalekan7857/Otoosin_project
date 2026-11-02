@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
-{% load static %}
+{% load static legal %}
 
-{% block title %}Privacy Policy | O’TOOSIN Farms{% endblock title %}
+{% block title %}{{ document.title }} | O’TOOSIN Farms{% endblock title %}
 
 {% block body_class %}otoosin-shop otoosin-legal{% endblock body_class %}
 
@@ -12,132 +12,48 @@
 
 {% block content %}
 <main id="fd-main">
-
         <section class="fd-shop-intro oto-shop-intro" aria-labelledby="oto-privacy-heading">
             <div class="container">
                 <nav aria-label="Breadcrumb">
                     <ol class="fd-breadcrumb">
                         <li><a href="{% url 'Otoosin:index' %}">Home</a></li>
-                        <li aria-current="page">Privacy Policy</li>
+                        <li aria-current="page">{{ document.title }}</li>
                     </ol>
                 </nav>
-                <span class="sec-subtitle">Your information</span>
-                <h1 class="sec-title" id="oto-privacy-heading">Privacy Policy</h1>
-                <p>This policy explains how O’TOOSIN Farms handles personal information connected with this website, its product pages and its ordering process.</p>
+                <span class="sec-subtitle">{{ document.eyebrow }}</span>
+                <h1 class="sec-title" id="oto-privacy-heading">{{ document.title }}</h1>
+                <p>{{ document.intro }}</p>
             </div>
         </section>
 
-        <section class="oto-legal-section" aria-label="Privacy Policy document">
+        <section class="oto-legal-section" aria-label="{{ document.title }} document">
             <div class="container">
                 <div class="oto-legal-layout">
                     <nav class="oto-legal-toc" aria-label="On this page">
                         <h2 class="oto-legal-toc-title">On this page</h2>
                         <ol>
-                            <li><a href="#scope">Scope of this policy</a></li>
-                            <li><a href="#information-provided">Information you provide</a></li>
-                            <li><a href="#automatic-information">Information collected automatically</a></li>
-                            <li><a href="#how-we-use">How information is used</a></li>
-                            <li><a href="#payments">Payments</a></li>
-                            <li><a href="#sharing">Sharing information</a></li>
-                            <li><a href="#retention">Data retention</a></li>
-                            <li><a href="#security">Security</a></li>
-                            <li><a href="#cookies">Cookies and browser storage</a></li>
-                            <li><a href="#rights">Your privacy rights</a></li>
-                            <li><a href="#children">Children's privacy</a></li>
-                            <li><a href="#changes">Policy updates</a></li>
-                            <li><a href="#contact">Contact</a></li>
+                            {% for section in document.sections.all %}
+                            <li><a href="#{{ section.anchor }}">{{ section.title }}</a></li>
+                            {% endfor %}
                         </ol>
                     </nav>
 
                     <div class="oto-legal-doc">
-                        <div class="oto-legal-lead">
-                            <p>O’TOOSIN Farms offers meats, fish, live animals, eggs, veggies and fruits. This policy describes the information the website can collect and the purposes it serves. It applies to this website and not to other websites or services.</p>
-                        </div>
-
-                        <h2 id="scope">1. Scope of this policy</h2>
-                        <p>This Privacy Policy covers your use of the O’TOOSIN Farms website, including browsing product pages, using the cart and preparing an order at checkout.</p>
-                        <p>It does not cover information you give to a separate service that O’TOOSIN Farms does not control. Where this policy refers to information being used to fulfil an order, that includes arrangements made by O’TOOSIN Farms staff and the rider who delivers the order.</p>
-
-                        <h2 id="information-provided">2. Information you may provide</h2>
-                        <p>The information requested depends on how you use the website:</p>
-                        <ul>
-                            <li><strong>Contact enquiries:</strong> your full name, email address, an optional phone number, the type of enquiry and the message you write.</li>
-                            <li><strong>Checkout details:</strong> your name, phone number, optional email address, delivery address, city or town, state, an optional nearest landmark and optional delivery instructions.</li>
-                            <li><strong>Order details:</strong> the products you select, their Fresh, Frozen or Fried condition where applicable, the selling unit, the quantity and the totals shown during checkout.</li>
-                            <li><strong>Correspondence:</strong> any other details you choose to include when you contact O’TOOSIN Farms about a product, an existing order or a delivery.</li>
-                        </ul>
-                        <p>When you submit the Contact page form, a valid enquiry is stored in the O’Toosin Farms staff inbox so the team can review and respond to it. We do not send an automatic email notification for contact enquiries in this phase. Please include only the information needed to help with your enquiry.</p>
-
-                        <h2 id="automatic-information">3. Information collected automatically</h2>
-                        <p>This website does not run advertising networks, analytics products or tracking pixels. It does not create customer accounts and does not ask you to sign in.</p>
-                        <p>The site stores some information in your own browser so that it can work between pages: your cart, your product-view preference, your light or dark theme choice and a temporary copy of order details used by the confirmation page where that flow is used. This browser storage is described further in section 9.</p>
-                        <p>As with most websites, the providers that host the site or deliver its fonts may process standard technical request information, such as the address your device uses to connect and the type of browser making the request, in order to deliver the page. O’TOOSIN Farms does not use that information to build advertising profiles.</p>
-
-                        <h2 id="how-we-use">4. How information is used</h2>
-                        <p>Information you provide is used for the practical purposes connected with your request:</p>
-                        <ul>
-                            <li>Reviewing and responding to an enquiry.</li>
-                            <li>Preparing, confirming and arranging an order.</li>
-                            <li>Coordinating delivery with you and the rider.</li>
-                            <li>Communicating about a product, an order, a payment or delivery arrangement.</li>
-                            <li>Keeping the records reasonably needed to run the business and deal with questions or complaints.</li>
-                            <li>Meeting legal or regulatory obligations that apply to the business.</li>
-                        </ul>
-                        <p>O’TOOSIN Farms does not sell customer information, and does not use contact details for unrelated marketing without a lawful basis.</p>
-
-                        <h2 id="payments">5. Payments</h2>
-                        <p>This website handles payment as part of checkout. The checkout total includes the selected products and any applicable delivery fee, and you are not asked to arrange payment separately.</p>
-                        <p>Please do not send card details by email or chat. The website does not store full payment-card information. An order summary is not a payment receipt and does not by itself show that a payment has been completed.</p>
-                        <p>Where a delivery fee applies, it is shown in the order summary. For park delivery, the delivery charge is confirmed before dispatch. Pickup has no delivery fee.</p>
-
-                        <h2 id="sharing">6. Sharing information</h2>
-                        <p>Information is shared only where it is needed for the purpose for which it was provided. This can include:</p>
-                        <ul>
-                            <li><strong>Delivery riders and couriers:</strong> the name, phone number, delivery address and delivery instructions needed to deliver an order.</li>
-                            <li><strong>Service providers:</strong> providers that host, secure or maintain the website or its fonts, where their involvement is necessary to make the site available.</li>
-                            <li><strong>Legal or regulatory disclosures:</strong> where disclosure is required by law or is reasonably necessary to establish, exercise or defend a legal claim.</li>
-                        </ul>
-                        <p>O’TOOSIN Farms does not share information with advertisers, data brokers or unrelated third parties for their own marketing.</p>
-
-                        <h2 id="retention">7. Data retention</h2>
-                        <p>Information is kept only for as long as it is reasonably needed for the purpose it was collected for, to handle an order or enquiry, to resolve a complaint, or to meet a legal or accounting requirement. Retention periods depend on the type of record and the circumstances; a single fixed period is not applied to every record.</p>
-                        <p>Information held only in your browser storage remains there until you clear it, until the relevant browser session ends, or until the website replaces it. O’TOOSIN Farms cannot delete information that exists only on your device.</p>
-
-                        <h2 id="security">8. Security</h2>
-                        <p>O’TOOSIN Farms aims to handle personal information carefully and to use reasonable measures to protect it against unauthorised access, loss or misuse. Measures are appropriate to the kind of information involved and the way it is held.</p>
-                        <p>No website transmission or storage method is completely secure, and absolute security cannot be guaranteed. If you have reason to believe information you provided has been mishandled, please raise it using the contact route below.</p>
-
-                        <h2 id="cookies">9. Cookies and browser storage</h2>
-                        <p>This website does not set advertising or analytics cookies. It uses browser storage for necessary functionality:</p>
-                        <ul>
-                            <li><strong>Your cart:</strong> saved in local storage so the items you add remain available as you move between pages.</li>
-                            <li><strong>Display preferences:</strong> your light or dark theme and your product-view preference may be saved in browser storage.</li>
-                            <li><strong>Order review:</strong> where the order-confirmation flow is used, a temporary copy of the order details may be kept in session storage for that browser session.</li>
-                        </ul>
-                        <p>You can clear this storage through your browser settings. Clearing it may remove your cart or reset your display preferences. The website also requests fonts from Google Fonts, which involves a request to Google's servers when the page loads.</p>
-
-                        <h2 id="rights">10. Your privacy rights</h2>
-                        <p>Depending on the law that applies to you, including the Nigeria Data Protection Act 2023 where it applies, you may have rights in relation to personal information about you. These can include the right to be informed about how your information is used, to request access to it, to ask for inaccurate information to be corrected, to request deletion in appropriate circumstances, to object to certain uses and to withdraw consent where consent is the basis for processing.</p>
-                        <p>To make a request or raise a privacy concern, use a verified O’TOOSIN Farms contact route where one is available and describe what you need. Please provide enough information for the request to be understood, but do not send sensitive information that is not needed. Requests are handled in accordance with applicable law; the website does not provide automated account controls or self-service deletion tools.</p>
-                        <p>You may also have the right to complain to the Nigeria Data Protection Commission. This policy does not claim that any particular certification, registration or compliance approval has been obtained.</p>
-
-                        <h2 id="children">11. Children's privacy</h2>
-                        <p>O’TOOSIN Farms intends this website for adults placing household orders. The business does not knowingly collect personal information from children. If you believe a child has provided information through the website, please raise it using the contact route below so it can be reviewed.</p>
-
-                        <h2 id="changes">12. Policy updates</h2>
-                        <p>This policy may be updated when the website, the ordering process or the way customer information is handled changes. The current version is the one published on this page. Material changes will be reflected here, and you should review this page if you want to understand the current practices.</p>
-
-                        <h2 id="contact">13. Contact</h2>
+                        <div class="oto-legal-lead">{{ document.lead|legal_text }}</div>
+                        {% for section in document.sections.all %}
+                        {% if section.is_callout %}
                         <div class="oto-legal-contact">
-                            <h2>Privacy questions and requests</h2>
-                            <p>Use the Contact page to ask about this policy or to request access, correction or deletion of personal information. Submitted enquiries are stored for staff review in the admin inbox. Please include only the information needed for your request.</p>
-                            <p><a href="{% url 'Otoosin:contact' %}" class="vs-btn">Contact O’TOOSIN Farms</a></p>
+                            <h2 id="{{ section.anchor }}">{{ forloop.counter }}. {{ section.title }}</h2>
+                            {{ section.content|legal_text }}
                         </div>
+                        {% else %}
+                        <h2 id="{{ section.anchor }}">{{ forloop.counter }}. {{ section.title }}</h2>
+                        {{ section.content|legal_text }}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 {% endblock content %}
-

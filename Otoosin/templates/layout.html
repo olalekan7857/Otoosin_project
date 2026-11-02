@@ -103,12 +103,9 @@
                     <li>
                         <a href="{% url 'Otoosin:index' %}#categories">Product Categories</a>
                         <ul>
-                            <li><a href="{% url 'Otoosin:product' %}">Meats</a></li>
-                            <li><a href="{% url 'Otoosin:product_category' %}?category=Fish">Fish</a></li>
-                            <li><a href="{% url 'Otoosin:product' %}">Live Animals</a></li>
-                            <li><a href="{% url 'Otoosin:product' %}">Eggs</a></li>
-                            <li><a href="{% url 'Otoosin:product' %}">Veggies</a></li>
-                            <li><a href="{% url 'Otoosin:product' %}">Fruits</a></li>
+                            {% for category in nav_categories %}
+                            <li><a href="{% url 'Otoosin:product_category' %}?category={{ category.slug|urlencode }}">{{ category.name }}</a></li>
+                            {% endfor %}
                         </ul>
                     </li>
                     <li>
@@ -188,12 +185,9 @@
                                                 <svg class="oto-caret" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true" focusable="false"><path d="M2.3 4.4 6 8.1l3.7-3.7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             </button>
                                             <ul class="sub-menu" id="oto-submenu-categories">
-                                                <li><a href="{% url 'Otoosin:product' %}">Meats</a></li>
-                                                <li><a href="{% url 'Otoosin:product_category' %}?category=Fish">Fish</a></li>
-                                                <li><a href="{% url 'Otoosin:product' %}">Live Animals</a></li>
-                                                <li><a href="{% url 'Otoosin:product' %}">Eggs</a></li>
-                                                <li><a href="{% url 'Otoosin:product' %}">Veggies</a></li>
-                                                <li><a href="{% url 'Otoosin:product' %}">Fruits</a></li>
+                                                {% for category in nav_categories %}
+                                                <li><a href="{% url 'Otoosin:product_category' %}?category={{ category.slug|urlencode }}">{{ category.name }}</a></li>
+                                                {% endfor %}
                                             </ul>
                                         </li>
                                         <li class="oto-has-dropdown">
@@ -269,12 +263,9 @@
                             <h3 class="widget_title">Shop</h3>
                             <ul class="widget_categories">
                                 <li><a href="{% url 'Otoosin:product' %}">Shop All</a></li>
-                                <li><a href="{% url 'Otoosin:product' %}">Meats</a></li>
-                                <li><a href="{% url 'Otoosin:product_category' %}?category=Fish">Fish</a></li>
-                                <li><a href="{% url 'Otoosin:product' %}">Live Animals</a></li>
-                                <li><a href="{% url 'Otoosin:product' %}">Eggs</a></li>
-                                <li><a href="{% url 'Otoosin:product' %}">Veggies</a></li>
-                                <li><a href="{% url 'Otoosin:product' %}">Fruits</a></li>
+                                {% for category in nav_categories %}
+                                <li><a href="{% url 'Otoosin:product_category' %}?category={{ category.slug|urlencode }}">{{ category.name }}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>
@@ -308,9 +299,13 @@
             <div class="copyright-wrap oto-copyright">
                 <p class="copyright-text">Copyright <i class="fal fa-copyright" aria-hidden="true"></i> <span data-fd-year>2026</span> <a href="{% url 'Otoosin:index' %}">{{ site_config.business_name|default:"O’TOOSIN Farms" }}</a>. All Rights Reserved.</p>
                 <ul class="oto-legal-links">
-                    <li><a href="{% url 'Otoosin:privacy' %}">Privacy Policy</a></li>
-                    <li><a href="{% url 'Otoosin:terms' %}">Terms &amp; Conditions</a></li>
-                    <li><a href="{% url 'Otoosin:contact' %}">Contact</a></li>
+                    {% if legal_pages.privacy %}
+                    <li><a href="{% url 'Otoosin:privacy' %}">{{ legal_pages.privacy }}</a></li>
+                    {% endif %}
+                    {% if legal_pages.terms %}
+                    <li><a href="{% url 'Otoosin:terms' %}">{{ legal_pages.terms }}</a></li>
+                    {% endif %}
+                    <li><a href="{% url 'Otoosin:contact' %}">Contact Us</a></li>
                 </ul>
             </div>
         </div>

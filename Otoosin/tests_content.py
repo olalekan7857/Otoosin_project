@@ -94,6 +94,15 @@ class ContentAndSeoTests(TestCase):
                 self.assertContains(response, '<meta name="description"')
                 self.assertContains(response, SITE)
 
+    def test_navigation_category_links_filter_by_category(self):
+        response = self.client.get("/")
+        for slug in ("meats", "fish", "live-animals", "eggs", "veggies", "fruits"):
+            with self.subTest(category=slug):
+                self.assertContains(
+                    response,
+                    f"/category/?category={slug}",
+                )
+
     def test_business_settings_propagate_to_contact_page(self):
         response = self.client.get("/contact/")
         self.assertContains(response, "O’Toosin Farms")

@@ -7,6 +7,15 @@ ROLE_GROUPS = {
     "support": "Support",
 }
 
+# Owner and Manager are the only roles allowed to edit public policy content.
+LEGAL_CODENAMES = {
+    "add_legaldocument",
+    "change_legaldocument",
+    "view_legaldocument",
+    "change_legalsection",
+    "view_legalsection",
+}
+
 MANAGER_CODENAMES = {
     "add_category",
     "change_category",
@@ -35,6 +44,7 @@ MANAGER_CODENAMES = {
     "view_pickuplocation",
     "change_siteconfiguration",
     "view_siteconfiguration",
+    *LEGAL_CODENAMES,
     "view_contactmessage",
     "change_contactmessage",
     "view_order",

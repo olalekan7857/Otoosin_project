@@ -163,6 +163,7 @@ urlpatterns = [
         name="staff_delivery",
     ),
     path("staff/settings/", views.staff_settings, name="staff_settings"),
+    path("staff/legal/", views.staff_legal, name="staff_legal"),
     path("staff/orders/", views.staff_orders, name="staff_orders"),
     path(
         "staff/orders/<str:reference>/",

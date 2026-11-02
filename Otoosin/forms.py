@@ -11,6 +11,8 @@ from .models import (
     ContactMessage,
     DeliveryLocation,
     Inventory,
+    LegalDocument,
+    LegalSection,
     PickupLocation,
     Product,
     ProductImage,
@@ -937,6 +939,79 @@ class SiteConfigurationForm(forms.ModelForm):
     def clean_whatsapp_number(self):
         value = self.cleaned_data.get("whatsapp_number") or ""
         return normalise_nigerian_phone(value) if value else ""
+
+
+LEGAL_FORMAT_HELP = (
+    "Type plain text. Leave a blank line between paragraphs. Start a line "
+    "with \"- \" to make a bullet. Wrap words in **double asterisks** to make "
+    "them bold. Write a link as [link text](/path/)."
+)
+
+
+class LegalDocumentForm(forms.ModelForm):
+    class Meta:
+        model = LegalDocument
+        fields = ["title", "eyebrow", "intro", "lead", "is_published"]
+        labels = {
+            "eyebrow": "Short label above the title",
+            "intro": "Short page introduction",
+            "lead": "Introductory paragraph",
+            "is_published": "Published on the storefront",
+        }
+        help_texts = {
+            "eyebrow": "For example: Your information.",
+            "intro": "Shown under the page title in the introduction panel.",
+            "lead": LEGAL_FORMAT_HELP,
+            "is_published": (
+                "Unpublish to hide this page and its footer link while the "
+                "wording is being reviewed."
+            ),
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={**TEXT_INPUT, "maxlength": 160}),
+            "eyebrow": forms.TextInput(attrs={**TEXT_INPUT, "maxlength": 120}),
+            "intro": forms.Textarea(attrs={**TEXT_INPUT, "rows": 3}),
+            "lead": forms.Textarea(attrs={**TEXT_INPUT, "rows": 5}),
+            "is_published": forms.CheckboxInput(attrs=CHECKBOX_INPUT),
+        }
+
+
+class LegalSectionForm(forms.ModelForm):
+    class Meta:
+        model = LegalSection
+        fields = ["title", "content", "is_callout", "sort_order"]
+        labels = {
+            "title": "Section heading",
+            "content": "Section text",
+            "is_callout": "Show as a highlighted contact panel",
+        }
+        help_texts = {
+            "content": LEGAL_FORMAT_HELP,
+            "is_callout": (
+                "Adds a highlighted panel around this section. Use it for "
+                "contact details or a closing call to action."
+            ),
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={**TEXT_INPUT, "maxlength": 200}),
+            "content": forms.Textarea(attrs={**TEXT_INPUT, "rows": 10}),
+            "is_callout": forms.CheckboxInput(attrs=CHECKBOX_INPUT),
+            "sort_order": forms.HiddenInput(),
+        }
+
+    def clean_title(self):
+        value = (self.cleaned_data.get("title") or "").strip()
+        return re.sub(r"^\d+[.)]\s*", "", value).strip()
+
+
+LegalSectionFormSet = inlineformset_factory(
+    LegalDocument,
+    LegalSection,
+    form=LegalSectionForm,
+    extra=0,
+    can_delete=True,
+    can_order=False,
+)
 
 
 class DeliveryLocationForm(forms.ModelForm):

@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
-    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.3">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.6">
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.5">
     <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
@@ -60,6 +60,9 @@
                     {% endif %}
                     {% if perms.Otoosin.change_siteconfiguration %}
                     <li><a href="{% url 'Otoosin:staff_settings' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_settings' %} aria-current="page"{% endif %}><i class="fas fa-cog" aria-hidden="true"></i>Settings</a></li>
+                    {% endif %}
+                    {% if perms.Otoosin.change_legaldocument %}
+                    <li><a href="{% url 'Otoosin:staff_legal' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_legal' %} aria-current="page"{% endif %}><i class="fas fa-balance-scale" aria-hidden="true"></i>Legal &amp; Policies</a></li>
                     {% endif %}
                     {% if perms.Otoosin.manage_staff %}
                     <li><a href="{% url 'Otoosin:staff_team' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_team' %} aria-current="page"{% endif %}><i class="fas fa-users" aria-hidden="true"></i>Team</a></li>

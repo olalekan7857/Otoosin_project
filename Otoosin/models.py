@@ -13,7 +13,6 @@ from django.db.models.functions import Lower
 from django.utils import timezone
 from django.utils.text import slugify
 
-
 MAX_IMAGE_BYTES = 5 * 1024 * 1024
 ALLOWED_IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "gif"]
 
@@ -496,6 +495,56 @@ class SiteConfiguration(models.Model):
     @property
     def whatsapp_digits(self):
         return re.sub(r"\D", "", self.whatsapp_number or "")
+
+
+class LegalDocument(models.Model):
+    class Slug(models.TextChoices):
+        PRIVACY = "privacy", "Privacy Policy"
+        TERMS = "terms", "Terms & Conditions"
+
+    slug = models.SlugField(max_length=30, unique=True, choices=Slug.choices)
+    title = models.CharField(max_length=160)
+    eyebrow = models.CharField(max_length=120, blank=True)
+    intro = models.TextField()
+    lead = models.TextField()
+    is_published = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["slug"]
+        verbose_name = "legal document"
+        verbose_name_plural = "legal documents"
+
+    def __str__(self):
+        return self.title
+
+
+class LegalSection(models.Model):
+    document = models.ForeignKey(
+        LegalDocument,
+        on_delete=models.CASCADE,
+        related_name="sections",
+    )
+    anchor = models.SlugField(max_length=80)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    sort_order = models.PositiveIntegerField(default=0)
+    is_callout = models.BooleanField(
+        default=False,
+        help_text="Display this section in a highlighted contact panel.",
+    )
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["document", "anchor"],
+                name="unique_legal_section_anchor",
+            )
+        ]
+
+    def __str__(self):
+        return f"{self.document.title}: {self.title}"
 
 
 class OrderNotificationRecipient(models.Model):

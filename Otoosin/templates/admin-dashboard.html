@@ -85,6 +85,7 @@
         {% if perms.Otoosin.view_contactmessage %}<a href="{% url 'Otoosin:staff_messages' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-envelope" aria-hidden="true"></i>Enquiries</a>{% endif %}
         {% if perms.Otoosin.view_deliverylocation %}<a href="{% url 'Otoosin:staff_delivery' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-truck" aria-hidden="true"></i>Delivery &amp; Pickup</a>{% endif %}
         {% if perms.Otoosin.change_siteconfiguration %}<a href="{% url 'Otoosin:staff_settings' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-cog" aria-hidden="true"></i>Settings</a>{% endif %}
+        {% if perms.Otoosin.change_legaldocument %}<a href="{% url 'Otoosin:staff_legal' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-balance-scale" aria-hidden="true"></i>Legal &amp; Policies</a>{% endif %}
         {% if perms.Otoosin.manage_staff %}<a href="{% url 'Otoosin:staff_team' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-users" aria-hidden="true"></i>Team</a>{% endif %}
         {% if perms.Otoosin.view_order %}<a href="{% url 'Otoosin:staff_orders' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-receipt" aria-hidden="true"></i>Orders</a>{% endif %}
     </div>

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
-{% load static %}
+{% load static legal %}
 
-{% block title %}Terms &amp; Conditions | O’TOOSIN Farms{% endblock title %}
+{% block title %}{{ document.title }} | O’TOOSIN Farms{% endblock title %}
 
 {% block body_class %}otoosin-shop otoosin-legal{% endblock body_class %}
 
@@ -12,138 +12,48 @@
 
 {% block content %}
 <main id="fd-main">
-
         <section class="fd-shop-intro oto-shop-intro" aria-labelledby="oto-terms-heading">
             <div class="container">
                 <nav aria-label="Breadcrumb">
                     <ol class="fd-breadcrumb">
                         <li><a href="{% url 'Otoosin:index' %}">Home</a></li>
-                        <li aria-current="page">Terms &amp; Conditions</li>
+                        <li aria-current="page">{{ document.title }}</li>
                     </ol>
                 </nav>
-                <span class="sec-subtitle">Using the store</span>
-                <h1 class="sec-title" id="oto-terms-heading">Terms &amp; Conditions</h1>
-                <p>These terms explain how the O’TOOSIN Farms website may be used, how orders are prepared and confirmed, and how delivery, pickup and payment are handled.</p>
+                <span class="sec-subtitle">{{ document.eyebrow }}</span>
+                <h1 class="sec-title" id="oto-terms-heading">{{ document.title }}</h1>
+                <p>{{ document.intro }}</p>
             </div>
         </section>
 
-        <section class="oto-legal-section" aria-label="Terms and Conditions document">
+        <section class="oto-legal-section" aria-label="{{ document.title }} document">
             <div class="container">
                 <div class="oto-legal-layout">
                     <nav class="oto-legal-toc" aria-label="On this page">
                         <h2 class="oto-legal-toc-title">On this page</h2>
                         <ol>
-                            <li><a href="#acceptance">About these terms</a></li>
-                            <li><a href="#website-use">Website use</a></li>
-                            <li><a href="#product-information">Product information</a></li>
-                            <li><a href="#categories">Product categories and conditions</a></li>
-                            <li><a href="#pricing">Pricing and quantities</a></li>
-                            <li><a href="#orders">Orders and acceptance</a></li>
-                            <li><a href="#payment">Payment</a></li>
-                            <li><a href="#delivery">Delivery, pickup and fees</a></li>
-                            <li><a href="#returns">Cancellations and refunds</a></li>
-                            <li><a href="#responsibilities">Customer responsibilities</a></li>
-                            <li><a href="#availability">Website availability</a></li>
-                            <li><a href="#ip">Intellectual property</a></li>
-                            <li><a href="#third-parties">Third-party services</a></li>
-                            <li><a href="#privacy">Privacy</a></li>
-                            <li><a href="#changes">Changes to these terms</a></li>
-                            <li><a href="#law">Applicable law</a></li>
-                            <li><a href="#contact">Contact</a></li>
+                            {% for section in document.sections.all %}
+                            <li><a href="#{{ section.anchor }}">{{ section.title }}</a></li>
+                            {% endfor %}
                         </ol>
                     </nav>
 
                     <div class="oto-legal-doc">
-                        <div class="oto-legal-lead">
-                            <p>O’TOOSIN Farms offers meats, fish, live animals, eggs, veggies and fruits through this website. By using the website, you agree to the terms below. If you do not agree with them, please do not use the website to prepare an order.</p>
-                        </div>
-
-                        <h2 id="acceptance">1. About these terms</h2>
-                        <p>These Terms &amp; Conditions apply to your use of the O’TOOSIN Farms website and to orders prepared through it. They should be read together with the <a href="{% url 'Otoosin:privacy' %}">Privacy Policy</a>, which explains how personal information is handled.</p>
-                        <p>The website is a single-seller storefront: O’TOOSIN Farms sells directly to customers. It is not a marketplace and does not host other sellers.</p>
-
-                        <h2 id="website-use">2. Website use</h2>
-                        <p>You may use the website to browse products, read product details, add items to a cart, prepare an order and contact O’TOOSIN Farms about a product, order or delivery. You agree to use the website lawfully and not to:</p>
-                        <ul>
-                            <li>Submit false, misleading or impersonating information.</li>
-                            <li>Attempt to disrupt, overload, probe or gain unauthorised access to the website or its systems.</li>
-                            <li>Use automated means to scrape or copy the website in a way that interferes with its normal operation.</li>
-                            <li>Use the website or its content for unlawful purposes.</li>
-                        </ul>
-
-                        <h2 id="product-information">3. Product information</h2>
-                        <p>Product pages show the item, its category, its available condition or selling unit, its price and other details intended to help you choose. Please review the product name, unit, condition, price and quantity before preparing an order.</p>
-                        <p>Photographs are illustrative. The cut, trimming, packaging, size and exact appearance of a delivered item can vary from the photograph. Product availability can change, and an item displayed on the website is not a guarantee that it remains available until the order is confirmed.</p>
-                        <p>Nothing on this website is a claim of organic certification, farming-method certification or a guarantee of a particular result from a product.</p>
-
-                        <h2 id="categories">4. Product categories and conditions</h2>
-                        <p>The shop covers <strong>Meats</strong>, <strong>Fish</strong>, <strong>Live Animals</strong>, <strong>Eggs</strong>, <strong>Veggies</strong> and <strong>Fruits</strong>. Within Meats, the range includes pork, chicken, turkey, beef and goat meat. Pork, beef and goat meat are red meat; chicken and turkey are poultry; fish is seafood.</p>
-                        <p>Where a product-condition filter applies, the available conditions are <strong>Fresh</strong>, <strong>Frozen</strong> and <strong>Fried</strong>. These describe the state of a product, not a separate product category. Available conditions can differ by product.</p>
-
-                        <h2 id="pricing">5. Pricing and quantities</h2>
-                        <p>Product prices are displayed in Nigerian Naira for the selling unit shown on the item, such as per kilogram, per piece, per crate or per basket. When you enter a quantity, it represents the number of those units you want. The cart and checkout calculate the product subtotal from the selected price and quantity.</p>
-                        <p>The product subtotal shown at checkout covers the products only. Any applicable delivery fee is shown separately in the order summary and included in the order total. Pickup has no delivery fee. Prices and availability may change before an order is confirmed; the amount shown for your selection before you complete the ordering process is the amount that applies to that order.</p>
-                        <p>No minimum purchase quantity, fixed weight step or additional product fee applies unless it is expressly shown on the website.</p>
-
-                        <h2 id="orders">6. Orders and acceptance</h2>
-                        <p>Guest checkout is available; you do not need to create an account. The checkout lets you enter your contact and delivery details, choose delivery or pickup, and review your selection before finishing.</p>
-                        <p>An order becomes confirmed only when O’TOOSIN Farms accepts it and communicates that confirmation, and a payment is only treated as complete when it has been successfully processed through the checkout. If an item is unavailable or a detail needs clarification, the business may contact you before preparing the order.</p>
-                        <p>Please provide accurate information so the order can be reviewed and arranged without avoidable delay.</p>
-
-                        <h2 id="payment">7. Payment</h2>
-                        <p>Payment for products and any delivery charge is completed through the website at checkout. The total shown for the selected products and applicable delivery fee is the amount due for that order.</p>
-                        <p>Please do not send card details by email or chat. A payment is not treated as complete unless it has been successfully processed through the checkout.</p>
-                        <p>Any applicable delivery fee is displayed in the order summary and included in the order total. Pickup orders have no delivery fee.</p>
-
-                        <h2 id="delivery">8. Delivery, pickup and fees</h2>
-                        <p>Choose delivery to a supported location or collect your order from a pickup location at checkout. Delivery and pickup are arranged by O’TOOSIN Farms staff after an order is accepted. Please provide a complete address, the relevant city or town and state, and any landmark or instruction that will help the rider.</p>
-                        <p>For doorstep delivery within the listed Abeokuta zones, the applicable delivery fee is shown in the order summary and included in the order total. For park delivery, the approved destination and applicable delivery charge are also included in the checkout total. Pickup from Mummy-D Stores has no delivery fee.</p>
-                        <p>Delivery coverage, timing and any same-day arrangement are not guaranteed by these terms. They are confirmed as part of the order arrangement. If a delivery cannot be completed because the information provided is incomplete or nobody is available to receive the order, O’TOOSIN Farms or the rider will try to contact you to resolve it.</p>
-
-                        <h2 id="returns">9. Cancellations, returns, refunds and complaints</h2>
-                        <p>If you need to change or cancel an order, contact O’TOOSIN Farms as soon as possible using a verified contact route where one is available. Whether a change or cancellation is possible depends on whether the order has been confirmed, prepared or handed to a rider.</p>
-                        <p>Meat is a perishable product, so please inspect your order when it arrives and raise any problem promptly. If something is incorrect, damaged or not what you ordered, contact O’TOOSIN Farms with the order details so the matter can be reviewed.</p>
-                        <p>These terms do not set a fixed cancellation window, return period or refund timeline, and they do not create an automatic refund entitlement. Requests are considered individually in light of the circumstances and applicable law. Nothing in these terms is intended to exclude or limit rights that cannot lawfully be excluded.</p>
-
-                        <h2 id="responsibilities">10. Customer responsibilities</h2>
-                        <p>When using the website or ordering, you are responsible for:</p>
-                        <ul>
-                            <li>Providing accurate contact, delivery and order information.</li>
-                            <li>Reviewing the selected meat, condition, quantity and total before completing the order.</li>
-                            <li>Providing clear delivery instructions and remaining reasonably reachable while delivery is arranged.</li>
-                            <li>Reviewing the delivery or pickup choice and any charge shown, and completing payment through the website at checkout.</li>
-                            <li>Using the website lawfully and respecting its content and operation.</li>
-                        </ul>
-
-                        <h2 id="availability">11. Website availability and errors</h2>
-                        <p>O’TOOSIN Farms aims to keep the website available and accurate, but access may be interrupted by maintenance, technical problems or circumstances outside the business's control. The website may contain errors in product information, pricing or availability. Reasonable steps will be taken to correct genuine errors, and an order affected by a manifest error may be reviewed with you before it is prepared.</p>
-
-                        <h2 id="ip">12. Intellectual property</h2>
-                        <p>The O’TOOSIN Farms name, logo, website text, layout, graphics and other original content are owned by or used for the business and are protected by applicable intellectual-property law. You may view and use the website for ordinary shopping and enquiry purposes. You may not reproduce, republish or commercially exploit the content without permission. Third-party assets remain the property of their respective owners.</p>
-
-                        <h2 id="third-parties">13. Third-party services</h2>
-                        <p>The website uses external font delivery to display its typography. Links to other websites, if present, are provided for convenience and are not under O’TOOSIN Farms' control.</p>
-
-                        <h2 id="privacy">14. Privacy</h2>
-                        <p>How personal information is collected and used is described in the <a href="{% url 'Otoosin:privacy' %}">Privacy Policy</a>. It forms part of the terms on which the website is made available.</p>
-
-                        <h2 id="changes">15. Changes to these terms</h2>
-                        <p>These terms may be updated when the website, ordering process or delivery arrangements change. The version published on this page is the current version. Please review it before placing a new order. Changes do not retrospectively alter an order that has already been confirmed, except where the law requires otherwise.</p>
-
-                        <h2 id="law">16. Applicable law and disputes</h2>
-                        <p>These terms are governed by the laws of the Federal Republic of Nigeria. If a concern arises, please contact O’TOOSIN Farms first so that it can be reviewed and, where possible, resolved directly. If a dispute cannot be resolved that way, it may be brought before a court or other body with jurisdiction over the matter.</p>
-
-                        <h2 id="contact">17. Contact</h2>
+                        <div class="oto-legal-lead">{{ document.lead|legal_text }}</div>
+                        {% for section in document.sections.all %}
+                        {% if section.is_callout %}
                         <div class="oto-legal-contact">
-                            <h2>Questions about these terms</h2>
-                            <p>This website does not publish a separate email address or phone number for questions about these terms, a product, an existing order or a delivery arrangement, and the form on the Contact page does not itself transmit a message. Where a verified contact route is shown on that page, use it for your enquiry.</p>
-                            <p><a href="{% url 'Otoosin:contact' %}" class="vs-btn">Contact O’TOOSIN Farms</a></p>
+                            <h2 id="{{ section.anchor }}">{{ forloop.counter }}. {{ section.title }}</h2>
+                            {{ section.content|legal_text }}
                         </div>
+                        {% else %}
+                        <h2 id="{{ section.anchor }}">{{ forloop.counter }}. {{ section.title }}</h2>
+                        {{ section.content|legal_text }}
+                        {% endif %}
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </section>
-
     </main>
 {% endblock content %}
-

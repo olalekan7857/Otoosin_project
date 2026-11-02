@@ -31,6 +31,7 @@ from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -56,6 +57,8 @@ from .forms import (
     ContactMessageStatusForm,
     DeliveryLocationForm,
     ImageFormSet,
+    LegalDocumentForm,
+    LegalSectionFormSet,
     OrderNotificationRecipientForm,
     OrderStatusUpdateForm,
     PickupLocationForm,
@@ -76,6 +79,7 @@ from .models import (
     ContactMessage,
     DeliveryLocation,
     EmailDelivery,
+    LegalDocument,
     Order,
     OrderItem,
     OrderNotificationRecipient,
@@ -1339,6 +1343,147 @@ def staff_settings(request):
     )
 
 
+def _unique_legal_anchor(document, title, exclude_pk=None):
+    base = slugify(title)[:80] or "section"
+    anchor = base
+    siblings = document.sections.all()
+    if exclude_pk:
+        siblings = siblings.exclude(pk=exclude_pk)
+    suffix = 2
+    while siblings.filter(anchor=anchor).exists():
+        ending = f"-{suffix}"
+        anchor = f"{base[: 80 - len(ending)]}{ending}"
+        suffix += 1
+    return anchor
+
+
+def _legal_admin_context(
+    bound_slug=None,
+    bound_document_form=None,
+    bound_section_formset=None,
+):
+    documents = {
+        document.slug: document
+        for document in LegalDocument.objects.prefetch_related("sections")
+    }
+    items = []
+    for slug, _label in LegalDocument.Slug.choices:
+        document = documents.get(slug)
+        if not document:
+            continue
+        if slug == bound_slug:
+            document_form = bound_document_form
+            section_formset = bound_section_formset
+        else:
+            document_form = LegalDocumentForm(
+                instance=document,
+                prefix=f"document-{slug}",
+            )
+            section_formset = LegalSectionFormSet(
+                instance=document,
+                prefix=f"sections-{slug}",
+            )
+        items.append(
+            {
+                "document": document,
+                "document_form": document_form,
+                "section_formset": section_formset,
+            }
+        )
+    return {"legal_documents": items}
+
+
+@_staff_permission("Otoosin.change_legaldocument")
+def staff_legal(request):
+    if request.method == "POST":
+        slug = request.POST.get("document")
+        try:
+            document = LegalDocument.objects.get(slug=slug)
+        except LegalDocument.DoesNotExist:
+            messages.error(request, "Choose a valid legal document.")
+            return redirect("Otoosin:staff_legal")
+
+        document_form = LegalDocumentForm(
+            request.POST,
+            instance=document,
+            prefix=f"document-{slug}",
+        )
+        section_formset = LegalSectionFormSet(
+            request.POST,
+            instance=document,
+            prefix=f"sections-{slug}",
+        )
+        if document_form.is_valid() and section_formset.is_valid():
+            changed_fields = list(document_form.changed_data)
+            with transaction.atomic():
+                document_form.save()
+                entries = []
+                deleted_count = 0
+                changed_sections = 0
+                for form in section_formset.forms:
+                    if not hasattr(form, "cleaned_data"):
+                        continue
+                    if form.cleaned_data.get("DELETE"):
+                        if form.instance.pk:
+                            form.instance.delete()
+                            deleted_count += 1
+                        continue
+                    if not form.instance.pk and not form.has_changed():
+                        continue
+                    if form.has_changed():
+                        changed_sections += 1
+                    entries.append(
+                        (form.cleaned_data.get("sort_order") or 0, form)
+                    )
+
+                entries.sort(key=lambda item: item[0])
+                for index, (_order, form) in enumerate(entries):
+                    section = form.save(commit=False)
+                    section.document = document
+                    if not section.anchor:
+                        section.anchor = _unique_legal_anchor(
+                            document,
+                            section.title,
+                            exclude_pk=section.pk,
+                        )
+                    section.sort_order = index
+                    section.save()
+
+                changes = []
+                if changed_fields:
+                    changes.append("page details updated")
+                if changed_sections:
+                    changes.append(f"{changed_sections} section(s) changed")
+                if deleted_count:
+                    changes.append(f"{deleted_count} section(s) removed")
+                record_audit(
+                    actor=request.user,
+                    action="legal_document_updated",
+                    target=document,
+                    summary=(
+                        f"{document.title} updated: " + ", ".join(changes) + "."
+                        if changes
+                        else f"{document.title} saved with no changes."
+                    ),
+                )
+            messages.success(request, f"{document.title} saved.")
+            return redirect(
+                f"{reverse('Otoosin:staff_legal')}#legal-{document.slug}"
+            )
+
+        return render(
+            request,
+            "admin-legal.html",
+            _legal_admin_context(
+                bound_slug=slug,
+                bound_document_form=document_form,
+                bound_section_formset=section_formset,
+            ),
+        )
+
+    return render(request, "admin-legal.html", _legal_admin_context())
+
+
 def _delivery_redirect():
     return redirect("Otoosin:staff_delivery")
 
@@ -2017,32 +2162,42 @@ def checkout_validate(request):
 
 
 def privacy(request):
+    document = get_object_or_404(
+        LegalDocument.objects.prefetch_related("sections"),
+        slug=LegalDocument.Slug.PRIVACY,
+        is_published=True,
+    )
     return render(
         request,
         "privacy.html",
-        seo_context(
-            title="Privacy Policy | O’TOOSIN Farms",
-            description=(
-                "Read how O’Toosin Farms handles personal information for "
-                "orders, payments and enquiries."
+        {
+            "document": document,
+            **seo_context(
+                title=f"{document.title} | O’TOOSIN Farms",
+                description=document.intro,
+                path="/privacy/",
             ),
-            path="/privacy/",
-        ),
+        },
     )
 
 
 def terms(request):
+    document = get_object_or_404(
+        LegalDocument.objects.prefetch_related("sections"),
+        slug=LegalDocument.Slug.TERMS,
+        is_published=True,
+    )
     return render(
         request,
         "terms.html",
-        seo_context(
-            title="Terms & Conditions | O’TOOSIN Farms",
-            description=(
-                "Read the terms that apply to using the O’Toosin Farms "
-                "website, placing orders, delivery, pickup and payment."
+        {
+            "document": document,
+            **seo_context(
+                title=f"{document.title} | O’TOOSIN Farms",
+                description=document.intro,
+                path="/terms/",
             ),
-            path="/terms/",
-        ),
+        },
     )
 
 

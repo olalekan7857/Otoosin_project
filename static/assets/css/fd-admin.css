@@ -1869,7 +1869,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
 }
 
 /* ---------- Product list responsive --------------------------------------- */
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .fd-prod-head .fd-dash-btn {
     flex: 1 1 100%;
     justify-content: center;
@@ -3264,7 +3264,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   /* Toolbar stacks full-width rows; desktop widths released. */
   .fd-admin .fd-orders-toolbar .fd-shop-select {
     flex: 1 1 100%;
@@ -4583,7 +4583,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .fd-msg-filters {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -4682,6 +4682,16 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 }
 
+@media (min-width: 768px) and (max-width: 991px) {
+  .fd-msg-filters {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .fd-msg-search-field {
+    grid-column: 1 / -1;
+  }
+}
+
 /* ==========================================================================
    Shared admin table hardening — generic stack tables + scroll affordance
    --------------------------------------------------------------------------
@@ -4698,7 +4708,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   display: none;
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 992px) and (max-width: 1023px) {
   .fd-table-scroll-note {
     display: flex;
     align-items: center;
@@ -4722,7 +4732,7 @@ html[data-theme="dark"] .fd-dash-card-icon {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .fd-dash-table-scroll:has(.fd-stack-table) {
     border: none;
     overflow: visible;

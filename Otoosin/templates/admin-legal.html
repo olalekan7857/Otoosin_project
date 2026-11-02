@@ -1,0 +1,244 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block title %}Legal &amp; Policies | O’Toosin Farms Admin{% endblock %}
+{% block skip_label %}Skip to legal and policies{% endblock %}
+{% block topbar_title %}Legal &amp; Policies{% endblock %}
+{% block topbar_context %}Farm admin &middot; public policy content{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assets/css/fd-admin-settings.css' %}?v=1.4">
+<link rel="stylesheet" href="{% static 'assets/css/fd-admin-legal.css' %}?v=1.2">
+{% endblock %}
+
+{% block admin_content %}
+<div class="fd-dash-head fd-settings-page-head">
+    <div class="fd-settings-page-head-text">
+        <p class="fd-settings-eyebrow"><i class="fas fa-balance-scale" aria-hidden="true"></i>Legal &amp; Policies</p>
+        <p class="fd-dash-lead">Edit the wording shown on the public policy pages. The storefront layout and styling stay in place; only the text below is replaced. Owner and Manager roles can edit this page.</p>
+    </div>
+</div>
+
+{% if legal_documents %}
+<nav class="fd-legal-jump" aria-label="Policy documents">
+    {% for item in legal_documents %}
+    <a href="#legal-{{ item.document.slug }}" class="fd-legal-jump-link">
+        <i class="fas {% if item.document.slug == 'privacy' %}fa-user-shield{% else %}fa-file-contract{% endif %}" aria-hidden="true"></i>
+        {{ item.document.title }}
+    </a>
+    {% endfor %}
+</nav>
+{% endif %}
+
+{% for item in legal_documents %}
+<section id="legal-{{ item.document.slug }}" class="fd-dash-section fd-settings-section fd-legal-admin-section" aria-labelledby="legal-{{ item.document.slug }}-title">
+    <div class="fd-settings-section-head">
+        <span class="fd-settings-index" aria-hidden="true">0{{ forloop.counter }}</span>
+        <div class="fd-settings-section-copy">
+            <h2 id="legal-{{ item.document.slug }}-title">{{ item.document.title }}</h2>
+            <p class="fd-settings-section-lead">
+                Last updated {{ item.document.updated_at|date:"j M Y, H:i" }}.
+                Publication status: {{ item.document.is_published|yesno:"published,draft" }}.
+            </p>
+        </div>
+        <span class="fd-dash-pill {% if item.document.is_published %}is-ok{% else %}is-muted{% endif %}">{{ item.document.is_published|yesno:"Published,Draft" }}</span>
+    </div>
+
+    <form method="post" class="fd-settings-form fd-legal-form" data-legal-form>
+        {% csrf_token %}
+        <input type="hidden" name="document" value="{{ item.document.slug }}">
+        {{ item.section_formset.management_form }}
+
+        {% if item.document_form.non_field_errors %}
+        <div class="fd-admin-notice is-error" role="alert">{% for error in item.document_form.non_field_errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+        {% if item.section_formset.non_form_errors %}
+        <div class="fd-admin-notice is-error" role="alert">{% for error in item.section_formset.non_form_errors %}{{ error }}{% endfor %}</div>
+        {% endif %}
+
+        <div class="fd-settings-grid">
+            {% for field in item.document_form %}
+            <div class="fd-field{% if field.name == 'intro' or field.name == 'lead' %} fd-field-full{% endif %}{% if field.name == 'is_published' %} fd-legal-publish-field{% endif %}">
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                    {% if field.field.required %}<span class="fd-required" aria-hidden="true">*</span>{% endif %}
+                </label>
+                {{ field }}
+                {% if field.help_text %}<p class="fd-dash-hint">{{ field.help_text }}</p>{% endif %}
+                {% for error in field.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="fd-legal-subsections">
+            <div class="fd-notify-list-head">
+                <div>
+                    <h3>Sections</h3>
+                    <p class="fd-dash-hint">Sections are numbered automatically on the public page. Use the arrows to reorder and the remove control to delete a section.</p>
+                </div>
+            </div>
+
+            <div class="fd-legal-format-help">
+                <p class="fd-legal-format-title"><i class="fas fa-circle-info" aria-hidden="true"></i>How to format section text</p>
+                <ul>
+                    <li>Leave a blank line between paragraphs.</li>
+                    <li>Start a line with <code>- </code> to create a bullet list.</li>
+                    <li>Put <code>**two asterisks**</code> around words to make them bold.</li>
+                    <li>Write a link as <code>[link text](/contact/)</code>.</li>
+                    <li>Tick <strong>Show as a highlighted contact panel</strong> on a section to add a highlighted panel around it.</li>
+                </ul>
+            </div>
+
+            <div class="fd-legal-section-list" data-section-list>
+                {% for section_form in item.section_formset %}
+                <article class="fd-legal-subsection" data-section>
+                    {{ section_form.id }}
+                    {{ section_form.sort_order }}
+                    <div class="fd-legal-section-toolbar">
+                        <span class="fd-legal-section-number" data-section-number aria-hidden="true">{{ forloop.counter }}</span>
+                        <div class="fd-legal-section-tools">
+                            <button type="button" class="fd-legal-tool" data-move="up" data-label="Move up" aria-label="Move section up"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                            <button type="button" class="fd-legal-tool" data-move="down" data-label="Move down" aria-label="Move section down"><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+                            <button type="button" class="fd-legal-tool is-danger" data-remove-section data-label="Remove" aria-label="Remove this section"><i class="fas fa-trash" aria-hidden="true"></i></button>
+                            <label class="fd-legal-delete-input" hidden>{{ section_form.DELETE }}</label>
+                        </div>
+                    </div>
+
+                    {% for error in section_form.non_field_errors %}
+                    <div class="fd-admin-notice is-error" role="alert">{{ error }}</div>
+                    {% endfor %}
+
+                    <div class="fd-legal-section-body">
+                        <div class="fd-field">
+                            <label for="{{ section_form.title.id_for_label }}">Section heading <span class="fd-required" aria-hidden="true">*</span></label>
+                            {{ section_form.title }}
+                            {% for error in section_form.title.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                        <div class="fd-field fd-field-full">
+                            <label for="{{ section_form.content.id_for_label }}">Section text <span class="fd-required" aria-hidden="true">*</span></label>
+                            {{ section_form.content }}
+                            {% if section_form.content.help_text %}<p class="fd-dash-hint">{{ section_form.content.help_text }}</p>{% endif %}
+                            {% for error in section_form.content.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                        <div class="fd-field fd-field-full fd-legal-callout-field">
+                            <label for="{{ section_form.is_callout.id_for_label }}">{{ section_form.is_callout }} {{ section_form.is_callout.label }}</label>
+                            <p class="fd-dash-hint">{{ section_form.is_callout.help_text }}</p>
+                            {% for error in section_form.is_callout.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                        </div>
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+
+            <template data-empty-section>
+                <article class="fd-legal-subsection" data-section>
+                    {{ item.section_formset.empty_form.id }}
+                    {{ item.section_formset.empty_form.sort_order }}
+                    <div class="fd-legal-section-toolbar">
+                        <span class="fd-legal-section-number" data-section-number aria-hidden="true"></span>
+                        <div class="fd-legal-section-tools">
+                            <button type="button" class="fd-legal-tool" data-move="up" data-label="Move up" aria-label="Move section up"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+                            <button type="button" class="fd-legal-tool" data-move="down" data-label="Move down" aria-label="Move section down"><i class="fas fa-arrow-down" aria-hidden="true"></i></button>
+                            <button type="button" class="fd-legal-tool is-danger" data-remove-section data-label="Remove" aria-label="Remove this section"><i class="fas fa-trash" aria-hidden="true"></i></button>
+                            <label class="fd-legal-delete-input" hidden>{{ item.section_formset.empty_form.DELETE }}</label>
+                        </div>
+                    </div>
+                    <div class="fd-legal-section-body">
+                        <div class="fd-field">
+                            <label for="{{ item.section_formset.empty_form.title.id_for_label }}">Section heading <span class="fd-required" aria-hidden="true">*</span></label>
+                            {{ item.section_formset.empty_form.title }}
+                        </div>
+                        <div class="fd-field fd-field-full">
+                            <label for="{{ item.section_formset.empty_form.content.id_for_label }}">Section text <span class="fd-required" aria-hidden="true">*</span></label>
+                            {{ item.section_formset.empty_form.content }}
+                            {% if item.section_formset.empty_form.content.help_text %}<p class="fd-dash-hint">{{ item.section_formset.empty_form.content.help_text }}</p>{% endif %}
+                        </div>
+                        <div class="fd-field fd-field-full fd-legal-callout-field">
+                            <label for="{{ item.section_formset.empty_form.is_callout.id_for_label }}">{{ item.section_formset.empty_form.is_callout }} {{ item.section_formset.empty_form.is_callout.label }}</label>
+                        </div>
+                    </div>
+                </article>
+            </template>
+
+            <button type="button" class="fd-ghost-btn fd-dash-btn fd-legal-add" data-add-section><i class="fas fa-plus" aria-hidden="true"></i>Add section</button>
+        </div>
+
+        <div class="fd-settings-actions">
+            <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save {{ item.document.title }}</button>
+        </div>
+    </form>
+</section>
+{% empty %}
+<div class="fd-admin-notice is-error" role="alert">No legal documents are configured. Run the latest database migrations before editing policy content.</div>
+{% endfor %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+    document.querySelectorAll('[data-legal-form]').forEach(function (form) {
+        var list = form.querySelector('[data-section-list]');
+        var total = form.querySelector('input[name$="-TOTAL_FORMS"]');
+        var template = form.querySelector('template[data-empty-section]');
+        if (!list || !total || !template) { return; }
+
+        function sync() {
+            var cards = list.querySelectorAll('[data-section]');
+            cards.forEach(function (card, index) {
+                var number = card.querySelector('[data-section-number]');
+                if (number) { number.textContent = index + 1; }
+                var order = card.querySelector('input[name$="-sort_order"]');
+                if (order) { order.value = index; }
+                var remove = card.querySelector('input[name$="-DELETE"]');
+                card.classList.toggle('is-removed', !!(remove && remove.checked));
+            });
+        }
+
+        form.addEventListener('click', function (event) {
+            var add = event.target.closest('[data-add-section]');
+            if (add) {
+                event.preventDefault();
+                var index = parseInt(total.value, 10) || 0;
+                var wrapper = document.createElement('div');
+                wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index).trim();
+                var card = wrapper.firstElementChild;
+                list.appendChild(card);
+                total.value = index + 1;
+                sync();
+                var title = card.querySelector('input[name$="-title"]');
+                if (title) { title.focus(); }
+                return;
+            }
+
+            var move = event.target.closest('[data-move]');
+            if (move) {
+                event.preventDefault();
+                var card = move.closest('[data-section]');
+                if (move.getAttribute('data-move') === 'up' && card.previousElementSibling) {
+                    list.insertBefore(card, card.previousElementSibling);
+                } else if (move.getAttribute('data-move') === 'down' && card.nextElementSibling) {
+                    list.insertBefore(card.nextElementSibling, card);
+                }
+                sync();
+                return;
+            }
+
+            var remove = event.target.closest('[data-remove-section]');
+            if (remove) {
+                event.preventDefault();
+                var section = remove.closest('[data-section]');
+                var checkbox = section.querySelector('input[name$="-DELETE"]');
+                if (checkbox) { checkbox.checked = !checkbox.checked; }
+                sync();
+            }
+        });
+
+        list.addEventListener('change', function (event) {
+            if (event.target.matches('input[name$="-DELETE"]')) { sync(); }
+        });
+
+        sync();
+    });
+}());
+</script>
+{% endblock %}
