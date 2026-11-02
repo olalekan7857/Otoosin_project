@@ -1081,6 +1081,15 @@ class SettingsEnvironmentTests(SimpleTestCase):
         "    'x_frame_options': settings.X_FRAME_OPTIONS,\n"
         "    'referrer_policy': settings.SECURE_REFERRER_POLICY,\n"
         "    'whitenoise_finders': settings.WHITENOISE_USE_FINDERS,\n"
+        "    'db_engine': settings.DATABASES['default']['ENGINE'],\n"
+        "    'db_name': str(settings.DATABASES['default'].get('NAME')),\n"
+        "    'db_user': settings.DATABASES['default'].get('USER'),\n"
+        "    'db_host': settings.DATABASES['default'].get('HOST'),\n"
+        "    'db_port': settings.DATABASES['default'].get('PORT'),\n"
+        "    'db_options': settings.DATABASES['default'].get('OPTIONS', {}),\n"
+        "    'db_password_present': bool(settings.DATABASES['default'].get('PASSWORD')),\n"
+        "    'db_conn_max_age': settings.DATABASES['default'].get('CONN_MAX_AGE'),\n"
+        "    'db_conn_health_checks': settings.DATABASES['default'].get('CONN_HEALTH_CHECKS'),\n"
         "}))"
     )
 
@@ -1096,6 +1105,9 @@ class SettingsEnvironmentTests(SimpleTestCase):
                 "SITE_URL": "http://localhost:8000",
                 "RESEND_API_KEY": "test-resend-key",
                 "RESEND_FROM_EMAIL": "sender@example.com",
+                "DATABASE_URL": (
+                    "postgresql://test-user:test-pass@db.example.com:5432/test-db"
+                ),
                 "PYTHONIOENCODING": "utf-8",
             }
         )
@@ -1157,7 +1169,7 @@ class SettingsEnvironmentTests(SimpleTestCase):
         )
 
     def test_development_defaults_keep_local_static_and_security_safe(self):
-        result = self.run_settings(DEBUG="True")
+        result = self.run_settings(DEBUG="True", DATABASE_URL=" ")
         self.assertEqual(result.returncode, 0, result.stderr)
         data = json.loads(result.stdout.strip().splitlines()[-1])
         self.assertTrue(data["debug"])
@@ -1169,6 +1181,65 @@ class SettingsEnvironmentTests(SimpleTestCase):
         self.assertFalse(data["secure_ssl_redirect"])
         self.assertFalse(data["session_cookie_secure"])
         self.assertFalse(data["csrf_cookie_secure"])
+        self.assertEqual(data["db_engine"], "django.db.backends.sqlite3")
+        self.assertTrue(data["db_name"].replace("\\", "/").endswith("/db.sqlite3"))
+
+    def test_production_uses_parsed_postgresql_url(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS="https://farm.example.com",
+            SITE_URL="https://farm.example.com",
+            DATABASE_URL=(
+                "postgresql://farm-user:farm-pass@db.example.com:6543/farm-db"
+                "?sslmode=require&connect_timeout=5"
+            ),
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        data = json.loads(result.stdout.strip().splitlines()[-1])
+        self.assertEqual(data["db_engine"], "django.db.backends.postgresql")
+        self.assertEqual(data["db_name"], "farm-db")
+        self.assertEqual(data["db_user"], "farm-user")
+        self.assertEqual(data["db_host"], "db.example.com")
+        self.assertEqual(data["db_port"], 6543)
+        self.assertTrue(data["db_password_present"])
+        self.assertEqual(
+            data["db_options"],
+            {"sslmode": "require", "connect_timeout": 5},
+        )
+        self.assertEqual(data["db_conn_max_age"], 600)
+        self.assertTrue(data["db_conn_health_checks"])
+
+    def test_production_requires_database_url(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS="https://farm.example.com",
+            SITE_URL="https://farm.example.com",
+            DATABASE_URL=" ",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "DATABASE_URL must be set in the environment when DEBUG=False.",
+            result.stderr,
+        )
+
+    def test_production_rejects_non_postgresql_database_url(self):
+        result = self.run_settings(
+            DEBUG="False",
+            SECRET_KEY="production-settings-secret",
+            ALLOWED_HOSTS="farm.example.com",
+            CSRF_TRUSTED_ORIGINS="https://farm.example.com",
+            SITE_URL="https://farm.example.com",
+            DATABASE_URL="sqlite:///tmp/local.sqlite3",
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(
+            "DATABASE_URL must use a PostgreSQL connection URL.",
+            result.stderr,
+        )
 
     def test_production_requires_a_secret_key(self):
         result = self.run_settings(
@@ -1248,6 +1319,9 @@ class SettingsEnvironmentTests(SimpleTestCase):
                     "SITE_URL": "https://farm.example.com",
                     "RESEND_API_KEY": "test-resend-key",
                     "RESEND_FROM_EMAIL": "sender@example.com",
+                    "DATABASE_URL": (
+                        "postgresql://test-user:test-pass@db.example.com:5432/test-db"
+                    ),
                     "STATIC_ROOT": static_root,
                     "PYTHONIOENCODING": "utf-8",
                 }

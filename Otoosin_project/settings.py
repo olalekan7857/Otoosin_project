@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from urllib.parse import urlsplit
 
+import dj_database_url
 from decouple import AutoConfig, Config, RepositoryEnv
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.utils import get_random_secret_key
@@ -205,12 +206,34 @@ WSGI_APPLICATION = 'Otoosin_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': _env_path('SQLITE_PATH', BASE_DIR / 'db.sqlite3'),
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': _env_path('SQLITE_PATH', BASE_DIR / 'db.sqlite3'),
+        }
     }
-}
+else:
+    database_url = config('DATABASE_URL', default='').strip()
+    if not database_url:
+        raise ImproperlyConfigured(
+            "DATABASE_URL must be set in the environment when DEBUG=False."
+        )
+    try:
+        database_config = dj_database_url.parse(
+            database_url,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    except ValueError as error:
+        raise ImproperlyConfigured(
+            "DATABASE_URL must be a valid PostgreSQL connection URL."
+        ) from error
+    if database_config.get('ENGINE') != 'django.db.backends.postgresql':
+        raise ImproperlyConfigured(
+            "DATABASE_URL must use a PostgreSQL connection URL."
+        )
+    DATABASES = {'default': database_config}
 
 
 # Password validation
