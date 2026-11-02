@@ -1335,6 +1335,11 @@ class SettingsEnvironmentTests(SimpleTestCase):
                 timeout=180,
             )
             self.assertEqual(result.returncode, 0, result.stderr[-2000:])
-            self.assertTrue(
-                os.path.exists(os.path.join(static_root, "staticfiles.json"))
+            manifest_path = os.path.join(static_root, "staticfiles.json")
+            self.assertTrue(os.path.exists(manifest_path))
+            with open(manifest_path, encoding="utf-8") as manifest_file:
+                manifest = json.load(manifest_file)
+            self.assertIn(
+                "assets/img/categorie/otoosin-farms.png",
+                manifest["paths"],
             )

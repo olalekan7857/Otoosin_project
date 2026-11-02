@@ -44,7 +44,7 @@ SUPPORT_EMAIL=support@otoosinfarms.com.ng
 PAYSTACK_SECRET_KEY=<live Paystack secret key>
 PAYSTACK_PUBLIC_KEY=<live Paystack public key>
 SQLITE_PATH=/data/db.sqlite3
-STATIC_ROOT=/data/staticfiles
+STATIC_ROOT=staticfiles
 MEDIA_ROOT=/data/media
 ```
 
@@ -99,6 +99,28 @@ startup: production storage uses a manifest, and the app resolves static URLs at
 import time. Static files are served by WhiteNoise from `STATIC_ROOT`; the
 reverse proxy does not need a separate static directory. Uploaded media is
 served by the app from `MEDIA_ROOT`.
+
+### Rimbra build command
+
+Rimbra does not run `collectstatic` automatically. Set the project **Build
+command** to:
+
+```bash
+python manage.py collectstatic --noinput
+```
+
+Use a project-relative `STATIC_ROOT`, such as `staticfiles`, so the collected
+manifest is included with the deployed application. Do not point `STATIC_ROOT`
+at an unmounted `/data` path: the build can write there, but the running
+instance may mount a different empty directory, causing:
+
+```text
+ValueError: Missing staticfiles manifest entry for 'assets/img/categorie/otoosin-farms.png'
+```
+
+Build commands run before the Start command. If the Build command is blank, or
+if `STATIC_ROOT` changes between build and runtime, the app will start without a
+usable `staticfiles.json`.
 
 `check --deploy` should report only warnings you have consciously accepted. A
 `SECURE_HSTS_SECONDS` warning is expected until the HSTS rollout in section 2.
