@@ -1,0 +1,52 @@
+{% load humanize %}O’Toosin Farms
+New Paid Order Received
+
+A customer has successfully completed payment for an order on O’Toosin Farms.
+
+ORDER REFERENCE: {{ order.reference }}
+Placed: {{ order_datetime }}
+Order status: {{ order.get_status_display }}
+Payment status: {{ payment_status }}
+Payment method: {{ payment_method }}
+{% if payment_reference %}Payment reference: {{ payment_reference }}
+{% endif %}{% if verified_at %}Verified: {{ verified_at }}
+{% endif %}
+CUSTOMER INFORMATION
+Name: {{ order.customer_name }}
+Phone: {{ order.customer_phone }}
+Email: {% if order.customer_email %}{{ order.customer_email }}{% else %}Not provided{% endif %}
+Customer notes: {% if order.customer_notes %}{{ order.customer_notes }}{% else %}None recorded{% endif %}
+
+{% if is_pickup %}PICKUP DETAILS{% else %}DELIVERY DETAILS{% endif %}
+Fulfilment type: {{ order.get_receive_method_display }}
+{% if is_pickup %}Pickup location: {{ order.location_name|default:"Not specified" }}
+Pickup address: {% if order.location_address %}{{ order.location_address }}{% else %}Not provided{% endif %}
+Pickup instructions: {% if order.location_instructions %}{{ order.location_instructions }}{% else %}None recorded{% endif %}{% else %}Recipient: {{ order.customer_name }}
+Phone: {{ order.customer_phone }}
+Street / house address: {% if order.delivery_address %}{{ order.delivery_address }}{% else %}Not provided{% endif %}
+Landmark: {% if order.landmark %}{{ order.landmark }}{% else %}Not provided{% endif %}
+Area / neighbourhood: {% if order.location_address %}{{ order.location_address }}{% else %}Not provided{% endif %}
+City: {% if order.city %}{{ order.city }}{% else %}Not provided{% endif %}
+State: {% if order.state %}{{ order.state }}{% else %}Not provided{% endif %}
+Delivery instructions: {% if order.location_instructions %}{{ order.location_instructions }}{% else %}None recorded{% endif %}
+{% if is_park %}Park delivery fee{% else %}Delivery fee{% endif %}: {{ order.currency }} {{ order.delivery_fee|floatformat:2|intcomma }}{% endif %}
+
+ORDERED PRODUCTS
+{% for item in items %}- {{ item.product_name }}{% if item.variant_label %} ({{ item.variant_label }}){% endif %}
+  {% if item.sku %}SKU: {{ item.sku }}
+  {% endif %}Qty: {{ item.quantity_label|default:item.quantity }}
+  Unit price: {{ order.currency }} {{ item.unit_price|floatformat:2|intcomma }}
+  Line total: {{ order.currency }} {{ item.line_total|floatformat:2|intcomma }}
+{% endfor %}
+FINANCIAL SUMMARY
+Subtotal: {{ order.currency }} {{ order.subtotal|floatformat:2|intcomma }}
+Delivery fee: {% if is_pickup %}No delivery fee{% else %}{{ order.currency }} {{ order.delivery_fee|floatformat:2|intcomma }}{% endif %}
+Total paid: {{ order.currency }} {{ order.total|floatformat:2|intcomma }}
+Currency: {{ order.currency }}
+Payment status: {{ payment_status }}
+
+VIEW ORDER IN ADMIN
+{{ action_url }}
+Admin access requires authorized staff credentials. Receiving this notification does not grant dashboard access.
+
+This is an automated order notification from O’Toosin Farms.

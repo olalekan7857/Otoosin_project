@@ -1,0 +1,18 @@
+O’Toosin Farms
+You’re invited to join our team
+
+Hello {{ invited_name }},
+
+You have been invited to join the O’Toosin Farms administration team as {{ role_label }}.
+
+Use this secure link to set your password and activate your staff account:
+{{ action_url }}
+
+Assigned role: {{ role_label }}
+Invitation expires: {{ expiry_text }}
+
+This invitation link can only be used once. If you were not expecting this invitation, you can safely ignore this email and no account changes will be made.
+
+O’Toosin Farms
+Farm-fresh food, delivered with care.
+This is a transactional message from the O’Toosin Farms administration team. Please do not reply to this email.

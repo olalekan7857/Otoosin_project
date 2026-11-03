@@ -159,6 +159,7 @@ class BrandedStaffEmailTests(TestCase):
         self.assertIn(self.logo_url, message["html"])
         self.assertIn("invitation expires", message["text"].lower())
         self.assertIn("/staff/activate/uid/invite-token/", message["html"])
+        self.assertIn("/staff/activate/uid/invite-token/", message["text"])
         self.assertIn("ignore", message["html"].lower())
         self.assertIn("O’Toosin Farms", message["text"])
         self.assertNotIn("<script", message["html"].lower())
@@ -310,6 +311,44 @@ class StaffRoleAndTeamTests(TestCase):
         self.assertEqual(
             invitation.email_delivery.status, EmailDelivery.Status.FAILED
         )
+
+    @override_settings(
+        RESEND_API_KEY="test-resend-key",
+        RESEND_FROM_EMAIL="sender@example.com",
+        SITE_URL="https://farm.example.com",
+    )
+    def test_owner_invite_renders_text_and_reaches_resend(self):
+        self.client.force_login(self.owner)
+        captured = {}
+
+        def fake_send(payload):
+            captured.update(payload)
+            return 200, '{"id":"invite-email-1"}'
+
+        with mock.patch(
+            "Otoosin.email_service._send_request", side_effect=fake_send
+        ):
+            response = self.client.post(
+                "/staff/team/",
+                {
+                    "action": "invite",
+                    "email": "successfulstaff@example.com",
+                    "role": "manager",
+                },
+            )
+        self.assertRedirects(response, "/staff/team/")
+        User = get_user_model()
+        invited = User.objects.get(email="successfulstaff@example.com")
+        self.assertFalse(invited.is_active)
+        self.assertTrue(invited.is_staff)
+        invitation = StaffInvitation.objects.get(user=invited)
+        self.assertEqual(
+            invitation.email_delivery.status, EmailDelivery.Status.SENT
+        )
+        self.assertEqual(captured["to"], ["successfulstaff@example.com"])
+        self.assertIn("invited", captured["subject"].lower())
+        self.assertIn("/staff/activate/", captured["html"])
+        self.assertIn("/staff/activate/", captured["text"])
 
     def test_invitation_activation_is_single_use_and_role_bounded(self):
         User = get_user_model()

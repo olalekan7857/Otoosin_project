@@ -54,6 +54,7 @@ media/
 *.mo
 *.md
 *.txt
+!Otoosin/templates/emails/*.txt
 !DEPLOYMENT.md
 !requirements.txt
 
