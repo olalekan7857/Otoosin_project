@@ -144,12 +144,18 @@ the same SQLite file.
 
 ## 4. First owner account
 
-After the first deploy and migrations:
+After the first deploy and migrations, run this only in the production
+environment:
 
 ```bash
-python manage.py createsuperuser
+python manage.py create_production_superuser
 python manage.py provision_staff_roles
 ```
+
+`create_production_superuser` checks `django.db.connection.vendor` and aborts
+without creating or modifying any user unless the active database is
+PostgreSQL. It never reads or writes the local SQLite development database.
+Do not run it locally or with a non-production `DATABASE_URL`.
 
 Then sign in at `/staff/login/`, confirm the owner account has the Owner role,
 and invite the remaining team from `/staff/team/`. Do not create shared staff
