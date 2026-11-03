@@ -315,6 +315,7 @@ LOGOUT_REDIRECT_URL = '/staff/login/'
 # verified. Every value remains environment-controlled for hosting platforms
 # that terminate TLS or use a different proxy header.
 SECURE_SSL_REDIRECT = _env_bool('SECURE_SSL_REDIRECT', not DEBUG)
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SESSION_COOKIE_SECURE = _env_bool('SESSION_COOKIE_SECURE', not DEBUG)
 CSRF_COOKIE_SECURE = _env_bool('CSRF_COOKIE_SECURE', not DEBUG)
 SESSION_COOKIE_SAMESITE = config('SESSION_COOKIE_SAMESITE', default='Lax').strip() or 'Lax'
@@ -330,8 +331,6 @@ X_FRAME_OPTIONS = config('X_FRAME_OPTIONS', default='DENY').strip() or 'DENY'
 SECURE_HSTS_SECONDS = _env_int('SECURE_HSTS_SECONDS', 0, minimum=0)
 SECURE_HSTS_INCLUDE_SUBDOMAINS = _env_bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
 SECURE_HSTS_PRELOAD = _env_bool('SECURE_HSTS_PRELOAD', False)
-if _env_bool('USE_X_FORWARDED_PROTO', False):
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 PASSWORD_RESET_TIMEOUT = _env_int('PASSWORD_RESET_TIMEOUT', 86400, minimum=3600)
 
