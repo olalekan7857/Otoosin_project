@@ -1,8 +1,10 @@
-from django.conf import settings
-from django.conf.urls.static import static
-from django.urls import path
+import re
+from urllib.parse import urlsplit
 
-from . import views
+from django.conf import settings
+from django.urls import path, re_path
+
+from . import media_serving, views
 
 app_name = "Otoosin"
 
@@ -199,7 +201,12 @@ urlpatterns = [
 
 handler404 = "Otoosin.views.not_found"
 
-if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
+_media_url_path = urlsplit(settings.MEDIA_URL).path.strip("/")
+if _media_url_path:
+    urlpatterns += [
+        re_path(
+            rf"^{re.escape(_media_url_path)}/(?P<path>.*)$",
+            media_serving.serve_media,
+            name="media",
+        )
+    ]

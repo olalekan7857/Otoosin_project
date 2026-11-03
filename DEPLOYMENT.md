@@ -97,8 +97,14 @@ python manage.py provision_staff_roles
 `collectstatic` must complete without errors before `check --deploy` or app
 startup: production storage uses a manifest, and the app resolves static URLs at
 import time. Static files are served by WhiteNoise from `STATIC_ROOT`; the
-reverse proxy does not need a separate static directory. Uploaded media is
-served by the app from `MEDIA_ROOT`.
+reverse proxy does not need a separate static directory.
+
+Uploaded media is served by a narrow Django fallback view from `MEDIA_ROOT`
+(`Otoosin/media_serving.py`). This route is a temporary diagnostic fallback,
+not a production-grade media architecture: it blocks path traversal and
+directory listings, but it makes the application process serve every upload.
+For a long-lived deployment, move `/media/` to a reverse-proxy mapping or
+object storage.
 
 ### Rimbra build command
 
