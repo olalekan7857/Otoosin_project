@@ -1081,6 +1081,43 @@ class StaffOrderTests(CheckoutTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context["page_obj"].object_list), 7)
 
+    def test_admin_nav_pending_badge_tracks_database_status(self):
+        self.client.force_login(self.owner)
+        response = self.client.get("/staff/")
+        self.assertEqual(response.context["admin_pending_orders_count"], 0)
+        self.assertNotContains(response, "fd-admin-nav-badge")
+
+        first, _ = self.make_order()
+        response = self.client.get("/staff/")
+        self.assertEqual(response.context["admin_pending_orders_count"], 1)
+        self.assertContains(response, "fd-admin-nav-badge")
+        self.assertContains(response, 'aria-label="1 pending order"')
+
+        self.make_order()
+        self.make_order()
+        response = self.client.get("/staff/orders/")
+        self.assertEqual(response.context["admin_pending_orders_count"], 3)
+        self.assertContains(response, ">3</span>")
+
+        first.status = Order.Status.COMPLETED
+        first.save(update_fields=["status"])
+        response = self.client.get("/staff/")
+        self.assertEqual(response.context["admin_pending_orders_count"], 2)
+
+        Order.objects.update(status=Order.Status.COMPLETED)
+        response = self.client.get("/staff/")
+        self.assertEqual(response.context["admin_pending_orders_count"], 0)
+        self.assertNotContains(response, "fd-admin-nav-badge")
+
+    def test_admin_nav_pending_badge_respects_order_permission(self):
+        self.make_order()
+        self.client.force_login(self.support)
+        response = self.client.get("/staff/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["admin_pending_orders_count"], 0)
+        self.assertNotContains(response, "fd-admin-nav-badge")
+        self.assertNotContains(response, "pending order")
+
     def test_empty_state_and_dashboard_metrics_are_database_backed(self):
         self.client.force_login(self.owner)
         response = self.client.get("/staff/orders/")

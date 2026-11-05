@@ -195,6 +195,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'Otoosin.context_processors.storefront_catalog',
                 'Otoosin.context_processors.storefront_settings',
+                'Otoosin.context_processors.admin_pending_orders',
             ],
         },
     },

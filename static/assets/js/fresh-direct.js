@@ -621,6 +621,13 @@
   }
 
   function cartReconcile() {
+    /* A verified-payment confirmation owns cart cleanup. Its async cart
+       validation must not write the purchased lines back after the cleanup
+       script has removed them. */
+    var confirmWrap = document.getElementById("oto-confirm-wrap");
+    if (confirmWrap && confirmWrap.hasAttribute("data-clear-cart")) {
+      return Promise.resolve();
+    }
     var items = cartLoad();
     if (!items.length) {
       return Promise.resolve();
