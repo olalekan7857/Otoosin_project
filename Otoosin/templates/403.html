@@ -1,0 +1,21 @@
+{% extends "admin/base_admin.html" %}
+{% load static %}
+
+{% block title %}Access denied | O’TOOSIN Farms Admin{% endblock %}
+{% block skip_label %}Skip to access message{% endblock %}
+{% block topbar_title %}Access denied{% endblock %}
+{% block topbar_context %}Farm admin &middot; restricted section{% endblock %}
+
+{% block admin_content %}
+<div class="fd-admin-denied" role="region" aria-labelledby="fd-admin-denied-title">
+    <span class="fd-admin-denied-icon" aria-hidden="true"><i class="fas fa-lock"></i></span>
+    <h2 id="fd-admin-denied-title">You don't have access to this page</h2>
+    <p>Your current staff role does not include permission to access this section of the O’TOOSIN Farms admin dashboard. If you believe you need access, please contact an administrator.</p>
+    <div class="fd-admin-denied-actions">
+        {% if user.is_staff and user.is_active %}
+        <a href="{% url 'Otoosin:staff_dashboard' %}" class="vs-btn fd-dash-btn"><i class="fas fa-th-large" aria-hidden="true"></i>Return to Dashboard</a>
+        {% endif %}
+        <button type="button" class="fd-ghost-btn fd-dash-btn" data-fd-go-back><i class="fas fa-arrow-left" aria-hidden="true"></i>Go Back</button>
+    </div>
+</div>
+{% endblock %}

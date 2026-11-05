@@ -1,0 +1,161 @@
+/* ==========================================================================
+   O’TOOSIN Farms — shared motion layer
+   --------------------------------------------------------------------------
+   Lightweight, CSS-first entrance and interaction polish for the storefront
+   and admin dashboard. Nothing here changes colour, size or layout tokens.
+
+   The `.fd-motion` class is only added by otoosin-motion.js. If JavaScript
+   fails or is disabled, no element receives that class and every page stays
+   fully visible. Reduced-motion users never see the entrance state.
+   ========================================================================== */
+
+:root {
+  --fd-motion-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --fd-motion-duration: 0.55s;
+}
+
+@keyframes fdMotionRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Above-the-fold surfaces animate from first paint without a JavaScript
+     race, so they never flash from visible to hidden and back. */
+  .oto-hero-content,
+  .oto-hero-media,
+  .fd-shop-intro,
+  .fd-dash-head,
+  .fd-admin-login-card {
+    animation: fdMotionRise var(--fd-motion-duration) var(--fd-motion-ease) both;
+  }
+
+  /* ---------- Entrance state (added by JS, then removed on reveal) ---------- */
+  .fd-motion {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity var(--fd-motion-duration) var(--fd-motion-ease),
+      transform var(--fd-motion-duration) var(--fd-motion-ease);
+    transition-delay: var(--fd-motion-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .fd-motion.fd-motion-in {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+
+  /* ---------- Interactive feedback ---------- */
+  .vs-btn,
+  .fd-ghost-btn,
+  .fd-dash-btn,
+  .fd-admin-nav-link,
+  .fd-admin-logout,
+  .fd-admin-menu-btn,
+  .fd-admin-nav-close,
+  .fd-variant-btn,
+  .fd-pdp-qty button,
+  .fd-qty button,
+  .icon-btn,
+  .product-style1 .product-img img,
+  .categorie-style1,
+  .oto-shop-category {
+    transition:
+      background-color 0.22s ease,
+      border-color 0.22s ease,
+      color 0.22s ease,
+      box-shadow 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .vs-btn:hover,
+  .fd-ghost-btn:hover,
+  .fd-dash-btn:hover,
+  .fd-admin-menu-btn:hover {
+    transform: translateY(-1px);
+  }
+
+  .vs-btn:active,
+  .fd-ghost-btn:active,
+  .fd-dash-btn:active,
+  .fd-admin-menu-btn:active {
+    transform: translateY(0);
+  }
+
+  .fd-admin-nav-link:hover {
+    transform: translateX(2px);
+  }
+
+  .product-style1:hover .product-img img {
+    transform: scale(1.035);
+  }
+
+  .categorie-style1:hover,
+  .oto-shop-category:hover {
+    transform: translateY(-4px);
+  }
+
+  .form-control,
+  .form-select {
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+  }
+}
+
+/* Reduced motion: content is always visible; hover feedback is simplified. */
+@media (prefers-reduced-motion: reduce) {
+  .oto-hero-content,
+  .oto-hero-media,
+  .fd-shop-intro,
+  .fd-dash-head,
+  .fd-admin-login-card {
+    animation: none !important;
+  }
+
+  .fd-motion,
+  .fd-motion.fd-motion-in {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .vs-btn,
+  .fd-ghost-btn,
+  .fd-dash-btn,
+  .fd-admin-nav-link,
+  .fd-admin-logout,
+  .fd-admin-menu-btn,
+  .fd-admin-nav-close,
+  .fd-variant-btn,
+  .fd-pdp-qty button,
+  .fd-qty button,
+  .icon-btn,
+  .product-style1 .product-img img,
+  .categorie-style1,
+  .oto-shop-category,
+  .form-control,
+  .form-select {
+    transition: none !important;
+  }
+
+  .vs-btn:hover,
+  .fd-ghost-btn:hover,
+  .fd-dash-btn:hover,
+  .fd-admin-menu-btn:hover,
+  .fd-admin-nav-link:hover,
+  .product-style1:hover .product-img img,
+  .categorie-style1:hover,
+  .oto-shop-category:hover {
+    transform: none !important;
+  }
+}

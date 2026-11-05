@@ -53,8 +53,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
     <!-- Light/dark token layer -->
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.5">
-    <link rel="stylesheet" href="{% static 'assets/css/otoosin-mobile-nav.css' %}?v=2.0">
-    <link rel="stylesheet" href="{% static 'assets/css/otoosin-footer.css' %}?v=2.0">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-mobile-nav.css' %}?v=2.1">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-footer.css' %}?v=2.1">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-motion.css' %}?v=1.1">
     <!-- Apply the stored theme before first paint. Default is Light. -->
     <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
 
@@ -350,6 +351,7 @@
     <!-- Storefront interactions and cart -->
     <script src="{% static 'assets/js/fresh-direct.js' %}?v=8.1"></script>
     <script src="{% static 'assets/js/fd-theme.js' %}"></script>
+    <script src="{% static 'assets/js/otoosin-motion.js' %}?v=1.0" defer></script>
 
     {% block extra_js %}{% endblock extra_js %}
 

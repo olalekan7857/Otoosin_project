@@ -237,11 +237,6 @@
     font-size: 12.5px;
   }
 
-  /* The fixed base nav is 61-65px tall; 74px leaves a small, intentional
-     gap without the extra empty band the old 84px reserved. */
-  body.otoosin-mobile-nav-enabled .footer-wrapper.footer-layout1 {
-    padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px));
-  }
 }
 
 @media (max-width: 400px) {

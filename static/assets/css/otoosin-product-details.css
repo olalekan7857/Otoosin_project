@@ -410,19 +410,30 @@ html[data-theme="dark"] .oto-pdp-know-icon {
     margin-bottom: 14px;
   }
 
+  /* Keep the stepper compact on phones instead of stretching it across the
+     full width. It stays aligned with the unit label and can wrap cleanly
+     on very narrow screens. */
+  .oto-pdp-info .fd-pdp-buy-row {
+    justify-content: flex-start;
+  }
+
   .oto-pdp-info .fd-pdp-qty {
-    flex: 1 1 100%;
-    justify-content: space-between;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    gap: 4px;
+    max-width: 100%;
   }
 
   .oto-pdp-info .fd-pdp-qty button {
-    flex: 0 0 44px;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
   }
 
   .oto-pdp-info .fd-pdp-qty-input {
-    width: auto;
-    flex: 1 1 auto;
-    max-width: none;
+    width: 56px;
+    flex: 0 1 56px;
+    max-width: 64px;
   }
 
   .oto-pdp-info .fd-pdp-qty > span:not(.fd-qty-entry) {
@@ -430,24 +441,24 @@ html[data-theme="dark"] .oto-pdp-know-icon {
   }
 
   .oto-pdp-info .fd-pdp-qty .fd-qty-entry {
-    flex: 1 1 auto;
-    align-items: stretch;
+    flex: 0 0 auto;
+    align-items: center;
   }
 
   .oto-pdp-info .fd-pdp-qty .fd-qty-entry-row {
-    width: 100%;
+    width: auto;
   }
 
   .oto-pdp-info .fd-pdp-qty .fd-pdp-entry-field {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
   }
 
   .oto-pdp-info .fd-pdp-qty .fd-pdp-entry-field .fd-pdp-qty-input {
-    width: 100%;
+    width: 56px;
   }
 
   .oto-pdp-info .fd-pdp-qty .oto-pdp-qty-unit {
-    margin-right: 10px;
+    margin-right: 4px;
   }
 
   .oto-pdp-info .fd-pdp-add,

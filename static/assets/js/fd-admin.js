@@ -40,6 +40,7 @@
     var toggle = document.getElementById("fd-admin-menu-btn");
     var scrim = document.getElementById("fd-admin-scrim");
     var sidebar = document.getElementById("fd-admin-sidebar");
+    var closeButton = document.getElementById("fd-admin-nav-close");
     if (!toggle || !scrim || !sidebar) {
       return;
     }
@@ -87,6 +88,12 @@
     scrim.addEventListener("click", function () {
       close(true);
     });
+
+    if (closeButton) {
+      closeButton.addEventListener("click", function () {
+        close(true);
+      });
+    }
 
     document.addEventListener("keydown", function (ev) {
       if ((ev.key === "Escape" || ev.key === "Esc") && isOpen()) {
@@ -467,6 +474,19 @@
     document.body.classList.add("fd-admin-base-nav-on");
   }
 
+  function wireGoBack() {
+    var buttons = document.querySelectorAll("[data-fd-go-back]");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].addEventListener("click", function () {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = "/staff/";
+        }
+      });
+    }
+  }
+
   /* Paint the mobile base navigation as soon as the shell is parsed, so the
      bottom of small screens is covered from first paint instead of waiting
      for DOMContentLoaded (which can be delayed by slow font/asset requests).
@@ -476,6 +496,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     wireYear();
     wireShell();
+    wireGoBack();
     wireBaseNav();
     wirePasswordToggle();
     wireForgotPanel();

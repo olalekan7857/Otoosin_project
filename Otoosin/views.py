@@ -6,7 +6,7 @@ import secrets
 from datetime import timedelta
 from decimal import Decimal
 from functools import wraps
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 
 from django.conf import settings
 from django.contrib import messages
@@ -26,7 +26,7 @@ from django.db import DatabaseError, transaction
 from django.db.models import Count, OuterRef, Prefetch, Q, Subquery
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse, reverse_lazy
+from django.urls import Resolver404, resolve, reverse, reverse_lazy
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.utils.encoding import force_bytes, force_str
@@ -131,6 +131,87 @@ def _staff_permission(permission):
     return decorator
 
 
+# Actual permission required by each admin view. The mapping mirrors the
+# decorators below so a post-login destination can be checked without making
+# a request or weakening any existing permission check.
+STAFF_VIEW_PERMISSIONS = {
+    "staff_dashboard": None,
+    "staff_products": "Otoosin.view_product",
+    "staff_product_create": "Otoosin.add_product",
+    "staff_product_edit": "Otoosin.change_product",
+    "staff_categories": "Otoosin.change_category",
+    "staff_inventory": "Otoosin.change_inventory",
+    "staff_orders": "Otoosin.view_order",
+    "staff_order_detail": "Otoosin.view_order",
+    "staff_messages": "Otoosin.view_contactmessage",
+    "staff_message_detail": "Otoosin.view_contactmessage",
+    "staff_delivery": "Otoosin.view_deliverylocation",
+    "staff_settings": "Otoosin.change_siteconfiguration",
+    "staff_legal": "Otoosin.change_legaldocument",
+    "staff_team": "Otoosin.manage_staff",
+}
+
+STAFF_ACTIVATION_SESSION_KEY = "otoosin_staff_activation_pending"
+
+
+def _safe_next_path(request, raw_next):
+    """Return a safe local path for ``next`` or an empty string.
+
+    Absolute URLs are only accepted when they point at this same host, and
+    the result is always reduced to a path so redirects cannot leave the
+    site.
+    """
+    if not raw_next:
+        return ""
+    parts = urlsplit(raw_next)
+    if parts.scheme or parts.netloc:
+        if parts.netloc.lower() != request.get_host().lower():
+            return ""
+        path = parts.path or "/"
+    else:
+        if not raw_next.startswith("/") or raw_next.startswith("//"):
+            return ""
+        path = raw_next
+    if parts.query:
+        path = f"{path}?{parts.query}"
+    return path
+
+
+def _staff_can_access_path(user, path):
+    path_only = urlsplit(path).path
+    try:
+        match = resolve(path_only)
+    except Resolver404:
+        return False
+    if match.namespace != "Otoosin":
+        return False
+    if match.url_name in STAFF_VIEW_PERMISSIONS:
+        permission = STAFF_VIEW_PERMISSIONS[match.url_name]
+        return permission is None or user.has_perm(permission)
+    # Unknown admin routes are never a safe post-login destination.
+    if path_only.startswith("/staff/"):
+        return False
+    # Public storefront routes remain valid next targets.
+    return True
+
+
+def _staff_landing_url(user):
+    """Pick an existing admin page the signed-in staff member can access."""
+    if user.is_superuser or user.has_perm("Otoosin.view_product"):
+        return reverse("Otoosin:staff_dashboard")
+    if user.has_perm("Otoosin.view_order"):
+        return reverse("Otoosin:staff_orders")
+    if user.has_perm("Otoosin.view_contactmessage"):
+        return reverse("Otoosin:staff_messages")
+    if user.has_perm("Otoosin.view_inventory"):
+        return reverse("Otoosin:staff_inventory")
+    if user.has_perm("Otoosin.view_deliverylocation"):
+        return reverse("Otoosin:staff_delivery")
+    # The dashboard only requires an active staff account, so it is the safe
+    # fallback for any team member without a more specific landing page.
+    return reverse("Otoosin:staff_dashboard")
+
+
 LOGIN_MAX_ATTEMPTS = 5
 LOGIN_WINDOW_SECONDS = 900
 CONTACT_MAX_ATTEMPTS = 5
@@ -150,6 +231,20 @@ class StaffLoginView(LoginView):
     template_name = "admin-login.html"
     authentication_form = StaffLoginForm
     redirect_authenticated_user = False
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["staff_activation_notice"] = bool(
+            self.request.session.get(STAFF_ACTIVATION_SESSION_KEY)
+        )
+        return context
+
+    def get_success_url(self):
+        requested = self.get_redirect_url()
+        safe_path = _safe_next_path(self.request, requested)
+        if safe_path and _staff_can_access_path(self.request.user, safe_path):
+            return safe_path
+        return _staff_landing_url(self.request.user)
 
     def post(self, request, *args, **kwargs):
         identifier = (request.POST.get("username") or "").strip()
@@ -184,7 +279,16 @@ class StaffLoginView(LoginView):
     def form_valid(self, form):
         identifier = (self.request.POST.get("username") or "").strip()
         cache.delete(_throttle_key("staff-login", self.request, identifier))
+        activation_pending = self.request.session.pop(
+            STAFF_ACTIVATION_SESSION_KEY, None
+        )
         response = super().form_valid(form)
+        if activation_pending == self.request.user.pk:
+            messages.success(
+                self.request,
+                "Your staff account has been activated successfully. "
+                "Welcome to the O’Toosin Farms admin team.",
+            )
         record_audit(
             actor=self.request.user,
             action="login_success",
@@ -409,7 +513,10 @@ def staff_activate(request, uidb64, token):
                     f"{invitation.get_role_display()}."
                 ),
             )
-        messages.success(request, "Your staff account is active. Please sign in.")
+        # The sign-in page shows a short activation notice from this flag.
+        # The flag is consumed after a successful login, where the welcome
+        # message is shown instead of a stale "please sign in" message.
+        request.session[STAFF_ACTIVATION_SESSION_KEY] = user.pk
         return redirect("Otoosin:staff_login")
 
     return render(
@@ -2199,6 +2306,18 @@ def terms(request):
             ),
         },
     )
+
+
+def permission_denied(request, exception=None):
+    user = getattr(request, "user", None)
+    is_staff = bool(
+        user is not None
+        and user.is_authenticated
+        and user.is_staff
+        and user.is_active
+    )
+    template = "403.html" if is_staff else "403-storefront.html"
+    return render(request, template, status=403)
 
 
 def not_found(request, exception):

@@ -1417,7 +1417,16 @@
         closeDropdown(false);
       }
     });
+    var lastViewportWidth = window.innerWidth;
     window.addEventListener("resize", function () {
+      /* Mobile keyboards resize the visual viewport and fire resize while
+         the location search is focused. Only close for real width changes,
+         such as orientation changes, so the dropdown stays open while the
+         customer types. */
+      if (window.innerWidth === lastViewportWidth) {
+        return;
+      }
+      lastViewportWidth = window.innerWidth;
       closeDropdown(false);
     });
   }

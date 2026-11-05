@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
     <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.0">
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.4">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-motion.css' %}?v=1.0">
     <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
 </head>
 
@@ -71,6 +72,12 @@
                                     <h1 id="fd-admin-login-title">Admin sign-in</h1>
                                     <p>Use your staff credentials to manage the O’TOOSIN Farms storefront.</p>
                                 </div>
+
+                                {% if staff_activation_notice %}
+                                <div class="fd-admin-notice is-success" role="status">
+                                    <p>Your staff account is now active. Sign in to continue to the O’TOOSIN Farms admin dashboard.</p>
+                                </div>
+                                {% endif %}
 
                                 {% if form.non_field_errors %}
                                 <div class="fd-admin-notice is-error" role="alert">

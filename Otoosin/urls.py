@@ -199,6 +199,7 @@ urlpatterns = [
     ),
 ]
 
+handler403 = "Otoosin.views.permission_denied"
 handler404 = "Otoosin.views.not_found"
 
 _media_url_path = urlsplit(settings.MEDIA_URL).path.strip("/")

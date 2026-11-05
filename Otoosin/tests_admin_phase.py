@@ -388,6 +388,9 @@ class StaffRoleAndTeamTests(TestCase):
         self.assertTrue(invited.groups.filter(name="Support").exists())
         self.assertFalse(invited.groups.filter(name="Owner").exists())
 
+        login_page = self.client.get("/staff/login/")
+        self.assertContains(login_page, "Your staff account is now active")
+
         login = self.client.post(
             "/staff/login/",
             {
@@ -395,7 +398,15 @@ class StaffRoleAndTeamTests(TestCase):
                 "password": "new-strong-pass-456",
             },
         )
-        self.assertRedirects(login, "/staff/products/", fetch_redirect_response=False)
+        self.assertRedirects(login, "/staff/messages/", fetch_redirect_response=False)
+        dashboard = self.client.get("/staff/messages/")
+        self.assertContains(
+            dashboard,
+            "Your staff account has been activated successfully",
+        )
+        self.assertNotContains(
+            dashboard, "Your staff account is active. Please sign in."
+        )
         self.client.post("/staff/logout/")
 
         self.client.force_login(self.owner)
@@ -477,7 +488,7 @@ class StaffRoleAndTeamTests(TestCase):
                 "password": "strong-pass-123",
             },
         )
-        self.assertRedirects(email_login, "/staff/products/")
+        self.assertRedirects(email_login, "/staff/")
         self.client.post("/staff/logout/")
 
         username_login = self.client.post(
@@ -487,7 +498,65 @@ class StaffRoleAndTeamTests(TestCase):
                 "password": "strong-pass-123",
             },
         )
-        self.assertRedirects(username_login, "/staff/products/")
+        self.assertRedirects(username_login, "/staff/")
+
+    def test_role_aware_login_landing_pages(self):
+        cases = (
+            (self.fulfilment, "/staff/orders/"),
+            (self.support, "/staff/messages/"),
+            (self.manager, "/staff/"),
+            (self.owner, "/staff/"),
+        )
+        for user, expected in cases:
+            response = self.client.post(
+                "/staff/login/",
+                {"username": user.username, "password": "strong-pass-123"},
+            )
+            self.assertRedirects(
+                response, expected, fetch_redirect_response=False
+            )
+            self.client.post("/staff/logout/")
+
+    def test_login_next_is_ignored_when_forbidden_or_external(self):
+        response = self.client.post(
+            "/staff/login/",
+            {
+                "username": "support",
+                "password": "strong-pass-123",
+                "next": "/staff/team/",
+            },
+        )
+        self.assertRedirects(
+            response, "/staff/messages/", fetch_redirect_response=False
+        )
+        self.client.post("/staff/logout/")
+
+        response = self.client.post(
+            "/staff/login/",
+            {
+                "username": "support",
+                "password": "strong-pass-123",
+                "next": "https://evil.example.com/staff/messages/",
+            },
+        )
+        self.assertRedirects(
+            response, "/staff/messages/", fetch_redirect_response=False
+        )
+
+    @override_settings(DEBUG=False)
+    def test_access_denied_page_keeps_403_and_admin_branding(self):
+        self.client.force_login(self.support)
+        response = self.client.get(
+            "/staff/team/", HTTP_HOST="localhost"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "have access to this page", status_code=403
+        )
+        self.assertContains(
+            response, "Return to Dashboard", status_code=403
+        )
+        self.assertNotContains(response, "manage_staff", status_code=403)
 
     def test_login_is_throttled_and_generic_for_inactive_accounts(self):
         User = get_user_model()

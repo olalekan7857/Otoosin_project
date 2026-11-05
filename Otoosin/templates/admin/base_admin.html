@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.6">
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.5">
+    <link rel="stylesheet" href="{% static 'assets/css/otoosin-motion.css' %}?v=1.0">
     <script>try{var fdT=localStorage.getItem("freshdirect_theme_v1");if(fdT==="dark"){document.documentElement.setAttribute("data-theme","dark");}}catch(fdE){}</script>
 </head>
 
@@ -33,6 +34,9 @@
 
     <div class="fd-admin-shell" id="fd-admin-shell">
         <aside class="fd-admin-sidebar" id="fd-admin-sidebar" aria-label="Admin navigation">
+            <button type="button" class="fd-admin-nav-close" id="fd-admin-nav-close" aria-label="Close admin menu">
+                <i class="fal fa-times" aria-hidden="true"></i>
+            </button>
             <div class="fd-admin-brand">
                 <a href="{% url 'Otoosin:index' %}" class="fd-logo" aria-label="O’TOOSIN Farms storefront"><img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50"></a>
             </div>
@@ -109,8 +113,9 @@
         </div>
     </div>
 
-    <script src="{% static 'assets/js/fd-admin.js' %}?v=6.8"></script>
+    <script src="{% static 'assets/js/fd-admin.js' %}?v=6.9"></script>
     <script src="{% static 'assets/js/fd-theme.js' %}"></script>
+    <script src="{% static 'assets/js/otoosin-motion.js' %}?v=1.0" defer></script>
     <script src="{% static 'assets/js/otoosin-admin-images.js' %}?v=1.2"></script>
     {% block extra_js %}{% endblock %}
 </body>
