@@ -27,11 +27,11 @@ class CustomErrorPageTests(SimpleTestCase):
 class StaticAssetReferenceTests(SimpleTestCase):
     referenced_assets = (
         "assets/img/harvest_castle/of_favicon.png",
-        "assets/img/categorie/otoosin-live-animals.png",
-        "assets/img/categorie/otoosin-veggies.png",
-        "assets/img/categorie/fish-meat.png",
-        "assets/img/categorie/otoosin-eggs.png",
-        "assets/img/categorie/otoosin-fruits.png",
+        "assets/img/categorie/otoosin-live-animals.webp",
+        "assets/img/categorie/otoosin-veggies.webp",
+        "assets/img/categorie/fish-meat.webp",
+        "assets/img/categorie/otoosin-eggs.webp",
+        "assets/img/categorie/otoosin-fruits.webp",
         "assets/img/hero/oto-hero-meat.jpg",
         "assets/fonts/fa-brands-400.woff2",
         "assets/fonts/fa-solid-900.woff2",

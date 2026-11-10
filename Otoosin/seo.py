@@ -31,7 +31,7 @@ def canonical_url(path, params=None):
 
 
 def default_image_url():
-    return absolute_url(static("assets/img/categorie/otoosin-farms.png"))
+    return absolute_url(static("assets/img/categorie/otoosin-farms.webp"))
 
 
 def seo_context(

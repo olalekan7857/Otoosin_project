@@ -8,7 +8,7 @@
       kicker: "Product categories",
       lead:
         "Browse meats, fish, live animals, eggs, veggies and fruits by category. Each product shows its unit and condition where it applies, then goes straight into your cart.",
-      image: "assets/img/categorie/otoosin-farms.png",
+      image: "assets/img/categorie/otoosin-farms.webp",
       alt: "O\u2019TOOSIN Farms produce and meats",
       group: "Meats \u00b7 Fish \u00b7 Live Animals \u00b7 Eggs \u00b7 Veggies \u00b7 Fruits",
       unit: "Units vary by product",
@@ -30,7 +30,7 @@
       kicker: "Pork category",
       lead:
         "Fresh and frozen pork cuts, prepared and priced by the kilogram. Choose a cut, add your weight to the cart, and check out when you are ready.",
-      image: "assets/img/categorie/pork-meat.png",
+      image: "assets/img/categorie/pork-meat.webp",
       alt: "Fresh pork chops",
       group: "Red meat",
       unit: "Priced per kilogram",
@@ -41,7 +41,7 @@
       kicker: "Chicken category",
       lead:
         "From whole chickens to wings and drumsticks, browse fresh and frozen chicken by the kilogram. Every listing shows the condition before you add it to the cart.",
-      image: "assets/img/categorie/chicken-meat.png",
+      image: "assets/img/categorie/chicken-meat.webp",
       alt: "Whole fresh chicken",
       group: "Poultry",
       unit: "Priced per kilogram",
@@ -52,7 +52,7 @@
       kicker: "Turkey category",
       lead:
         "Lean turkey breast, prepared for roasting or slicing and sold by the kilogram. Add the weight you need directly from the product card.",
-      image: "assets/img/categorie/turkey-meat.png",
+      image: "assets/img/categorie/turkey-meat.webp",
       alt: "Fresh turkey breast",
       group: "Poultry",
       unit: "Priced per kilogram",
@@ -63,7 +63,7 @@
       kicker: "Beef category",
       lead:
         "Browse fresh steak and frozen brisket, both priced per kilogram. Choose the cut that suits your cooking and add it to your cart.",
-      image: "assets/img/categorie/beef-meat.png",
+      image: "assets/img/categorie/beef-meat.webp",
       alt: "Fresh marbled beef steak",
       group: "Red meat",
       unit: "Priced per kilogram",
@@ -74,7 +74,7 @@
       kicker: "Goat Meat category",
       lead:
         "Fresh goat meat for stews and soups, plus fried goat meat with a deeper savoury flavour. Every option is sold by the kilogram.",
-      image: "assets/img/categorie/goat-meat.png",
+      image: "assets/img/categorie/goat-meat.webp",
       alt: "Fresh cubed goat meat",
       group: "Red meat",
       unit: "Priced per kilogram",
@@ -85,7 +85,7 @@
       kicker: "Fish category",
       lead:
         "Fresh, frozen and fried fish, cleaned and sold by the kilogram. Browse catfish and tilapia, then add the amount your kitchen needs.",
-      image: "assets/img/categorie/fish-meat.png",
+      image: "assets/img/categorie/fish-meat.webp",
       alt: "Fresh whole catfish",
       group: "Seafood",
       unit: "Priced per kilogram",
@@ -96,7 +96,7 @@
       kicker: "Live Animals category",
       lead:
         "Healthy live chickens and farm animals, priced per chicken or animal. Choose what you need and add it to your cart for collection or arranged delivery.",
-      image: "assets/img/categorie/otoosin-live-animals.png",
+      image: "assets/img/categorie/otoosin-live-animals.webp",
       alt: "Live chickens, goats, a cow, a sheep and a pig on the farm",
       group: "Farm animals",
       unit: "Priced per chicken or animal",
@@ -107,7 +107,7 @@
       kicker: "Eggs category",
       lead:
         "Fresh eggs from the farm, packed by the crate. Browse the current selection and add a crate to your cart.",
-      image: "assets/img/categorie/otoosin-eggs.png",
+      image: "assets/img/categorie/otoosin-eggs.webp",
       alt: "Fresh brown farm eggs in a basket",
       group: "Farm produce",
       unit: "Priced per crate",
@@ -118,7 +118,7 @@
       kicker: "Veggies category",
       lead:
         "Farm-fresh vegetables, sorted and packed by the basket. Browse what is available and add your selection to the cart.",
-      image: "assets/img/categorie/otoosin-veggies.png",
+      image: "assets/img/categorie/otoosin-veggies.webp",
       alt: "Fresh farm vegetables including tomatoes, carrots, peppers and greens",
       group: "Farm produce",
       unit: "Priced per basket",
@@ -129,7 +129,7 @@
       kicker: "Fruits category",
       lead:
         "Seasonal fruit from the farm, hand-picked and packed by the basket. Browse the selection and add your fruit to the cart.",
-      image: "assets/img/categorie/otoosin-fruits.png",
+      image: "assets/img/categorie/otoosin-fruits.webp",
       alt: "Fresh farm fruits including oranges, bananas, pineapple and mango",
       group: "Farm produce",
       unit: "Priced per basket",

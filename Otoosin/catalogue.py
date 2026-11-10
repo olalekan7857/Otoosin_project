@@ -7,7 +7,7 @@ from django.urls import reverse
 from .models import Category, Product, ProductVariant
 
 
-PLACEHOLDER_IMAGE = static("assets/img/categorie/otoosin-farms.png")
+PLACEHOLDER_IMAGE = static("assets/img/categorie/otoosin-farms.webp")
 
 GROUP_LABELS = {
     Category.Kind.RED_MEAT: "Red meat",

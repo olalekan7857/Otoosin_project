@@ -442,27 +442,27 @@ html[data-theme="dark"] .oto-shop-notice strong {
 }
 
 .oto-shop-card .categorie-img.cat-pork {
-  background-image: url("../img/categorie/pork-meat.png");
+  background-image: url("../img/categorie/pork-meat.webp");
 }
 
 .oto-shop-card .categorie-img.cat-chicken {
-  background-image: url("../img/categorie/chicken-meat.png");
+  background-image: url("../img/categorie/chicken-meat.webp");
 }
 
 .oto-shop-card .categorie-img.cat-turkey {
-  background-image: url("../img/categorie/turkey-meat.png");
+  background-image: url("../img/categorie/turkey-meat.webp");
 }
 
 .oto-shop-card .categorie-img.cat-beef {
-  background-image: url("../img/categorie/beef-meat.png");
+  background-image: url("../img/categorie/beef-meat.webp");
 }
 
 .oto-shop-card .categorie-img.cat-goat {
-  background-image: url("../img/categorie/goat-meat.png");
+  background-image: url("../img/categorie/goat-meat.webp");
 }
 
 .oto-shop-card .categorie-img.cat-fish {
-  background-image: url("../img/categorie/fish-meat.png");
+  background-image: url("../img/categorie/fish-meat.webp");
 }
 
 .oto-shop-card:hover .categorie-img {

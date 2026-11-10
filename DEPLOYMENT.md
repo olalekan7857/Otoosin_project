@@ -99,12 +99,12 @@ startup: production storage uses a manifest, and the app resolves static URLs at
 import time. Static files are served by WhiteNoise from `STATIC_ROOT`; the
 reverse proxy does not need a separate static directory.
 
-Uploaded media is served by a narrow Django fallback view from `MEDIA_ROOT`
-(`Otoosin/media_serving.py`). This route is a temporary diagnostic fallback,
-not a production-grade media architecture: it blocks path traversal and
-directory listings, but it makes the application process serve every upload.
-For a long-lived deployment, move `/media/` to a reverse-proxy mapping or
-object storage.
+Uploaded media is served by Django only in local development (`DEBUG=True`).
+The application does not expose `/media/` from `MEDIA_ROOT` in production.
+Uploaded files stored locally are therefore not publicly reachable on the
+current Rimbra deployment until `/media/` is mapped to the hosting layer's
+static/media handler. The permanent media solution will be configured during
+the Truehost cPanel migration.
 
 ### Rimbra build command
 
@@ -121,7 +121,7 @@ at an unmounted `/data` path: the build can write there, but the running
 instance may mount a different empty directory, causing:
 
 ```text
-ValueError: Missing staticfiles manifest entry for 'assets/img/categorie/otoosin-farms.png'
+ValueError: Missing staticfiles manifest entry for 'assets/img/categorie/otoosin-farms.webp'
 ```
 
 Build commands run before the Start command. If the Build command is blank, or

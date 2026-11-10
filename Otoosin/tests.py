@@ -1340,6 +1340,6 @@ class SettingsEnvironmentTests(SimpleTestCase):
             with open(manifest_path, encoding="utf-8") as manifest_file:
                 manifest = json.load(manifest_file)
             self.assertIn(
-                "assets/img/categorie/otoosin-farms.png",
+                "assets/img/categorie/otoosin-farms.webp",
                 manifest["paths"],
             )

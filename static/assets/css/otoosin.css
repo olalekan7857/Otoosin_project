@@ -397,23 +397,23 @@
 }
 
 .oto-cat-card .categorie-img.cat-fish {
-  background-image: url("../img/categorie/fish-meat.png");
+  background-image: url("../img/categorie/fish-meat.webp");
 }
 
 .oto-cat-card .categorie-img.cat-live {
-  background-image: url("../img/categorie/otoosin-live-animals.png");
+  background-image: url("../img/categorie/otoosin-live-animals.webp");
 }
 
 .oto-cat-card .categorie-img.cat-eggs {
-  background-image: url("../img/categorie/otoosin-eggs.png");
+  background-image: url("../img/categorie/otoosin-eggs.webp");
 }
 
 .oto-cat-card .categorie-img.cat-veggies {
-  background-image: url("../img/categorie/otoosin-veggies.png");
+  background-image: url("../img/categorie/otoosin-veggies.webp");
 }
 
 .oto-cat-card .categorie-img.cat-fruits {
-  background-image: url("../img/categorie/otoosin-fruits.png");
+  background-image: url("../img/categorie/otoosin-fruits.webp");
 }
 
 .oto-cat-card:hover .categorie-img {

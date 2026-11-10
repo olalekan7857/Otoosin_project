@@ -1,10 +1,6 @@
-import re
-from urllib.parse import urlsplit
+from django.urls import path
 
-from django.conf import settings
-from django.urls import path, re_path
-
-from . import media_serving, views
+from . import views
 
 app_name = "Otoosin"
 
@@ -201,13 +197,3 @@ urlpatterns = [
 
 handler403 = "Otoosin.views.permission_denied"
 handler404 = "Otoosin.views.not_found"
-
-_media_url_path = urlsplit(settings.MEDIA_URL).path.strip("/")
-if _media_url_path:
-    urlpatterns += [
-        re_path(
-            rf"^{re.escape(_media_url_path)}/(?P<path>.*)$",
-            media_serving.serve_media,
-            name="media",
-        )
-    ]

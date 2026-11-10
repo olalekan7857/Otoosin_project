@@ -2151,7 +2151,7 @@ def product_details(request):
         request.build_absolute_uri(primary_image.image.url)
         if primary_image
         else request.build_absolute_uri(
-            "/static/assets/img/categorie/otoosin-farms.png"
+            "/static/assets/img/categorie/otoosin-farms.webp"
         )
     )
     availability_url = {

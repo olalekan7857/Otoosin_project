@@ -42,8 +42,8 @@
                                 {% else %}
                                     <span class="fd-badge" id="fd-pdp-badge">{{ product.badge|default:product.get_condition_display }}</span>
                                 {% endif %}
-                                <a class="fd-pdp-main-img popup-image" id="fd-pdp-zoom" href="{% if image %}{{ image.image.url }}{% else %}{% static 'assets/img/categorie/otoosin-farms.png' %}{% endif %}" aria-label="Open larger product image">
-                                    <img id="fd-pdp-img" src="{% if image %}{{ image.image.url }}{% else %}{% static 'assets/img/categorie/otoosin-farms.png' %}{% endif %}" alt="{% if image %}{{ image.alt }}{% else %}{{ product.name }}{% endif %}" width="{% if image %}{{ image.width|default:480 }}{% else %}480{% endif %}" height="{% if image %}{{ image.height|default:360 }}{% else %}360{% endif %}">
+                                <a class="fd-pdp-main-img popup-image" id="fd-pdp-zoom" href="{% if image %}{{ image.image.url }}{% else %}{% static 'assets/img/categorie/otoosin-farms.webp' %}{% endif %}" aria-label="Open larger product image">
+                                    <img id="fd-pdp-img" src="{% if image %}{{ image.image.url }}{% else %}{% static 'assets/img/categorie/otoosin-farms.webp' %}{% endif %}" alt="{% if image %}{{ image.alt }}{% else %}{{ product.name }}{% endif %}" width="{% if image %}{{ image.width|default:480 }}{% else %}480{% endif %}" height="{% if image %}{{ image.height|default:360 }}{% else %}360{% endif %}">
                                 </a>
                                 <div class="fd-pdp-thumbs" id="fd-pdp-thumbs" hidden></div>
                             </div>

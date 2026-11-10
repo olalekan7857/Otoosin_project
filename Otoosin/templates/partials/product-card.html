@@ -28,7 +28,7 @@
             {% if image %}
                 <img src="{{ image.image.url }}" alt="{{ image.alt }}" width="{{ image.width|default:480 }}" height="{{ image.height|default:360 }}" loading="lazy" decoding="async">
             {% else %}
-                <img src="{% static 'assets/img/categorie/otoosin-farms.png' %}" alt="{{ product.name }}" width="480" height="360" loading="lazy" decoding="async">
+                <img src="{% static 'assets/img/categorie/otoosin-farms.webp' %}" alt="{{ product.name }}" width="480" height="360" loading="lazy" decoding="async">
             {% endif %}
         </div>
         <div class="product-about">
