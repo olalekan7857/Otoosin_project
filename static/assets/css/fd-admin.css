@@ -4959,6 +4959,240 @@ html[data-theme="dark"] .fd-dash-card-icon {
 }
 
 /* ==========================================================================
+   Order detail — compact phone/tablet cards
+   --------------------------------------------------------------------------
+   The items and payment tables used to spend one full-width row per field,
+   which made a single order very tall on phones. They now use the same
+   dense two-column card language as the orders list: the long identifying
+   value spans the first row, then paired details sit side by side. Every
+   column still renders with its data-label, so no detail is hidden.
+   ========================================================================== */
+
+@media (max-width: 991px) {
+  /* ---------- Ordered items ---------- */
+  .fd-admin .fd-order-items-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .fd-admin .fd-order-items-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px 16px;
+    padding: 14px 16px 16px;
+    margin: 0;
+    border: 1px solid var(--fd-hairline, #ececec);
+    border-bottom: 2px solid var(--fd-hairline, #ececec);
+    border-radius: 12px;
+    background: var(--fd-surface, var(--white-color));
+    min-width: 0;
+  }
+
+  .fd-admin .fd-order-items-table tbody tr:last-child {
+    margin-bottom: 0;
+    border-bottom-color: var(--fd-hairline, #ececec);
+  }
+
+  .fd-admin .fd-order-items-table td {
+    display: block;
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .fd-admin .fd-order-items-table td::before {
+    display: block;
+    font-size: 10.5px;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(1),
+  .fd-admin .fd-order-items-table td:nth-child(2),
+  .fd-admin .fd-order-items-table td:nth-child(3) {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(1) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(4) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(5) {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .fd-admin .fd-order-items-table td:nth-child(3)::before,
+  .fd-admin .fd-order-items-table td:nth-child(5)::before {
+    text-align: right;
+  }
+
+  .fd-admin .fd-order-items-table td.is-amount {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .fd-admin .fd-order-items-table .fd-orders-sub {
+    font-size: 11.5px;
+    line-height: 1.35;
+    margin-top: 1px;
+  }
+
+  .fd-admin .fd-order-items-table tfoot tr {
+    padding: 5px 2px 0;
+  }
+
+  .fd-admin .fd-order-items-table tfoot th,
+  .fd-admin .fd-order-items-table tfoot td {
+    font-size: 13.5px;
+    padding: 0;
+  }
+
+  /* ---------- Payment attempts ---------- */
+  .fd-admin .fd-order-payments-table {
+    font-size: 13px;
+  }
+
+  .fd-admin .fd-order-payments-table tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .fd-admin .fd-order-payments-table tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 10px 16px;
+    padding: 14px 16px 16px;
+    margin: 0;
+    border: 1px solid var(--fd-hairline, #ececec);
+    border-bottom: 2px solid var(--fd-hairline, #ececec);
+    border-radius: 12px;
+    background: var(--fd-surface, var(--white-color));
+    min-width: 0;
+  }
+
+  .fd-admin .fd-order-payments-table tbody tr:last-child {
+    margin-bottom: 0;
+    border-bottom-color: var(--fd-hairline, #ececec);
+  }
+
+  .fd-admin .fd-order-payments-table td {
+    display: block;
+    width: auto;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .fd-admin .fd-order-payments-table td::before {
+    display: block;
+    font-size: 10.5px;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(1),
+  .fd-admin .fd-order-payments-table td:nth-child(2),
+  .fd-admin .fd-order-payments-table td:nth-child(3) {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--fd-hairline, #ececec);
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(1) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(4) {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(5) {
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .fd-admin .fd-order-payments-table td:nth-child(3)::before,
+  .fd-admin .fd-order-payments-table td:nth-child(5)::before {
+    text-align: right;
+  }
+
+  .fd-admin .fd-order-payments-table td.is-amount {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .fd-admin .fd-order-payments-table .fd-orders-sub {
+    font-size: 11.5px;
+    line-height: 1.35;
+    margin-top: 1px;
+  }
+
+  .fd-admin .fd-order-payments-table td .fd-dash-pill {
+    justify-self: auto;
+    max-width: 100%;
+    padding: 3px 8px;
+    border-width: 1px;
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
    Orders list refinement — compact phone cards + two-up filter grid
    --------------------------------------------------------------------------
    The order list is the one admin table viewed with 20+ records at a time.

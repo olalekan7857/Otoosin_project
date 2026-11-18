@@ -285,7 +285,18 @@ html[data-theme="dark"] .oto-shop-category-head .oto-shop-category-link:focus-vi
 }
 
 html[data-theme="dark"] .oto-shop-category {
-  border-color: #2e3b33;
+  background: var(--fd-surface);
+  border-color: var(--fd-hairline);
+}
+
+html[data-theme="dark"] .oto-shop-category:hover,
+html[data-theme="dark"] .oto-shop-category:focus-visible {
+  border-color: var(--fd-brand-green-text);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] .oto-shop-category img {
+  background: var(--fd-surface-2);
 }
 
 @media (max-width: 1199.98px) {
