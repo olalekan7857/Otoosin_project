@@ -838,11 +838,16 @@ img.fd-logo-img {
 
 .sideCart-wrapper .widget_shopping_cart .buttons .vs-btn,
 .sideCart-wrapper .widget_shopping_cart .buttons .fd-whatsapp-btn,
-.sideCart-wrapper .widget_shopping_cart .buttons .fd-view-cart-btn {
+.sideCart-wrapper .widget_shopping_cart .buttons .fd-view-cart-btn,
+.sideCart-wrapper .widget_shopping_cart .buttons .fd-ghost-btn {
   width: 100%;
   justify-content: center;
   text-align: center;
   margin: 0;
+}
+
+.sideCart-wrapper .widget_shopping_cart .buttons [hidden] {
+  display: none !important;
 }
 
 .fd-cart-empty p {

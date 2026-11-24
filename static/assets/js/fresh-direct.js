@@ -394,6 +394,7 @@
 
   function renderOneCartPanel(panel, items) {
     var empty = panel.querySelector(".fd-cart-empty");
+    var checkout = panel.querySelector("[data-cart-checkout]");
     var oldList = panel.querySelector("[data-cart-items]");
     if (oldList && oldList.parentNode) {
       oldList.parentNode.removeChild(oldList);
@@ -406,10 +407,16 @@
       if (empty) {
         empty.removeAttribute("hidden");
       }
+      if (checkout) {
+        checkout.setAttribute("hidden", "");
+      }
       return;
     }
     if (empty) {
       empty.setAttribute("hidden", "");
+    }
+    if (checkout) {
+      checkout.removeAttribute("hidden");
     }
     var list = document.createElement("ul");
     list.className = "fd-cart-items";

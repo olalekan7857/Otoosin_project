@@ -147,8 +147,9 @@
                         <p>Browse the farm shop and add the first item you need.</p>
                     </div>
                     <div class="buttons">
-                        <a href="{% url 'Otoosin:product' %}" class="vs-btn">Shop All Products</a>
+                        <a href="{% url 'Otoosin:checkout' %}" class="vs-btn" data-cart-checkout>Proceed to Checkout</a>
                         <a href="{% url 'Otoosin:cart' %}" class="fd-view-cart-btn">View cart</a>
+                        <a href="{% url 'Otoosin:product' %}" class="fd-ghost-btn">Shop All Products</a>
                     </div>
                 </div>
             </div>
