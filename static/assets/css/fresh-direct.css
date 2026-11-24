@@ -1005,7 +1005,7 @@ img.fd-logo-img {
   }
 
   #featured .product-style1 .product-img img {
-    max-height: 120px;
+    height: 120px;
   }
 
   #featured .product-style1 .product-title {
@@ -1290,10 +1290,14 @@ a.fd-cat-pill {
 #fd-home-grid .product-style1 .product-img img,
 #fd-pdp-related .product-style1 .product-img img {
   border-radius: var(--fd-radius-img);
-  max-height: 150px;
-  width: auto;
+  display: block;
+  width: 100%;
+  height: 160px;
   max-width: 100%;
-  margin: 0 auto;
+  max-height: none;
+  object-fit: cover;
+  object-position: center;
+  margin: 0;
 }
 
 #featured .product-style1 .product-title,
@@ -1693,7 +1697,7 @@ html[data-theme="dark"] .fd-pdp-qty:has(.fd-pdp-qty-input:focus) {
 #fd-shop-grid .product-style1 .product-img img,
 #fd-home-grid .product-style1 .product-img img,
 #fd-pdp-related .product-style1 .product-img img {
-    max-height: 120px;
+    height: 120px;
   }
 
 #featured .product-style1 .product-title,
