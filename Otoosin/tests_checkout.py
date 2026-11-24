@@ -59,11 +59,13 @@ def make_product(sku="CHK-001", category_slug="pork", **overrides):
 
 
 def success_data(payment, **overrides):
+    requested = int(Decimal(payment.amount) * 100)
     data = {
         "id": 9000 + payment.pk,
         "status": "success",
         "reference": payment.provider_reference,
-        "amount": int(Decimal(payment.amount) * 100),
+        "amount": requested,
+        "requested_amount": requested,
         "currency": "NGN",
         "gateway_response": "Successful",
         "paid_at": "2026-10-29T10:00:00.000Z",
@@ -687,6 +689,109 @@ class VerificationAndWebhookTests(CheckoutTestCase):
         self.assertIsNotNone(payment.verified_at)
         self.assertTrue(result["changed"])
 
+    def test_merchant_borne_fees_are_accepted(self):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        data = success_data(
+            payment,
+            amount=expected,
+            requested_amount=expected,
+            fees=2500,
+        )
+        result = verify_payment(payment, provider_data=data)
+        payment.refresh_from_db()
+        self.assertEqual(payment.status, Payment.Status.PAID)
+        self.assertIsNotNone(payment.verified_at)
+        self.assertTrue(result["changed"])
+
+    def test_customer_borne_fees_are_accepted(self):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        fees = 25000
+        data = success_data(
+            payment,
+            requested_amount=expected,
+            amount=expected + fees,
+            fees=fees,
+        )
+        result = verify_payment(payment, provider_data=data)
+        payment.refresh_from_db()
+        self.assertEqual(payment.status, Payment.Status.PAID)
+        self.assertIsNotNone(payment.verified_at)
+        self.assertTrue(result["changed"])
+
+    def test_requested_amount_below_order_total_is_rejected(self):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        result = verify_payment(
+            payment,
+            provider_data=success_data(
+                payment, requested_amount=expected - 1, amount=expected - 1
+            ),
+        )
+        payment.refresh_from_db()
+        self.assertNotEqual(payment.status, Payment.Status.PAID)
+        self.assertEqual(payment.failure_category, "verification_mismatch")
+        self.assertFalse(result.get("changed", False))
+
+    def test_requested_amount_above_order_total_is_rejected(self):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        result = verify_payment(
+            payment,
+            provider_data=success_data(
+                payment, requested_amount=expected + 1, amount=expected + 1
+            ),
+        )
+        payment.refresh_from_db()
+        self.assertNotEqual(payment.status, Payment.Status.PAID)
+        self.assertEqual(payment.failure_category, "verification_mismatch")
+        self.assertFalse(result.get("changed", False))
+
+    def test_missing_requested_amount_is_rejected_safely(self):
+        order, payment = self.make_order()
+        data = success_data(payment)
+        data.pop("requested_amount")
+        result = verify_payment(payment, provider_data=data)
+        payment.refresh_from_db()
+        self.assertNotEqual(payment.status, Payment.Status.PAID)
+        self.assertEqual(payment.failure_category, "verification_mismatch")
+        self.assertFalse(result.get("changed", False))
+
+    def test_invalid_requested_amount_is_rejected_safely(self):
+        for bad_value in ("not-a-number", None, -1, 975000.5):
+            order, payment = self.make_order()
+            result = verify_payment(
+                payment,
+                provider_data=success_data(
+                    payment, requested_amount=bad_value
+                ),
+            )
+            payment.refresh_from_db()
+            self.assertNotEqual(
+                payment.status, Payment.Status.PAID, bad_value
+            )
+            self.assertEqual(
+                payment.failure_category, "verification_mismatch", bad_value
+            )
+            self.assertFalse(result.get("changed", False), bad_value)
+
+    def test_gross_amount_inconsistent_with_fees_is_rejected(self):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        result = verify_payment(
+            payment,
+            provider_data=success_data(
+                payment,
+                requested_amount=expected,
+                amount=expected + 500,
+                fees=25000,
+            ),
+        )
+        payment.refresh_from_db()
+        self.assertNotEqual(payment.status, Payment.Status.PAID)
+        self.assertFalse(result.get("changed", False))
+
     @mock.patch("Otoosin.paystack.verify_transaction")
     def test_browser_return_parameters_alone_cannot_mark_paid(self, verify):
         order, payment = self.make_order()
@@ -781,6 +886,64 @@ class VerificationAndWebhookTests(CheckoutTestCase):
         payment.refresh_from_db()
         self.assertNotEqual(payment.status, Payment.Status.PAID)
         self.assertEqual(payment.failure_category, "verification_mismatch")
+
+    @mock.patch("Otoosin.paystack.verify_transaction")
+    def test_webhook_accepts_customer_borne_fees(self, verify):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        fees = 25000
+        data = success_data(
+            payment,
+            requested_amount=expected,
+            amount=expected + fees,
+            fees=fees,
+        )
+        verify.return_value = data
+        payload = {"event": "charge.success", "data": data}
+        response = self.webhook_post(payload)
+        self.assertEqual(response.status_code, 200)
+        payment.refresh_from_db()
+        self.assertEqual(payment.status, Payment.Status.PAID)
+        self.assertIsNotNone(payment.verified_at)
+
+    @mock.patch("Otoosin.paystack.verify_transaction")
+    def test_webhook_rejects_mismatched_requested_amount(self, verify):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        data = success_data(
+            payment, requested_amount=expected - 1, amount=expected - 1
+        )
+        verify.return_value = data
+        payload = {"event": "charge.success", "data": data}
+        response = self.webhook_post(payload)
+        self.assertEqual(response.status_code, 200)
+        payment.refresh_from_db()
+        self.assertNotEqual(payment.status, Payment.Status.PAID)
+        self.assertEqual(payment.failure_category, "verification_mismatch")
+
+    @mock.patch("Otoosin.paystack.verify_transaction")
+    def test_duplicate_customer_borne_webhook_is_idempotent(self, verify):
+        order, payment = self.make_order()
+        expected = int(payment.amount * 100)
+        fees = 25000
+        data = success_data(
+            payment,
+            requested_amount=expected,
+            amount=expected + fees,
+            fees=fees,
+        )
+        verify.return_value = data
+        payload = {"event": "charge.success", "data": data}
+        first = self.webhook_post(payload)
+        second = self.webhook_post(payload)
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+        payment.refresh_from_db()
+        self.assertEqual(payment.status, Payment.Status.PAID)
+        self.assertEqual(PaymentWebhookEvent.objects.count(), 1)
+        self.assertEqual(
+            AuditEvent.objects.filter(action="payment.verified_paid").count(), 1
+        )
 
     @mock.patch("Otoosin.paystack.verify_transaction")
     def test_webhook_failure_event_with_mismatched_amount_is_ignored(self, verify):

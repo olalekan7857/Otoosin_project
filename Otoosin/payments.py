@@ -37,19 +37,61 @@ def _safe_status(data):
     return str((data or {}).get("status") or "").strip().lower()
 
 
+def _kobo_int(value):
+    """Parse a non-negative integer amount (kobo) or return None when invalid."""
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return None
+    if parsed < 0:
+        return None
+    return parsed
+
+
+def _validate_amounts(payment, data):
+    """Validate the merchant-requested amount against the stored order.
+
+    Paystack reports ``requested_amount`` (what O’Toosin asked the provider to
+    charge) separately from ``amount`` (what the customer was actually charged)
+    and ``fees``. When the customer bears the transaction fee, the provider
+    charges ``amount == requested_amount + fees`` while the amount requested by
+    O’Toosin is still ``requested_amount``. The order must therefore be matched
+    against ``requested_amount``, never the gross charged ``amount``.
+
+    The gross ``amount`` is only used as a consistency check so underpayment or
+    arbitrary overpayment is still rejected, while both merchant-borne
+    (``amount == requested_amount``) and customer-borne
+    (``amount == requested_amount + fees``) arrangements are accepted.
+    """
+    requested = _kobo_int(data.get("requested_amount"))
+    if requested is None:
+        return False, "The provider requested amount is missing or invalid."
+    expected = _kobo(payment.amount)
+    if requested != expected or requested != _kobo(payment.order.total):
+        return False, "The verified amount does not match the order total."
+
+    charged = _kobo_int(data.get("amount"))
+    if charged is None:
+        return False, "The provider amount is invalid."
+    if charged < requested:
+        return False, "The provider charged less than the requested amount."
+    if charged > requested:
+        fees = _kobo_int(data.get("fees"))
+        if fees is None or charged != requested + fees:
+            return False, "The provider charged amount is inconsistent."
+    return True, ""
+
+
 def _validate_success(payment, data):
     if _safe_status(data) != "success":
         return False, "The provider has not confirmed this payment as successful."
     if str(data.get("reference") or "") != payment.provider_reference:
         return False, "The provider reference does not match this payment."
-    try:
-        provider_amount = int(data.get("amount"))
-    except (TypeError, ValueError):
-        return False, "The provider amount is invalid."
-    if provider_amount != _kobo(payment.amount):
-        return False, "The verified amount does not match the order total."
-    if provider_amount != _kobo(payment.order.total):
-        return False, "The verified amount does not match the order total."
+    amounts_valid, amounts_reason = _validate_amounts(payment, data)
+    if not amounts_valid:
+        return False, amounts_reason
     if str(data.get("currency") or "").upper() != "NGN":
         return False, "The verified currency is not supported."
     return True, ""
@@ -59,14 +101,9 @@ def _event_matches(payment, data):
     """Check reference, amount, currency and order association for an event."""
     if str(data.get("reference") or "") != payment.provider_reference:
         return False, "The provider reference does not match this payment."
-    try:
-        provider_amount = int(data.get("amount"))
-    except (TypeError, ValueError):
-        return False, "The provider amount is invalid."
-    if provider_amount != _kobo(payment.amount):
-        return False, "The provider amount does not match this payment."
-    if provider_amount != _kobo(payment.order.total):
-        return False, "The provider amount does not match the order total."
+    amounts_valid, amounts_reason = _validate_amounts(payment, data)
+    if not amounts_valid:
+        return False, amounts_reason
     if str(data.get("currency") or "").upper() != "NGN":
         return False, "The verified currency is not supported."
     return True, ""
