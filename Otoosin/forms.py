@@ -191,7 +191,7 @@ class CategoryForm(forms.ModelForm):
             "A category that already has subcategories must stay at main level."
         )
         self.fields["kind"].help_text = (
-            "The category type controls which product conditions staff can "
+            "The category type controls which product conditions your team can "
             "choose later. For example, Live Animals only accepts Live products."
         )
         self.fields["description"].help_text = (
@@ -251,8 +251,8 @@ class ProductForm(forms.ModelForm):
             "is_active": forms.Select(
                 attrs=SELECT_INPUT,
                 choices=[
-                    (True, "Active — show in the shop"),
-                    (False, "Draft — hide from the shop"),
+                    (True, "Active — visible to customers"),
+                    (False, "Deactivated — hidden from customers"),
                 ],
             ),
             "is_featured": forms.Select(
@@ -310,8 +310,8 @@ class ProductForm(forms.ModelForm):
             "Leave blank to use the product condition."
         )
         self.fields["is_active"].help_text = (
-            "Active products can be found in the shop. Draft products stay "
-            "hidden from customers."
+            "Deactivate a product to hide it from customers. You can make it "
+            "available again later."
         )
         self.fields["is_featured"].help_text = (
             "Featured products are prioritised on the homepage and in the "
@@ -474,7 +474,7 @@ class BaseVariantFormSet(BaseInlineFormSet):
             if sku:
                 if sku in seen_skus:
                     raise forms.ValidationError(
-                        "Each variant must have a unique SKU."
+                        "Each selling option must have a unique option code."
                     )
                 seen_skus.add(sku)
 
@@ -607,7 +607,7 @@ class ProductInventoryForm(forms.Form):
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={**TEXT_INPUT, "step": "0.001", "min": 0}),
-        label="Quantity available",
+        label="Stock quantity",
     )
     low_stock_threshold = forms.DecimalField(
         max_digits=10,
@@ -615,26 +615,27 @@ class ProductInventoryForm(forms.Form):
         required=False,
         min_value=0,
         widget=forms.NumberInput(attrs={**TEXT_INPUT, "step": "0.001", "min": 0}),
-        label="Low-stock threshold",
+        label="Low-stock level",
     )
 
     def __init__(self, *args, product=None, **kwargs):
         self.product = product
         super().__init__(*args, **kwargs)
+        self.fields["availability_status"].label = "Customer-facing availability"
         self.fields["availability_status"].help_text = (
-            "What customers see on the product card right now."
+            "Choose what customers see on the product card right now."
         )
         self.fields["track_stock"].help_text = (
-            "Turn this on to track exact quantities for the default selling "
+            "Turn this on to count exact quantities for the default selling "
             "option. Leave it off for made-to-order or untracked items."
         )
         self.fields["quantity_available"].help_text = (
-            "How many units are currently available. Only used when stock "
+            "How many units are currently in stock. Only used when stock "
             "tracking is on."
         )
         self.fields["low_stock_threshold"].help_text = (
-            "Optional warning level. When stock falls to or below this number, "
-            "the variant can be treated as low stock."
+            "Optional. When stock falls to or below this number, the default "
+            "selling option can be treated as low stock."
         )
         if product is not None:
             self.fields["availability_status"].initial = product.availability_status
@@ -838,7 +839,7 @@ class StaffInviteForm(forms.Form):
         label="Email address",
         help_text=(
             "The invitation and password-setup link are sent to this address. "
-            "Use the staff member's own work or personal email."
+            "Use the team member's own work or personal email."
         ),
     )
     first_name = forms.CharField(
@@ -846,22 +847,22 @@ class StaffInviteForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs=TEXT_INPUT),
         label="First name",
-        help_text="Optional. This appears on the staff account.",
+        help_text="Optional. This appears on the team member’s account.",
     )
     last_name = forms.CharField(
         max_length=150,
         required=False,
         widget=forms.TextInput(attrs=TEXT_INPUT),
         label="Last name",
-        help_text="Optional. This appears on the staff account.",
+        help_text="Optional. This appears on the team member’s account.",
     )
     role = forms.ChoiceField(
         choices=STAFF_ROLE_CHOICES,
         widget=forms.Select(attrs=SELECT_INPUT),
         label="Role",
         help_text=(
-            "Owner can manage everything including staff. Manager manages the "
-            "catalogue, settings and messages. Support only handles enquiries. "
+            "Owner can manage everything including team members. Manager manages the "
+            "catalogue, settings and enquiries. Support only handles enquiries. "
             "Fulfilment can view orders and update permitted order statuses "
             "without catalogue, settings or payment powers."
         ),
@@ -876,7 +877,7 @@ class StaffRoleForm(forms.Form):
         choices=STAFF_ROLE_CHOICES,
         widget=forms.Select(attrs=SELECT_INPUT),
         label="New role",
-        help_text="The new permissions take effect on the staff member's next request.",
+        help_text="The new permissions take effect on the team member’s next request.",
     )
 
 
@@ -906,30 +907,38 @@ class SiteConfigurationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["business_name"].label = "Business name"
         self.fields["business_name"].help_text = (
-            "The public business name used in page titles, metadata and contact copy."
+            "This is the name customers see on the website."
         )
+        self.fields["address"].label = "Business address"
         self.fields["address"].help_text = (
-            "Optional public business address. Add a full, customer-safe address."
+            "Customers can see this address on the Contact page."
         )
+        self.fields["contact_phone"].label = "Phone number"
         self.fields["contact_phone"].help_text = (
-            "Optional public phone number. Nigerian numbers are saved in +234 format."
+            "Customers can call this number from the Contact page."
         )
+        self.fields["whatsapp_number"].label = "WhatsApp number"
         self.fields["whatsapp_number"].help_text = (
-            "Optional WhatsApp number used for customer contact links. "
+            "Customers use this number to contact your business through WhatsApp. "
             "Enter a Nigerian number such as 0803 123 4567."
         )
+        self.fields["support_email"].label = "Support email"
         self.fields["support_email"].help_text = (
-            "Optional public support email shown where a contact email is needed."
+            "Customers can use this email address to contact your business."
         )
+        self.fields["description"].label = "Business description"
         self.fields["description"].help_text = (
-            "Optional short introduction used in page descriptions and storefront metadata."
+            "A short introduction shown in search results and on the website."
         )
+        self.fields["delivery_cutoff_time"].label = "Same-day delivery cut-off time"
         self.fields["delivery_cutoff_time"].help_text = (
-            "The daily cut-off time shown to customers. Use 24-hour time."
+            "Orders placed after this time will be scheduled for the next delivery day."
         )
+        self.fields["delivery_cutoff_note"].label = "Delivery timing note"
         self.fields["delivery_cutoff_note"].help_text = (
-            "Optional explanation shown beside the cut-off time, for example same-day rules."
+            "Optional short note about delivery timing. This is saved for your reference."
         )
 
     def clean_contact_phone(self):
@@ -1170,7 +1179,7 @@ class ContactMessageNoteForm(forms.Form):
         widget=forms.Textarea(attrs={**TEXT_INPUT, "rows": 5}),
         label="Internal notes",
         help_text=(
-            "Private staff notes only. Do not enter payment card details or "
+            "Private team notes only. Do not enter payment card details or "
             "information the customer has not agreed to share."
         ),
     )

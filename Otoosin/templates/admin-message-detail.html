@@ -51,12 +51,12 @@
 
 <section class="fd-dash-section" aria-labelledby="fd-msg-notes-title">
     <h2 id="fd-msg-notes-title">Internal notes</h2>
-    <p class="fd-dash-hint">Notes are only visible to permitted staff. Do not store passwords, API keys or unnecessary sensitive information.</p>
+    <p class="fd-dash-hint">Notes are only visible to permitted team members. Do not store passwords, API keys or unnecessary sensitive information.</p>
     <form method="post" class="fd-dash-form">
         {% csrf_token %}
         <input type="hidden" name="action" value="notes">
         <div class="fd-field">
-            <label for="{{ note_form.internal_notes.id_for_label }}">Staff notes</label>
+            <label for="{{ note_form.internal_notes.id_for_label }}">Team notes</label>
             {{ note_form.internal_notes }}
             <p class="fd-dash-hint">{{ note_form.internal_notes.help_text }}</p>
             {% for error in note_form.internal_notes.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}

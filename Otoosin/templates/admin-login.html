@@ -58,7 +58,7 @@
                                 <li><i class="fas fa-warehouse" aria-hidden="true"></i><span>Inventory and availability</span></li>
                                 <li><i class="fas fa-image" aria-hidden="true"></i><span>Product images and primary selection</span></li>
                             </ul>
-                            <p class="fd-admin-login-brand-foot"><i class="fas fa-user-check" aria-hidden="true"></i>Staff access is managed by the farm owner</p>
+                            <p class="fd-admin-login-brand-foot"><i class="fas fa-user-check" aria-hidden="true"></i>Team access is managed by the farm owner</p>
                         </aside>
 
                         <div class="fd-admin-login-form-panel">
@@ -68,14 +68,14 @@
 
                             <div class="fd-admin-card fd-admin-login-card">
                                 <div class="fd-admin-card-head">
-                                    <p class="fd-admin-login-eyebrow">Staff access</p>
+                                    <p class="fd-admin-login-eyebrow">Team access</p>
                                     <h1 id="fd-admin-login-title">Admin sign-in</h1>
-                                    <p>Use your staff credentials to manage the O’TOOSIN Farms storefront.</p>
+                                    <p>Use your team credentials to manage the O’TOOSIN Farms storefront.</p>
                                 </div>
 
                                 {% if staff_activation_notice %}
                                 <div class="fd-admin-notice is-success" role="status">
-                                    <p>Your staff account is now active. Sign in to continue to the O’TOOSIN Farms admin dashboard.</p>
+                                    <p>Your team account is now active. Sign in to continue to the O’TOOSIN Farms admin dashboard.</p>
                                 </div>
                                 {% endif %}
 
@@ -115,8 +115,8 @@
 
                                 <div class="fd-admin-forgot-panel" id="fd-admin-forgot-panel" hidden>
                                     <p><strong>Password help</strong></p>
-                                    <p>Staff passwords are managed by the farm owner. You can also request a secure reset link by email.</p>
-                                    <p><a href="{% url 'Otoosin:staff_password_reset' %}">Reset a staff password</a></p>
+                                    <p>Team passwords are managed by the farm owner. You can also request a secure reset link by email.</p>
+                                    <p><a href="{% url 'Otoosin:staff_password_reset' %}">Reset a team password</a></p>
                                 </div>
 
                                 <a class="fd-admin-back-link fd-admin-login-back" href="{% url 'Otoosin:index' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to storefront</a>

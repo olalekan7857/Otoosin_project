@@ -63,28 +63,46 @@
       }
 
       remove.addEventListener("click", function () {
-        if (isExisting && deleteInput) {
-          deleteInput.checked = true;
-        } else {
-          Array.prototype.forEach.call(
-            card.querySelectorAll("input, select, textarea"),
-            function (field) {
-              if (field.type === "checkbox" || field.type === "radio") {
-                field.checked = false;
-              } else if (field.type !== "hidden") {
-                field.value = "";
+        function performRemove() {
+          if (isExisting && deleteInput) {
+            deleteInput.checked = true;
+          } else {
+            Array.prototype.forEach.call(
+              card.querySelectorAll("input, select, textarea"),
+              function (field) {
+                if (field.type === "checkbox" || field.type === "radio") {
+                  field.checked = false;
+                } else if (field.type !== "hidden") {
+                  field.value = "";
+                }
               }
+            );
+            if (deleteInput) {
+              deleteInput.checked = false;
             }
-          );
-          if (deleteInput) {
-            deleteInput.checked = false;
           }
+          if (defaultInput) {
+            defaultInput.checked = false;
+          }
+          card.hidden = true;
+          renumber();
         }
-        if (defaultInput) {
-          defaultInput.checked = false;
+
+        if (isExisting && deleteInput && window.FdAdminConfirm) {
+          var labelField = card.querySelector('input[name$="-label"]');
+          var label = labelField && labelField.value
+            ? labelField.value.trim()
+            : "";
+          window.FdAdminConfirm.open({
+            title: "Remove selling option?",
+            message: "Remove \u201c" + (label || "this selling option") +
+              "\u201d? It will be permanently deleted when you save the product. This cannot be undone.",
+            confirmLabel: "Remove option",
+            onConfirm: performRemove
+          });
+        } else {
+          performRemove();
         }
-        card.hidden = true;
-        renumber();
       });
     }
 

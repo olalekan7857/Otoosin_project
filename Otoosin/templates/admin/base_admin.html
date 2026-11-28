@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/harvest-castle.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.6">
-    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.7">
+    <link rel="stylesheet" href="{% static 'assets/css/fresh-direct.css' %}?v=8.7">
+    <link rel="stylesheet" href="{% static 'assets/css/fd-admin.css' %}?v=8.9">
     {% block extra_css %}{% endblock %}
     <link rel="stylesheet" href="{% static 'assets/css/fd-theme.css' %}?v=8.5">
     <link rel="stylesheet" href="{% static 'assets/css/otoosin-motion.css' %}?v=1.0">
@@ -61,7 +61,7 @@
                     <li><a href="{% url 'Otoosin:staff_messages' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_messages' or request.resolver_match.url_name == 'staff_message_detail' %} aria-current="page"{% endif %}><i class="fas fa-envelope" aria-hidden="true"></i>Enquiries</a></li>
                     {% endif %}
                     {% if perms.Otoosin.view_deliverylocation %}
-                    <li><a href="{% url 'Otoosin:staff_delivery' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_delivery' %} aria-current="page"{% endif %}><i class="fas fa-truck" aria-hidden="true"></i>Delivery</a></li>
+                    <li><a href="{% url 'Otoosin:staff_delivery' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_delivery' %} aria-current="page"{% endif %}><i class="fas fa-truck" aria-hidden="true"></i>Delivery &amp; Pickup</a></li>
                     {% endif %}
                     {% if perms.Otoosin.change_siteconfiguration %}
                     <li><a href="{% url 'Otoosin:staff_settings' %}" class="fd-admin-nav-link"{% if request.resolver_match.url_name == 'staff_settings' %} aria-current="page"{% endif %}><i class="fas fa-cog" aria-hidden="true"></i>Settings</a></li>
@@ -114,10 +114,12 @@
         </div>
     </div>
 
-    <script src="{% static 'assets/js/fd-admin.js' %}?v=6.9"></script>
+    {% include "admin/partials/confirm-delete-modal.html" %}
+
+    <script src="{% static 'assets/js/fd-admin.js' %}?v=7.0"></script>
     <script src="{% static 'assets/js/fd-theme.js' %}"></script>
     <script src="{% static 'assets/js/otoosin-motion.js' %}?v=1.0" defer></script>
-    <script src="{% static 'assets/js/otoosin-admin-images.js' %}?v=1.2"></script>
+    <script src="{% static 'assets/js/otoosin-admin-images.js' %}?v=1.3"></script>
     {% block extra_js %}{% endblock %}
 </body>
 

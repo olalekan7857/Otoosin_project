@@ -1,8 +1,8 @@
 {% extends "admin-auth-base.html" %}
 
-{% block title %}{% if invalid %}Invitation not valid{% else %}Activate staff account{% endif %} | O’TOOSIN Farms{% endblock %}
-{% block auth_eyebrow %}Staff invitation{% endblock %}
-{% block auth_title %}{% if invalid %}This invitation is not valid{% else %}Activate your staff account{% endif %}{% endblock %}
+{% block title %}{% if invalid %}Invitation not valid{% else %}Activate team account{% endif %} | O’TOOSIN Farms{% endblock %}
+{% block auth_eyebrow %}Team invitation{% endblock %}
+{% block auth_title %}{% if invalid %}This invitation is not valid{% else %}Activate your team account{% endif %}{% endblock %}
 {% block auth_intro %}{% if not invalid %}<p>Set up your sign-in details below. Your account becomes active as soon as you finish.</p>{% endif %}{% endblock %}
 
 {% block auth_content %}
@@ -10,7 +10,7 @@
 <div class="fd-admin-notice is-error" role="alert">
     <p>This invitation link is expired, already used or revoked. Ask an Owner to resend a new invitation.</p>
 </div>
-<a class="fd-admin-back-link" href="{% url 'Otoosin:staff_login' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to staff sign-in</a>
+<a class="fd-admin-back-link" href="{% url 'Otoosin:staff_login' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to team sign-in</a>
 {% else %}
 <div class="fd-auth-context" aria-label="Invitation details">
     <div>
@@ -18,7 +18,7 @@
         <strong>{{ invitation.email }}</strong>
     </div>
     <div>
-        <span>Staff role</span>
+        <span>Team role</span>
         <strong>{{ invitation.get_role_display }}</strong>
     </div>
 </div>
@@ -54,6 +54,6 @@
     <button type="submit" class="vs-btn"><i class="fas fa-user-check" aria-hidden="true"></i>Activate account</button>
 </form>
 
-<a class="fd-admin-back-link" href="{% url 'Otoosin:staff_login' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to staff sign-in</a>
+<a class="fd-admin-back-link" href="{% url 'Otoosin:staff_login' %}"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back to team sign-in</a>
 {% endif %}
 {% endblock %}

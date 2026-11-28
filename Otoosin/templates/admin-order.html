@@ -21,7 +21,7 @@
     <div class="fd-order-pills">
         {% if order.status == 'completed' %}<span class="fd-dash-pill is-ok">Completed</span>{% elif order.status == 'cancelled' %}<span class="fd-dash-pill is-bad">Cancelled</span>{% else %}<span class="fd-dash-pill is-warn">Pending</span>{% endif %}
         {% if latest_payment %}
-            {% if latest_payment.status == 'paid' and latest_payment.verified_at %}<span class="fd-dash-pill is-ok">Paid / verified</span>
+            {% if latest_payment.status == 'paid' and latest_payment.verified_at %}<span class="fd-dash-pill is-ok">Payment confirmed</span>
             {% elif latest_payment.status == 'pending' or latest_payment.status == 'initiated' %}<span class="fd-dash-pill is-warn">Payment pending</span>
             {% elif latest_payment.status == 'failed' %}<span class="fd-dash-pill is-bad">Payment failed</span>
             {% else %}<span class="fd-dash-pill is-muted">{{ latest_payment.get_status_display }}</span>{% endif %}
@@ -62,12 +62,12 @@
     <div class="fd-dash-table-scroll fd-order-items-scroll" role="region" aria-label="Ordered items table" tabindex="0">
         <table class="fd-dash-table fd-order-items-table">
             <caption class="fd-dash-caption">Every item as ordered, at the price and unit recorded at order time.</caption>
-            <thead><tr><th scope="col">Product</th><th scope="col">Variant / SKU</th><th scope="col">Qty</th><th scope="col">Unit price</th><th scope="col">Line total</th></tr></thead>
+            <thead><tr><th scope="col">Product</th><th scope="col">Selling option / SKU</th><th scope="col">Qty</th><th scope="col">Unit price</th><th scope="col">Line total</th></tr></thead>
             <tbody>
                 {% for item in order.items.all %}
                 <tr>
                     <td data-label="Product"><strong>{{ item.product_name }}</strong><span class="fd-orders-sub">{{ item.category_name }}{% if item.condition %} &middot; {{ item.condition }}{% endif %}</span></td>
-                    <td data-label="Variant / SKU">{{ item.variant_label }}{% if item.sku %}<span class="fd-orders-sub">{{ item.sku }}</span>{% endif %}</td>
+                    <td data-label="Selling option / SKU">{{ item.variant_label }}{% if item.sku %}<span class="fd-orders-sub">{{ item.sku }}</span>{% endif %}</td>
                     <td data-label="Quantity">{{ item.quantity_label|default:item.quantity }}</td>
                     <td class="is-amount" data-label="Unit price">&#8358;{{ item.unit_price|floatformat:2|intcomma }}</td>
                     <td class="is-amount" data-label="Line total">&#8358;{{ item.line_total|floatformat:2|intcomma }}</td>
@@ -90,21 +90,21 @@
         <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every payment column.</p>
         <div class="fd-dash-table-scroll">
             <table class="fd-dash-table fd-stack-table fd-order-payments-table">
-                <caption class="fd-dash-caption">Payment attempts for this order. Paid is only shown after server verification.</caption>
-                <thead><tr><th scope="col">Reference</th><th scope="col">Amount</th><th scope="col">Status</th><th scope="col">Created</th><th scope="col">Verified</th></tr></thead>
+                <caption class="fd-dash-caption">Payment attempts for this order. Payment is shown as confirmed only after it has been securely verified.</caption>
+                <thead><tr><th scope="col">Reference</th><th scope="col">Amount</th><th scope="col">Status</th><th scope="col">Created</th><th scope="col">Confirmed at</th></tr></thead>
                 <tbody>
                     {% for payment in payment_attempts %}
                     <tr>
                         <td data-label="Reference">{{ payment.provider_reference }}{% if payment.failure_category %}<span class="fd-orders-sub">{{ payment.failure_category }}{% if payment.failure_message %}: {{ payment.failure_message }}{% endif %}</span>{% endif %}</td>
                         <td class="is-amount" data-label="Amount">&#8358;{{ payment.amount|floatformat:2|intcomma }}</td>
                         <td data-label="Status">
-                            {% if payment.status == 'paid' and payment.verified_at %}<span class="fd-dash-pill is-ok">Paid / verified</span>
+                            {% if payment.status == 'paid' and payment.verified_at %}<span class="fd-dash-pill is-ok">Payment confirmed</span>
                             {% elif payment.status == 'pending' or payment.status == 'initiated' %}<span class="fd-dash-pill is-warn">{{ payment.get_status_display }}</span>
                             {% elif payment.status == 'failed' %}<span class="fd-dash-pill is-bad">Failed</span>
                             {% else %}<span class="fd-dash-pill is-muted">{{ payment.get_status_display }}</span>{% endif %}
                         </td>
                         <td data-label="Created">{{ payment.created_at|date:"j M Y H:i" }}</td>
-                        <td data-label="Verified">{% if payment.status == 'paid' and payment.verified_at %}{{ payment.verified_at|date:"j M Y H:i" }}{% else %}—{% endif %}</td>
+                        <td data-label="Confirmed at">{% if payment.status == 'paid' and payment.verified_at %}{{ payment.verified_at|date:"j M Y H:i" }}{% else %}—{% endif %}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -113,7 +113,7 @@
         {% else %}
         <p class="fd-dash-hint">No payment attempt has been recorded for this order.</p>
         {% endif %}
-        <p class="fd-dash-hint">Staff cannot mark a payment as paid, change its amount or edit historical order totals. Possible duplicate charges are recorded for investigation.</p>
+        <p class="fd-dash-hint">Team members cannot mark a payment as confirmed, change its amount or edit historical order totals. Possible duplicate charges are recorded for investigation.</p>
     </section>
 
     <section class="fd-dash-section" aria-labelledby="fd-order-status-title">

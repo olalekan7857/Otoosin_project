@@ -1,0 +1,12 @@
+{# Reusable confirmation dialog for destructive admin actions. #}
+<div class="fd-modal" id="fd-delete-modal" role="dialog" aria-modal="true" aria-labelledby="fd-delete-modal-title" aria-describedby="fd-delete-modal-desc" hidden>
+    <button type="button" class="fd-modal-scrim" data-fd-delete-cancel aria-label="Cancel and close"></button>
+    <div class="fd-modal-card" role="document">
+        <h2 id="fd-delete-modal-title">Delete this item?</h2>
+        <p id="fd-delete-modal-desc">This cannot be undone.</p>
+        <div class="fd-modal-actions">
+            <button type="button" class="fd-ghost-btn" data-fd-delete-cancel>Cancel</button>
+            <button type="button" class="vs-btn is-danger-btn" data-fd-delete-confirm>Delete</button>
+        </div>
+    </div>
+</div>

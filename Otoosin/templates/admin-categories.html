@@ -142,12 +142,17 @@
                         <button type="submit" class="fd-prod-btn"><i class="fas fa-{% if category.is_active %}toggle-on{% else %}toggle-off{% endif %}" aria-hidden="true"></i>{% if category.is_active %}Deactivate{% else %}Activate{% endif %}</button>
                     </form>
                     {% if not category.children.exists and not category.products.exists %}
-                    <form method="post" onsubmit="return confirm('Delete {{ category.name|escapejs }}?');">
+                    <form method="post"
+                          data-fd-delete
+                          data-delete-title="Delete category?"
+                          data-delete-message="Delete '{{ category.name }}'? This cannot be undone.">
                         {% csrf_token %}
                         <input type="hidden" name="action" value="delete">
                         <input type="hidden" name="category_id" value="{{ category.pk }}">
                         <button type="submit" class="fd-prod-btn is-danger"><i class="far fa-trash-alt" aria-hidden="true"></i>Delete</button>
                     </form>
+                    {% else %}
+                    <p class="fd-cat-delete-note">You can delete this category after moving or removing its products and subcategories.</p>
                     {% endif %}
                 </div>
 
@@ -178,12 +183,17 @@
                                     <button type="submit" class="fd-prod-btn"><i class="fas fa-{% if child.is_active %}toggle-on{% else %}toggle-off{% endif %}" aria-hidden="true"></i>{% if child.is_active %}Deactivate{% else %}Activate{% endif %}</button>
                                 </form>
                                 {% if not child.products.exists %}
-                                <form method="post" onsubmit="return confirm('Delete {{ child.name|escapejs }}?');">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="category_id" value="{{ child.pk }}">
-                                    <button type="submit" class="fd-prod-btn is-danger"><i class="far fa-trash-alt" aria-hidden="true"></i>Delete</button>
-                                </form>
+                                    <form method="post"
+                                          data-fd-delete
+                                          data-delete-title="Delete subcategory?"
+                                          data-delete-message="Delete '{{ child.name }}'? This cannot be undone.">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="category_id" value="{{ child.pk }}">
+                                        <button type="submit" class="fd-prod-btn is-danger"><i class="far fa-trash-alt" aria-hidden="true"></i>Delete</button>
+                                    </form>
+                                {% else %}
+                                    <p class="fd-cat-delete-note">You can delete this subcategory after moving or removing its products.</p>
                                 {% endif %}
                             </div>
                         </li>

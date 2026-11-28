@@ -80,12 +80,13 @@
 
             <div class="fd-legal-format-help">
                 <p class="fd-legal-format-title"><i class="fas fa-circle-info" aria-hidden="true"></i>How to format section text</p>
+                <p class="fd-dash-hint">Plain text is fine. Use these simple rules when you need extra formatting.</p>
                 <ul>
                     <li>Leave a blank line between paragraphs.</li>
-                    <li>Start a line with <code>- </code> to create a bullet list.</li>
+                    <li>Start a line with <code>- </code> to make a bullet.</li>
                     <li>Put <code>**two asterisks**</code> around words to make them bold.</li>
                     <li>Write a link as <code>[link text](/contact/)</code>.</li>
-                    <li>Tick <strong>Show as a highlighted contact panel</strong> on a section to add a highlighted panel around it.</li>
+                    <li>Tick <strong>Show as a highlighted contact panel</strong> to place the section inside a highlighted panel.</li>
                 </ul>
             </div>
 
@@ -228,8 +229,34 @@
                 event.preventDefault();
                 var section = remove.closest('[data-section]');
                 var checkbox = section.querySelector('input[name$="-DELETE"]');
-                if (checkbox) { checkbox.checked = !checkbox.checked; }
-                sync();
+                if (!checkbox) { return; }
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                    sync();
+                    return;
+                }
+                var idField = section.querySelector('input[name$="-id"]');
+                var isSaved = !!(idField && idField.value);
+                var headingField = section.querySelector('input[name$="-title"]');
+                var heading = headingField && headingField.value
+                    ? headingField.value.trim()
+                    : "";
+                function markRemoved() {
+                    checkbox.checked = true;
+                    sync();
+                }
+                if (isSaved && window.FdAdminConfirm) {
+                    window.FdAdminConfirm.open({
+                        title: "Remove this section?",
+                        message: "Remove \u201c" + (heading || "this section") +
+                            "\u201d? It will be permanently deleted when you save this policy. This cannot be undone.",
+                        confirmLabel: "Remove section",
+                        onConfirm: markRemoved
+                    });
+                } else {
+                    markRemoved();
+                }
+                return;
             }
         });
 

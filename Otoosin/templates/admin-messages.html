@@ -8,7 +8,7 @@
 
 {% block admin_content %}
 <div class="fd-dash-head">
-    <p class="fd-dash-lead">Database-backed customer enquiries, newest first. Open an enquiry to review details, update its status and keep internal notes.</p>
+    <p class="fd-dash-lead">Customer enquiries from the contact form, newest first. Open an enquiry to review details, update its status and keep internal notes.</p>
 </div>
 
 <section class="fd-dash-section" aria-labelledby="fd-msg-summary-title">
@@ -16,7 +16,7 @@
     <ul class="fd-dash-grid">
         <li class="fd-dash-card"><span class="fd-dash-card-label">Total</span><span class="fd-dash-card-value">{{ counts.total }}</span><span class="fd-dash-card-context">All stored enquiries.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">New</span><span class="fd-dash-card-value">{{ counts.new }}</span><span class="fd-dash-card-context">Not yet handled.</span></li>
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Read</span><span class="fd-dash-card-value">{{ counts.read }}</span><span class="fd-dash-card-context">Reviewed by staff.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Read</span><span class="fd-dash-card-value">{{ counts.read }}</span><span class="fd-dash-card-context">Reviewed by the team.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Replied</span><span class="fd-dash-card-value">{{ counts.replied }}</span><span class="fd-dash-card-context">Answered manually.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Closed</span><span class="fd-dash-card-value">{{ counts.closed }}</span><span class="fd-dash-card-context">No further action.</span></li>
     </ul>
@@ -26,7 +26,7 @@
     <div class="fd-msg-page-head">
         <div>
             <h2 id="fd-msg-list-title">All enquiries</h2>
-            <p class="fd-dash-hint">Search and filter the inbox, then select an enquiry to read it, change its status or add a private staff note.</p>
+            <p class="fd-dash-hint">Search and filter the inbox, then select an enquiry to read it, change its status or add a private team note.</p>
         </div>
     </div>
 

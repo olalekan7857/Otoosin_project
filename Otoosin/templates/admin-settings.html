@@ -7,7 +7,7 @@
 {% block topbar_context %}Farm admin &middot; business configuration{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'assets/css/fd-admin-settings.css' %}?v=1.4">
+<link rel="stylesheet" href="{% static 'assets/css/fd-admin-settings.css' %}?v=1.5">
 {% endblock %}
 
 {% block admin_content %}
@@ -22,8 +22,8 @@
     <div class="fd-settings-section-head">
         <span class="fd-settings-index" aria-hidden="true">01</span>
         <div class="fd-settings-section-copy">
-            <h2 id="fd-settings-profile-title">Business profile and contact</h2>
-            <p class="fd-settings-section-lead">These values are the canonical storefront configuration. Required fields are marked; optional fields can be left blank.</p>
+            <h2 id="fd-settings-profile-title">Business details</h2>
+            <p class="fd-settings-section-lead">These details appear on the website. Required fields are marked; optional fields can be left blank.</p>
         </div>
     </div>
 
@@ -33,20 +33,75 @@
         {% if business_form.non_field_errors %}
         <div class="fd-admin-notice is-error" role="alert">{% for error in business_form.non_field_errors %}{{ error }}{% endfor %}</div>
         {% endif %}
-        <div class="fd-settings-grid">
-            {% for field in business_form %}
-            <div class="fd-field{% if field.name == 'description' %} fd-field-full{% endif %}">
-                <label for="{{ field.id_for_label }}">
-                    {{ field.label }}
-                    {% if field.field.required %}<span class="fd-required" aria-hidden="true">*</span>{% else %}<span class="fd-optional">(optional)</span>{% endif %}
-                </label>
-                {{ field }}
-                {% if field.help_text %}<p class="fd-dash-hint">{{ field.help_text }}</p>{% endif %}
-                {% for error in field.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+
+        <fieldset class="fd-settings-group">
+            <legend class="fd-settings-group-title">Business Information</legend>
+            <div class="fd-settings-grid">
+                <div class="fd-field">
+                    <label for="{{ business_form.business_name.id_for_label }}">{{ business_form.business_name.label }} <span class="fd-required" aria-hidden="true">*</span></label>
+                    {{ business_form.business_name }}
+                    <p class="fd-dash-hint">{{ business_form.business_name.help_text }}</p>
+                    {% for error in business_form.business_name.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ business_form.address.id_for_label }}">{{ business_form.address.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.address }}
+                    <p class="fd-dash-hint">{{ business_form.address.help_text }}</p>
+                    {% for error in business_form.address.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field fd-field-full">
+                    <label for="{{ business_form.description.id_for_label }}">{{ business_form.description.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.description }}
+                    <p class="fd-dash-hint">{{ business_form.description.help_text }}</p>
+                    {% for error in business_form.description.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
             </div>
-            {% endfor %}
-        </div>
-        <div class="fd-settings-actions">
+        </fieldset>
+
+        <fieldset class="fd-settings-group">
+            <legend class="fd-settings-group-title">Contact Information</legend>
+            <div class="fd-settings-grid">
+                <div class="fd-field">
+                    <label for="{{ business_form.contact_phone.id_for_label }}">{{ business_form.contact_phone.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.contact_phone }}
+                    <p class="fd-dash-hint">{{ business_form.contact_phone.help_text }}</p>
+                    {% for error in business_form.contact_phone.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ business_form.whatsapp_number.id_for_label }}">{{ business_form.whatsapp_number.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.whatsapp_number }}
+                    <p class="fd-dash-hint">{{ business_form.whatsapp_number.help_text }}</p>
+                    {% for error in business_form.whatsapp_number.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ business_form.support_email.id_for_label }}">{{ business_form.support_email.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.support_email }}
+                    <p class="fd-dash-hint">{{ business_form.support_email.help_text }}</p>
+                    {% for error in business_form.support_email.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="fd-settings-group">
+            <legend class="fd-settings-group-title">Delivery Timing</legend>
+            <div class="fd-settings-grid">
+                <div class="fd-field">
+                    <label for="{{ business_form.delivery_cutoff_time.id_for_label }}">{{ business_form.delivery_cutoff_time.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.delivery_cutoff_time }}
+                    <p class="fd-dash-hint">{{ business_form.delivery_cutoff_time.help_text }}</p>
+                    {% for error in business_form.delivery_cutoff_time.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+                <div class="fd-field">
+                    <label for="{{ business_form.delivery_cutoff_note.id_for_label }}">{{ business_form.delivery_cutoff_note.label }} <span class="fd-optional">(optional)</span></label>
+                    {{ business_form.delivery_cutoff_note }}
+                    <p class="fd-dash-hint">{{ business_form.delivery_cutoff_note.help_text }}</p>
+                    {% for error in business_form.delivery_cutoff_note.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="fd-settings-savebar">
+            <span class="fd-settings-savebar-text">Changes apply to the public website as soon as you save.</span>
             <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save business settings</button>
         </div>
     </form>
@@ -56,22 +111,22 @@
     <div class="fd-settings-section-head">
         <span class="fd-settings-index" aria-hidden="true">02</span>
         <div class="fd-settings-section-copy">
-            <h2 id="fd-settings-notify-title">Order Email Notifications</h2>
-            <p class="fd-settings-section-lead">Manage the email addresses that receive notifications whenever a customer's order payment is successfully verified.</p>
+            <h2 id="fd-settings-notify-title">Order Notification Emails</h2>
+            <p class="fd-settings-section-lead">Choose which email addresses receive a notification when a customer's payment is confirmed.</p>
         </div>
     </div>
 
     {% if missing_email_config %}
     <div class="fd-admin-notice is-error" role="alert">
-        <strong>Resend is not fully configured.</strong>
-        Missing: {{ missing_email_config|join:", " }}. Paid-order emails will be recorded as failed until these environment values are set.
+        <strong>Email notifications are not fully set up yet.</strong>
+        Order notification emails cannot be sent until the email service is connected. Ask your technical support to finish setting up the email service.
     </div>
     {% endif %}
 
     {% if not active_recipient_count %}
     <div class="fd-admin-notice is-dev" role="status">
         <strong>No active order notification email addresses are configured.</strong>
-        New paid orders will not generate admin email notifications until at least one recipient is activated.
+        New confirmed orders will not send notification emails until at least one address is activated.
     </div>
     {% endif %}
 
@@ -85,17 +140,17 @@
             <div class="fd-field">
                 <label for="{{ recipient_form.email.id_for_label }}">Email address <span class="fd-required" aria-hidden="true">*</span></label>
                 {{ recipient_form.email }}
-                <p class="fd-dash-hint">External addresses are allowed. The recipient does not get an admin account or dashboard access.</p>
+                <p class="fd-dash-hint">These addresses receive order notifications. Adding an address here does not give that person access to the admin panel.</p>
                 {% for error in recipient_form.email.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
             </div>
             <div class="fd-notify-add-action">
-                <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-plus" aria-hidden="true"></i>Add recipient</button>
+                <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-plus" aria-hidden="true"></i>Add email address</button>
             </div>
         </div>
     </form>
 
     <div class="fd-notify-list-head">
-        <h3>Configured recipients</h3>
+        <h3>Notification email addresses</h3>
         <span class="fd-dash-pill {% if active_recipient_count %}is-ok{% else %}is-muted{% endif %}">{{ active_recipient_count }} active</span>
     </div>
 
@@ -117,7 +172,11 @@
                         {% if recipient.is_active %}<i class="fas fa-pause" aria-hidden="true"></i>Disable{% else %}<i class="fas fa-play" aria-hidden="true"></i>Enable{% endif %}
                     </button>
                 </form>
-                <form method="post" onsubmit="return confirm('Remove {{ recipient.email|escapejs }} from paid-order notifications? This cannot be undone.');">
+                <form method="post"
+                      data-fd-delete
+                      data-delete-title="Remove notification email?"
+                      data-delete-confirm-label="Remove"
+                      data-delete-message="Remove '{{ recipient.email }}' from order notifications? This cannot be undone.">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="recipient_remove">
                     <input type="hidden" name="recipient_id" value="{{ recipient.pk }}">

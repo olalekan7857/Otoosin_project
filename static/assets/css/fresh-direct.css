@@ -3974,6 +3974,21 @@ html[data-theme="dark"] a.fd-page-link.is-current:hover {
   color: var(--white-color);
 }
 
+/* Keep the confirmation card readable on the dark admin theme. */
+html[data-theme="dark"] .fd-modal-card {
+  background: var(--fd-surface);
+  color: var(--fd-text);
+  border: 1px solid var(--fd-hairline);
+}
+
+html[data-theme="dark"] .fd-modal-card h2 {
+  color: var(--fd-text);
+}
+
+html[data-theme="dark"] .fd-modal-card p {
+  color: var(--fd-text-2);
+}
+
 /* ==========================================================================
    LOGO VISIBILITY PASS
    Keep the header height unchanged by reclaiming the vertical padding around

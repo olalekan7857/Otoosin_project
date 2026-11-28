@@ -876,6 +876,60 @@
   color: var(--error-color);
 }
 
+.fd-settings-group {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--fd-hairline);
+  padding-top: 18px;
+}
+
+.fd-settings-group:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.fd-settings-group-title {
+  padding: 0;
+  margin: 0 0 14px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fd-text);
+  letter-spacing: 0.01em;
+}
+
+.fd-settings-savebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: var(--fd-surface);
+  border: 1px solid var(--fd-hairline);
+  border-radius: 12px;
+}
+
+.fd-settings-savebar-text {
+  flex: 1 1 240px;
+  font-size: 13px;
+  color: var(--fd-text-2);
+}
+
+.fd-settings-savebar .vs-btn {
+  min-width: 190px;
+}
+
+@media (min-width: 768px) {
+  .fd-settings-savebar {
+    position: sticky;
+    bottom: 12px;
+    z-index: 3;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.12);
+  }
+}
+
 .fd-settings-actions {
   display: flex;
   align-items: center;

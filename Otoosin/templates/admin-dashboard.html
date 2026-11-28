@@ -30,9 +30,9 @@
         <a href="{% url 'Otoosin:staff_orders' %}" class="fd-ghost-btn fd-dash-btn">Open orders</a>
     </div>
     <ul class="fd-dash-grid">
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Total orders</span><span class="fd-dash-card-value">{{ order_summary.total }}</span><span class="fd-dash-card-context">All database orders.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Total orders</span><span class="fd-dash-card-value">{{ order_summary.total }}</span><span class="fd-dash-card-context">All orders.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Pending orders</span><span class="fd-dash-card-value">{{ order_summary.pending }}</span><span class="fd-dash-card-context">Awaiting fulfilment or payment.</span></li>
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Verified paid</span><span class="fd-dash-card-value">{{ order_summary.paid }}</span><span class="fd-dash-card-context">Orders with a server-verified payment.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Payment confirmed</span><span class="fd-dash-card-value">{{ order_summary.paid }}</span><span class="fd-dash-card-context">Orders with a confirmed payment.</span></li>
     </ul>
 </section>
 {% endif %}
@@ -41,11 +41,11 @@
 <section class="fd-dash-section" aria-labelledby="fd-dash-messages-title">
     <div class="fd-dash-section-head">
         <h2 id="fd-dash-messages-title">Customer enquiries</h2>
-        <a href="{% url 'Otoosin:staff_messages' %}" class="fd-ghost-btn fd-dash-btn">Open inbox</a>
+        <a href="{% url 'Otoosin:staff_messages' %}" class="fd-ghost-btn fd-dash-btn">Open enquiries</a>
     </div>
     <ul class="fd-dash-grid">
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Total enquiries</span><span class="fd-dash-card-value">{{ contact_summary.total }}</span><span class="fd-dash-card-context">Stored contact messages.</span></li>
-        <li class="fd-dash-card"><span class="fd-dash-card-label">New / unread</span><span class="fd-dash-card-value">{{ contact_summary.new }}</span><span class="fd-dash-card-context">Waiting for staff attention.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Total enquiries</span><span class="fd-dash-card-value">{{ contact_summary.total }}</span><span class="fd-dash-card-context">Saved customer enquiries.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">New / unread</span><span class="fd-dash-card-value">{{ contact_summary.new }}</span><span class="fd-dash-card-context">Waiting for the team’s attention.</span></li>
     </ul>
     {% if recent_messages %}
     <p class="fd-table-scroll-note"><i class="fas fa-arrows-left-right" aria-hidden="true"></i>Scroll horizontally to see every enquiry column.</p>
@@ -89,7 +89,7 @@
         {% if perms.Otoosin.manage_staff %}<a href="{% url 'Otoosin:staff_team' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-users" aria-hidden="true"></i>Team</a>{% endif %}
         {% if perms.Otoosin.view_order %}<a href="{% url 'Otoosin:staff_orders' %}" class="fd-ghost-btn fd-dash-btn"><i class="fas fa-receipt" aria-hidden="true"></i>Orders</a>{% endif %}
     </div>
-    <p class="fd-dash-hint">Order and payment counts come from the database. Payment is shown as paid only after server-side Paystack verification.</p>
+    <p class="fd-dash-hint">Order and payment counts are updated automatically. Payment is shown as confirmed only after it has been securely verified.</p>
 </section>
 
 <section class="fd-dash-section" aria-labelledby="fd-dash-products-title">

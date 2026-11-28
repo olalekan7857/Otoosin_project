@@ -14,9 +14,9 @@
 <section class="fd-dash-section" aria-labelledby="fd-orders-overview-title">
     <h2 id="fd-orders-overview-title">Overview</h2>
     <ul class="fd-dash-grid">
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Total orders</span><span class="fd-dash-card-value">{{ summary.total }}</span><span class="fd-dash-card-context">All database orders.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Total orders</span><span class="fd-dash-card-value">{{ summary.total }}</span><span class="fd-dash-card-context">All orders.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Pending</span><span class="fd-dash-card-value">{{ summary.pending }}</span><span class="fd-dash-card-context">Awaiting fulfilment.</span></li>
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Verified paid</span><span class="fd-dash-card-value">{{ summary.paid }}</span><span class="fd-dash-card-context">Orders with a verified payment.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Payment confirmed</span><span class="fd-dash-card-value">{{ summary.paid }}</span><span class="fd-dash-card-context">Orders with a confirmed payment.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Cancelled</span><span class="fd-dash-card-value">{{ summary.cancelled }}</span><span class="fd-dash-card-context">Cancelled orders.</span></li>
     </ul>
 </section>
@@ -52,7 +52,7 @@
         <label class="fd-shop-select" for="fd-orders-payment">Payment status
             <select id="fd-orders-payment" name="payment" class="form-select">
                 <option value="">All payment statuses</option>
-                <option value="paid"{% if filters.payment == 'paid' %} selected{% endif %}>Paid / verified</option>
+                <option value="paid"{% if filters.payment == 'paid' %} selected{% endif %}>Payment confirmed</option>
                 <option value="pending"{% if filters.payment == 'pending' %} selected{% endif %}>Pending</option>
                 <option value="failed"{% if filters.payment == 'failed' %} selected{% endif %}>Failed</option>
                 <option value="unpaid"{% if filters.payment == 'unpaid' %} selected{% endif %}>Unpaid</option>
@@ -118,7 +118,7 @@
                     <td class="is-amount" data-label="Order total">&#8358;{{ order.total|floatformat:2 }}</td>
                     <td data-label="Payment">
                         {% if order.has_paid %}
-                            <span class="fd-dash-pill is-ok">Paid / verified</span>
+                            <span class="fd-dash-pill is-ok">Payment confirmed</span>
                         {% elif order.latest_payment_status == 'pending' or order.latest_payment_status == 'initiated' %}
                             <span class="fd-dash-pill is-warn">Payment pending</span>
                         {% elif order.latest_payment_status == 'failed' %}
@@ -156,6 +156,6 @@
     </div>
     {% endif %}
 
-    <p class="fd-dash-hint">Order status and payment status are separate. Payment is shown as paid only after server-side Paystack verification. Staff status changes never alter payment truth or historical item prices.</p>
+    <p class="fd-dash-hint">Order status and payment status are separate. Payment is shown as confirmed only after it has been securely verified. Team status changes never alter payment status or historical item prices.</p>
 </section>
 {% endblock %}

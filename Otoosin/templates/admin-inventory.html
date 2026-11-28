@@ -13,14 +13,14 @@
 
 {% block admin_content %}
 <div class="fd-dash-head">
-    <p class="fd-dash-lead">Review availability across every product and update the supported stock fields.</p>
+    <p class="fd-dash-lead">Review what customers see for every product and update stock for each product’s default selling option.</p>
 </div>
 
 <section class="fd-dash-section" aria-labelledby="fd-inv-overview-title">
     <div class="fd-prod-head">
         <div class="fd-prod-head-text">
-            <h2 id="fd-inv-overview-title">Inventory overview</h2>
-            <p class="fd-dash-lead">Availability is read from each product record. Stock tracking is optional.</p>
+            <h2 id="fd-inv-overview-title">Stock overview</h2>
+            <p class="fd-dash-lead">Availability is what customers see. Stock tracking is optional and applies to the default selling option.</p>
         </div>
         <a href="{% url 'Otoosin:staff_products' %}" class="vs-btn fd-dash-btn"><i class="fas fa-box" aria-hidden="true"></i>Products</a>
     </div>
@@ -28,14 +28,14 @@
         <li class="fd-dash-card"><span class="fd-dash-card-label">Products</span><span class="fd-dash-card-value">{{ summary.total }}</span><span class="fd-dash-card-context">All catalogue products.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Available</span><span class="fd-dash-card-value">{{ summary.available }}</span><span class="fd-dash-card-context">Ready to order.</span></li>
         <li class="fd-dash-card"><span class="fd-dash-card-label">Limited</span><span class="fd-dash-card-value">{{ summary.limited }}</span><span class="fd-dash-card-context">Limited quantities.</span></li>
-        <li class="fd-dash-card"><span class="fd-dash-card-label">Out of Stock</span><span class="fd-dash-card-value">{{ summary.out }}</span><span class="fd-dash-card-context">Cannot be ordered.</span></li>
+        <li class="fd-dash-card"><span class="fd-dash-card-label">Out of stock</span><span class="fd-dash-card-value">{{ summary.out }}</span><span class="fd-dash-card-context">Cannot be ordered.</span></li>
     </ul>
 </section>
 
 <section class="fd-dash-section" aria-labelledby="fd-inv-list-title">
     <div class="fd-prod-head">
         <div class="fd-prod-head-text">
-            <h2 id="fd-inv-list-title">Availability list</h2>
+            <h2 id="fd-inv-list-title">Products and stock</h2>
             <p class="fd-dash-count">Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }} product{{ paginator.count|pluralize }}.</p>
         </div>
     </div>
@@ -92,36 +92,36 @@
                         <p class="fd-cat-group">{{ product.category.name }} &middot; {{ product.get_condition_display }}{% if not product.is_active %} &middot; Inactive{% endif %}</p>
                     </div>
                 </div>
-                <p class="fd-cat-desc">Current status: <strong>{{ product.get_availability_status_display }}</strong>{% if variant %} &middot; {{ variant.label }} &middot; &#8358;{{ variant.price|floatformat:"-2" }}{% endif %}</p>
+                <p class="fd-cat-desc">Customer-facing availability: <strong>{{ product.get_availability_status_display }}</strong>{% if variant %} &middot; {{ variant.label }} &middot; &#8358;{{ variant.price|floatformat:"-2" }}{% endif %}</p>
                 <form method="post">
                     {% csrf_token %}
                     <input type="hidden" name="product_id" value="{{ product.pk }}">
                     <input type="hidden" name="page" value="{{ page_obj.number }}">
                     <div class="fd-edit-grid">
                         <div class="fd-field">
-                            <label for="{{ form.availability_status.id_for_label }}">Availability</label>
+                            <label for="{{ form.availability_status.id_for_label }}">Customer-facing availability</label>
                             {{ form.availability_status }}
                             {% if form.availability_status.help_text %}<p class="fd-dash-hint">{{ form.availability_status.help_text }}</p>{% endif %}
                         </div>
                         <div class="fd-field">
-                            <label class="fd-admin-check-row" for="{{ form.track_stock.id_for_label }}">{{ form.track_stock }} <span><strong>Track stock{% if variant %} for {{ variant.label }}{% endif %}</strong><small>{{ form.track_stock.help_text }}</small></span></label>
+                            <label class="fd-admin-check-row" for="{{ form.track_stock.id_for_label }}">{{ form.track_stock }} <span><strong>Track stock{% if variant %} for this selling option ({{ variant.label }}){% endif %}</strong><small>{{ form.track_stock.help_text }}</small></span></label>
                         </div>
                     </div>
                     <div class="fd-edit-grid">
                         <div class="fd-field">
-                            <label for="{{ form.quantity_available.id_for_label }}">Quantity available</label>
+                            <label for="{{ form.quantity_available.id_for_label }}">Stock quantity</label>
                             {{ form.quantity_available }}
                             {% if form.quantity_available.help_text %}<p class="fd-dash-hint">{{ form.quantity_available.help_text }}</p>{% endif %}
                         </div>
                         <div class="fd-field">
-                            <label for="{{ form.low_stock_threshold.id_for_label }}">Low-stock warning level</label>
+                            <label for="{{ form.low_stock_threshold.id_for_label }}">Low-stock level</label>
                             {{ form.low_stock_threshold }}
                             {% if form.low_stock_threshold.help_text %}<p class="fd-dash-hint">{{ form.low_stock_threshold.help_text }}</p>{% endif %}
                         </div>
                     </div>
-                    {% if form.errors %}<div class="fd-admin-notice is-error" role="alert">Check the quantity fields for {{ product.name }}.</div>{% endif %}
+                    {% if form.errors %}<div class="fd-admin-notice is-error" role="alert">Check the stock fields for {{ product.name }}.</div>{% endif %}
                     <div class="fd-cat-actions">
-                        <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save availability</button>
+                        <button type="submit" class="vs-btn fd-dash-btn"><i class="fas fa-check" aria-hidden="true"></i>Save stock &amp; availability</button>
                         <a class="fd-prod-btn" href="{% url 'Otoosin:staff_product_edit' product.pk %}"><i class="far fa-pen" aria-hidden="true"></i>Edit product</a>
                     </div>
                 </form>
@@ -143,6 +143,6 @@
     </div>
     {% endif %}
 
-    <p class="fd-dash-hint">When stock tracking is off, availability follows the product status. Quantity fields are optional and are not shown to customers.</p>
+    <p class="fd-dash-hint">Stock settings on this page apply to the product’s default selling option only. Other selling options are not changed here. When stock tracking is off, customers see only the availability selected above; stock quantities are never shown to customers.</p>
 </section>
 {% endblock %}

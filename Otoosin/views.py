@@ -286,7 +286,7 @@ class StaffLoginView(LoginView):
         if activation_pending == self.request.user.pk:
             messages.success(
                 self.request,
-                "Your staff account has been activated successfully. "
+                "Your team account has been activated successfully. "
                 "Welcome to the O’Toosin Farms admin team.",
             )
         record_audit(
@@ -390,6 +390,12 @@ def _apply_staff_role(user, role):
     group = _staff_role_group(role)
     if group is not None:
         user.groups.add(group)
+
+
+def _is_owner_account(user):
+    return user.is_superuser or user.groups.filter(
+        name=ROLE_GROUPS["owner"]
+    ).exists()
 
 
 def _usable_owner_count(exclude_user=None):
@@ -542,7 +548,7 @@ def staff_team(request):
                         "An account with this email already exists. Use role or activation controls instead.",
                     )
                 elif form.cleaned_data["role"] not in StaffInvitation.Role.values:
-                    messages.error(request, "Choose a valid staff role.")
+                    messages.error(request, "Choose a valid team role.")
                 else:
                     with transaction.atomic():
                         user = User.objects.create_user(
@@ -570,7 +576,7 @@ def staff_team(request):
                     else:
                         messages.error(
                             request,
-                            "The invitation was created but the email was not sent. Use Resend invitation after checking Resend configuration.",
+                            "The invitation was created but the email was not sent. Check the email service, then use Resend invitation.",
                         )
             else:
                 messages.error(request, "Check the invitation details and try again.")
@@ -599,7 +605,7 @@ def staff_team(request):
             else:
                 messages.error(
                     request,
-                    "The invitation email could not be sent. Check the Resend configuration and try again.",
+                    "The invitation email could not be sent. Check the email service and try again.",
                 )
             return redirect("Otoosin:staff_team")
 
@@ -607,7 +613,7 @@ def staff_team(request):
             target = get_object_or_404(User, pk=request.POST.get("user_id"), is_staff=True)
             form = StaffRoleForm(request.POST)
             if not form.is_valid() or form.cleaned_data["role"] not in StaffInvitation.Role.values:
-                messages.error(request, "Choose a valid staff role.")
+                messages.error(request, "Choose a valid team role.")
                 return redirect("Otoosin:staff_team")
             role = form.cleaned_data["role"]
             target_is_owner = target.is_superuser or target.groups.filter(
@@ -634,7 +640,7 @@ def staff_team(request):
                     target=target,
                     summary=f"{target.get_username()} role changed to {role}.",
                 )
-            messages.success(request, "Staff role updated.")
+            messages.success(request, "Team role updated.")
             return redirect("Otoosin:staff_team")
 
         if action == "toggle_active":
@@ -674,6 +680,73 @@ def staff_team(request):
             )
             return redirect("Otoosin:staff_team")
 
+        if action == "delete_account":
+            # Team management already requires manage_staff (Owner only).
+            # Re-check the highest-privilege role in the view as well so the
+            # operation cannot be reached by hiding a button alone.
+            if not _is_owner_account(request.user):
+                raise PermissionDenied
+            target = get_object_or_404(
+                User, pk=request.POST.get("user_id"), is_staff=True
+            )
+            if target.pk == request.user.pk:
+                messages.error(
+                    request,
+                    "You cannot delete the account you are signed in with.",
+                )
+                return redirect("Otoosin:staff_team")
+            if target.is_superuser:
+                messages.error(
+                    request,
+                    "This is the highest access account and cannot be deleted "
+                    "from the admin panel.",
+                )
+                return redirect("Otoosin:staff_team")
+            if (
+                _is_owner_account(target)
+                and _usable_owner_count(exclude_user=target) < 1
+            ):
+                messages.error(
+                    request,
+                    "You cannot delete the last usable owner account.",
+                )
+                return redirect("Otoosin:staff_team")
+
+            username = target.get_username()
+            email = target.email
+            invitation_count = target.staff_invitations.count()
+            try:
+                with transaction.atomic():
+                    record_audit(
+                        actor=request.user,
+                        action="staff_account_deleted",
+                        target_type="User",
+                        target_id=str(target.pk),
+                        summary=(
+                            f"Staff account {username} ({email or 'no email'}) "
+                            f"was permanently deleted. {invitation_count} "
+                            "invitation record(s) were removed with the account; "
+                            "orders, enquiries and audit history were preserved."
+                        ),
+                    )
+                    target.delete()
+            except DatabaseError:
+                logger.exception(
+                    "Failed to permanently delete staff account pk=%s",
+                    target.pk,
+                )
+                messages.error(
+                    request,
+                    "This account could not be deleted because it is linked "
+                    "to records that must be kept. Deactivate the account "
+                    "instead.",
+                )
+            else:
+                messages.success(
+                    request, f"{username} was permanently deleted."
+                )
+            return redirect("Otoosin:staff_team")
+
         messages.error(request, "Unknown team action.")
         return redirect("Otoosin:staff_team")
 
@@ -711,6 +784,14 @@ def staff_team(request):
                 "user": user,
                 "role": role,
                 "invitation": invitations.get(user.pk),
+                "can_delete": (
+                    user.pk != request.user.pk
+                    and not user.is_superuser
+                    and not (
+                        _is_owner_account(user)
+                        and _usable_owner_count(exclude_user=user) < 1
+                    )
+                ),
             }
         )
     return render(
@@ -1383,7 +1464,7 @@ def staff_settings(request):
                     )
                 messages.success(
                     request,
-                    f"{recipient.email} will receive paid-order notifications.",
+                    f"{recipient.email} will receive order notifications.",
                 )
                 return _settings_redirect()
             return render(

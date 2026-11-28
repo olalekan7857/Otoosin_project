@@ -4207,6 +4207,14 @@ html[data-theme="dark"] .fd-dash-card-icon {
   white-space: nowrap;
 }
 
+.fd-admin .fd-cat-delete-note {
+  flex: 1 1 100%;
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fd-text-2, #667085);
+}
+
 /* ---------- Variant card additions: active state + advanced code --------- */
 .fd-admin .fd-edit-variant[hidden] {
   display: none;
@@ -4502,6 +4510,24 @@ html[data-theme="dark"] .fd-dash-card-icon {
 
 .fd-team-controls .fd-field {
   margin: 0;
+}
+
+.fd-team-danger {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.fd-admin .fd-ghost-btn.is-danger {
+  border-color: var(--error-color);
+  color: var(--error-color);
+}
+
+.fd-admin .fd-ghost-btn.is-danger:hover,
+.fd-admin .fd-ghost-btn.is-danger:focus-visible {
+  background: var(--error-color);
+  border-color: var(--error-color);
+  color: var(--white-color);
 }
 
 .fd-team-role-help {

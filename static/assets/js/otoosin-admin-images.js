@@ -115,23 +115,35 @@
 
     if (remove) {
       remove.addEventListener("click", function () {
-        revokeObjectUrl();
-        if (deleteInput) {
-          deleteInput.checked = true;
+        function performRemove() {
+          revokeObjectUrl();
+          if (deleteInput) {
+            deleteInput.checked = true;
+            input.value = "";
+            showEmpty("This image will be removed when you save.");
+            return;
+          }
+          if (clear && clear.parentNode) {
+            clear.checked = true;
+            showEmpty("Current image will be removed when you save.");
+            return;
+          }
           input.value = "";
-          showEmpty("This image will be removed when you save.");
-          return;
+          if (currentUrl) {
+            showEmpty("Image will be removed when you save.");
+          } else {
+            showEmpty("");
+          }
         }
-        if (clear && clear.parentNode) {
-          clear.checked = true;
-          showEmpty("Current image will be removed when you save.");
-          return;
-        }
-        input.value = "";
-        if (currentUrl) {
-          showEmpty("Image will be removed when you save.");
+        if (window.FdAdminConfirm) {
+          window.FdAdminConfirm.open({
+            title: "Remove image?",
+            message: "Remove this image? It will be permanently deleted when you save. This cannot be undone.",
+            confirmLabel: "Remove image",
+            onConfirm: performRemove
+          });
         } else {
-          showEmpty("");
+          performRemove();
         }
       });
     }

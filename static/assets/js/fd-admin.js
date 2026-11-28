@@ -487,6 +487,118 @@
     }
   }
 
+  /* ---------- 6. Destructive action confirmation ---------- */
+  function wireDeleteConfirm() {
+    var modal = document.getElementById("fd-delete-modal");
+    if (!modal) {
+      return;
+    }
+    var titleEl = document.getElementById("fd-delete-modal-title");
+    var descEl = document.getElementById("fd-delete-modal-desc");
+    var confirmBtn = modal.querySelector("[data-fd-delete-confirm]");
+    var cancelEls = modal.querySelectorAll("[data-fd-delete-cancel]");
+    var pendingAction = null;
+    var lastFocus = null;
+
+    function close(restoreFocus) {
+      modal.setAttribute("hidden", "");
+      document.body.style.overflow = "";
+      pendingAction = null;
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.removeAttribute("aria-busy");
+        confirmBtn.textContent = "Delete";
+      }
+      if (restoreFocus && lastFocus && document.contains(lastFocus)) {
+        lastFocus.focus();
+      }
+    }
+
+    function open(options) {
+      options = options || {};
+      lastFocus = document.activeElement;
+      pendingAction = typeof options.onConfirm === "function"
+        ? options.onConfirm
+        : null;
+      if (titleEl) {
+        titleEl.textContent = options.title || "Delete this item?";
+      }
+      if (descEl) {
+        descEl.textContent = options.message || "This cannot be undone.";
+      }
+      if (confirmBtn) {
+        confirmBtn.disabled = false;
+        confirmBtn.removeAttribute("aria-busy");
+        confirmBtn.textContent = options.confirmLabel || "Delete";
+      }
+      modal.removeAttribute("hidden");
+      document.body.style.overflow = "hidden";
+      var cancel = modal.querySelector("[data-fd-delete-cancel]:not(.fd-modal-scrim)");
+      if (cancel) {
+        cancel.focus();
+      } else if (confirmBtn) {
+        confirmBtn.focus();
+      }
+    }
+
+    function confirm() {
+      if (!pendingAction) {
+        return;
+      }
+      var action = pendingAction;
+      pendingAction = null;
+      if (confirmBtn) {
+        confirmBtn.disabled = true;
+        confirmBtn.setAttribute("aria-busy", "true");
+        confirmBtn.textContent = "Working…";
+      }
+      action();
+      close(false);
+    }
+
+    window.FdAdminConfirm = { open: open, close: close };
+
+    if (confirmBtn) {
+      confirmBtn.addEventListener("click", confirm);
+    }
+    for (var c = 0; c < cancelEls.length; c++) {
+      cancelEls[c].addEventListener("click", function () {
+        close(true);
+      });
+    }
+    document.addEventListener("keydown", function (ev) {
+      if ((ev.key === "Escape" || ev.key === "Esc") && !modal.hasAttribute("hidden")) {
+        close(true);
+      }
+    });
+
+    var forms = document.querySelectorAll("form[data-fd-delete]");
+    for (var f = 0; f < forms.length; f++) {
+      forms[f].addEventListener("submit", function (ev) {
+        var form = this;
+        if (form.getAttribute("data-fd-delete-confirmed") === "1") {
+          return;
+        }
+        ev.preventDefault();
+        open({
+          title: form.getAttribute("data-delete-title") || "Delete this item?",
+          message: form.getAttribute("data-delete-message") || "This cannot be undone.",
+          confirmLabel: form.getAttribute("data-delete-confirm-label") || "Delete",
+          onConfirm: function () {
+            form.setAttribute("data-fd-delete-confirmed", "1");
+            var buttons = form.querySelectorAll(
+              'button[type="submit"], input[type="submit"]'
+            );
+            for (var b = 0; b < buttons.length; b++) {
+              buttons[b].disabled = true;
+            }
+            form.submit();
+          },
+        });
+      });
+    }
+  }
+
   /* Paint the mobile base navigation as soon as the shell is parsed, so the
      bottom of small screens is covered from first paint instead of waiting
      for DOMContentLoaded (which can be delayed by slow font/asset requests).
@@ -502,5 +614,6 @@
     wireForgotPanel();
     wireLoginForm();
     wireLogout();
+    wireDeleteConfirm();
   });
 })();

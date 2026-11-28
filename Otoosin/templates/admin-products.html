@@ -66,7 +66,7 @@
     <form method="get" action="{% url 'Otoosin:staff_products' %}" class="fd-prod-toolbar">
         <div class="fd-shop-search fd-prod-search">
             <i class="far fa-search" aria-hidden="true"></i>
-            <label class="visually-hidden" for="fd-prod-search">Search products by name, SKU, category or state</label>
+            <label class="visually-hidden" for="fd-prod-search">Search products by name, SKU, category or condition</label>
             <input id="fd-prod-search" name="q" value="{{ filters.q }}" class="form-control" type="search" placeholder="Search products…" autocomplete="off">
         </div>
         <label class="fd-shop-select" for="fd-prod-cat">Category
@@ -77,9 +77,9 @@
                 {% endfor %}
             </select>
         </label>
-        <label class="fd-shop-select" for="fd-prod-state">State
+        <label class="fd-shop-select" for="fd-prod-state">Condition
             <select id="fd-prod-state" name="state" class="form-select">
-                <option value="">All states</option>
+                <option value="">All conditions</option>
                 <option value="fresh"{% if filters.state == 'fresh' %} selected{% endif %}>Fresh</option>
                 <option value="frozen"{% if filters.state == 'frozen' %} selected{% endif %}>Frozen</option>
                 <option value="fried"{% if filters.state == 'fried' %} selected{% endif %}>Fried</option>
@@ -125,7 +125,7 @@
                         {% if variant %}
                             <span class="visually-hidden">Price: </span>&#8358;{{ variant.price|floatformat:"-2" }} <span class="fd-prod-unit">/ {{ variant.get_unit_kind_display|lower }}</span>
                         {% else %}
-                            <span class="fd-prod-unit">No active variant</span>
+                            <span class="fd-prod-unit">No active selling option</span>
                         {% endif %}
                     </p>
                     <div class="fd-prod-actions">
@@ -150,6 +150,6 @@
     </div>
     {% endif %}
 
-    <p class="fd-dash-hint">Prices follow each product’s default selling unit. Edit opens the product editor.</p>
+    <p class="fd-dash-hint">Prices follow each product’s main selling option. Deactivate a product to hide it from customers; you can make it available again later.</p>
 </section>
 {% endblock %}

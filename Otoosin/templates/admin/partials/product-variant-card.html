@@ -51,11 +51,11 @@
             </span>
         </label>
         {% for error in variant_form.is_active.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}
-        {% if variant_form.instance.pk and variant_form.instance.sku %}<p class="fd-dash-hint">Saved variant code: <strong>{{ variant_form.instance.sku }}</strong></p>{% endif %}
+        {% if variant_form.instance.pk and variant_form.instance.sku %}<p class="fd-dash-hint">Saved option code: <strong>{{ variant_form.instance.sku }}</strong></p>{% endif %}
         <details class="fd-edit-advanced"{% if variant_form.instance.pk %} open{% endif %}>
-            <summary>Advanced: variant code</summary>
+            <summary>Advanced: option code</summary>
             <div class="fd-field">
-                <label for="{{ variant_form.sku.id_for_label }}">Variant code (SKU)</label>
+                <label for="{{ variant_form.sku.id_for_label }}">Option code (SKU)</label>
                 {{ variant_form.sku }}
                 {% if variant_form.sku.help_text %}<p class="fd-dash-hint">{{ variant_form.sku.help_text }}</p>{% endif %}
                 {% for error in variant_form.sku.errors %}<span class="fd-field-error">{{ error }}</span>{% endfor %}

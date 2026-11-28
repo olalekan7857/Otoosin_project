@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>{% block title %}Staff access | O’TOOSIN Farms{% endblock %}</title>
+    <title>{% block title %}Team access | O’TOOSIN Farms{% endblock %}</title>
     <meta name="author" content="O’TOOSIN Farms">
-    <meta name="description" content="Private O’TOOSIN Farms staff access.">
+    <meta name="description" content="Private O’TOOSIN Farms team access.">
     <meta name="robots" content="NOINDEX,NOFOLLOW">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -28,7 +28,7 @@
 </head>
 
 <body class="fd-admin fd-admin-login">
-    <a class="fd-skip-link" href="#fd-admin-main">Skip to staff access</a>
+    <a class="fd-skip-link" href="#fd-admin-main">Skip to team access</a>
 
     <div class="fd-admin-shell fd-admin-shell--login" id="fd-admin-shell">
         <div class="fd-admin-login-theme">
@@ -42,7 +42,7 @@
             <main class="fd-admin-content fd-admin-login-content" id="fd-admin-main" tabindex="-1">
                 <div class="fd-admin-login-wrap">
                     <section class="fd-admin-login-shell" aria-labelledby="fd-auth-title">
-                        <aside class="fd-admin-login-brand" aria-label="O’TOOSIN Farms staff access">
+                        <aside class="fd-admin-login-brand" aria-label="O’TOOSIN Farms team access">
                             <a class="fd-logo fd-admin-login-brand-logo" href="{% url 'Otoosin:index' %}" aria-label="O’TOOSIN Farms storefront">
                                 <img src="{% static 'assets/img/harvest_castle/of_favicon.png' %}" alt="" aria-hidden="true" class="fd-logo-img" width="70" height="50">
                             </a>
@@ -56,7 +56,7 @@
                                 <li><i class="fas fa-warehouse" aria-hidden="true"></i><span>Inventory and availability</span></li>
                                 <li><i class="fas fa-image" aria-hidden="true"></i><span>Product images and primary selection</span></li>
                             </ul>
-                            <p class="fd-admin-login-brand-foot"><i class="fas fa-user-check" aria-hidden="true"></i>Staff access is managed by the farm owner</p>
+                            <p class="fd-admin-login-brand-foot"><i class="fas fa-user-check" aria-hidden="true"></i>Team access is managed by the farm owner</p>
                         </aside>
 
                         <div class="fd-admin-login-form-panel">
@@ -66,8 +66,8 @@
 
                             <div class="fd-admin-card fd-admin-login-card">
                                 <div class="fd-admin-card-head">
-                                    <p class="fd-admin-login-eyebrow">{% block auth_eyebrow %}Staff access{% endblock %}</p>
-                                    <h1 id="fd-auth-title">{% block auth_title %}Staff access{% endblock %}</h1>
+                                    <p class="fd-admin-login-eyebrow">{% block auth_eyebrow %}Team access{% endblock %}</p>
+                                    <h1 id="fd-auth-title">{% block auth_title %}Team access{% endblock %}</h1>
                                     {% block auth_intro %}{% endblock %}
                                 </div>
                                 {% block auth_content %}{% endblock %}

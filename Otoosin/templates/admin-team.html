@@ -1,38 +1,38 @@
 {% extends "admin/base_admin.html" %}
 {% load static %}
 
-{% block title %}Staff Team | O’Toosin Farms Admin{% endblock %}
-{% block skip_label %}Skip to staff team{% endblock %}
+{% block title %}Team | O’Toosin Farms Admin{% endblock %}
+{% block skip_label %}Skip to team{% endblock %}
 {% block topbar_title %}Team{% endblock %}
-{% block topbar_context %}Farm admin &middot; staff access{% endblock %}
+{% block topbar_context %}Farm admin &middot; team access{% endblock %}
 
 {% block admin_content %}
 <div class="fd-dash-head">
-    <p class="fd-dash-lead">Invite staff, assign an approved role, and review account or invitation state. Only an Owner can manage the team.</p>
-    <ol class="fd-team-guide" aria-label="How staff access works">
-        <li><strong>Invite</strong>Enter the staff email and choose a role.</li>
-        <li><strong>Open the email</strong>Resend sends a single-use activation link.</li>
-        <li><strong>Set a password</strong>The staff member opens the link and chooses a password.</li>
-        <li><strong>Sign in</strong>Forgotten passwords can be reset from the staff sign-in page.</li>
+    <p class="fd-dash-lead">Invite team members, assign an approved role, and review account or invitation state. Only an Owner can manage the team.</p>
+    <ol class="fd-team-guide" aria-label="How team access works">
+        <li><strong>Invite</strong>Enter the team member’s email address and choose a role.</li>
+        <li><strong>Open the email</strong>An email with a single-use activation link is sent.</li>
+        <li><strong>Set a password</strong>The team member opens the link and chooses a password.</li>
+        <li><strong>Sign in</strong>Forgotten passwords can be reset from the team sign-in page.</li>
     </ol>
 </div>
 
 <section class="fd-dash-section" aria-labelledby="fd-team-invite-title">
-    <h2 id="fd-team-invite-title">Invite a staff member</h2>
-    <p class="fd-dash-hint">The account stays inactive until the recipient opens the invitation link and sets a password. No password is included in the email.</p>
-    <div class="fd-role-access" aria-label="What each staff role can access">
+    <h2 id="fd-team-invite-title">Invite a team member</h2>
+    <p class="fd-dash-hint">The account stays inactive until the recipient opens the invitation email and sets a password. The email never contains a password.</p>
+    <div class="fd-role-access" aria-label="What each team role can access">
         <p class="fd-role-access-title">What each role can access</p>
         <ul>
             <li><strong>Owner</strong><span>Full access: team, catalogue, inventory, delivery, settings and enquiries.</span></li>
-            <li><strong>Manager</strong><span>Catalogue, inventory, delivery, business settings and enquiries. Cannot manage the team.</span></li>
+            <li><strong>Manager</strong><span>Catalogue, inventory, delivery, settings and enquiries. Cannot manage the team.</span></li>
             <li><strong>Support</strong><span>Enquiries only: read, update status and add internal notes.</span></li>
-            <li><strong>Fulfilment</strong><span>Orders only. Reserved until order management is added.</span></li>
+            <li><strong>Fulfilment</strong><span>Orders only: view orders and update the permitted fulfilment statuses.</span></li>
         </ul>
     </div>
     {% if resend_uses_test_sender %}
     <div class="fd-admin-notice is-dev" role="note">
-        <strong>Temporary Resend test sender</strong>
-        Invitations are currently sent from <code>onboarding@resend.dev</code>. Resend only delivers that test sender to the Resend account owner's email. Verify a domain in Resend, then set <code>RESEND_FROM_EMAIL</code> in <code>.env</code> to a sender on that domain before inviting other staff.
+        <strong>Temporary email test sender</strong>
+        Invitation emails are currently using a temporary test sender. They may only reach the email address that owns the email service account. Ask your technical support to connect your farm’s email domain before inviting other team members.
     </div>
     {% endif %}
     <form method="post" class="fd-dash-form" novalidate>
@@ -71,8 +71,8 @@
 </section>
 
 <section class="fd-dash-section" aria-labelledby="fd-team-list-title">
-    <h2 id="fd-team-list-title">Staff accounts</h2>
-    <p class="fd-dash-hint">Active and inactive staff accounts, including pending invitations. Role changes and activation changes take effect immediately.</p>
+    <h2 id="fd-team-list-title">Team members</h2>
+    <p class="fd-dash-hint">Active and inactive team members, including pending invitations. Role and activation changes take effect immediately.</p>
     {% if rows %}
     <div class="fd-team-list">
         {% for row in rows %}
@@ -84,8 +84,8 @@
                 </div>
                 <div class="fd-team-badges">
                     {% if row.user.is_active %}<span class="fd-dash-pill">Active account</span>{% else %}<span class="fd-dash-pill is-muted">Inactive account</span>{% endif %}
-                    {% if row.role %}<span class="fd-dash-pill is-muted">{{ row.role|capfirst }} role</span>{% else %}<span class="fd-dash-pill is-muted">No role group</span>{% endif %}
-                    {% if row.user.is_superuser %}<span class="fd-dash-pill is-muted">Superuser</span>{% endif %}
+                    {% if row.role %}<span class="fd-dash-pill is-muted">{{ row.role|capfirst }} role</span>{% else %}<span class="fd-dash-pill is-muted">No role assigned</span>{% endif %}
+                    {% if row.user.is_superuser %}<span class="fd-dash-pill is-muted">Highest access account</span>{% endif %}
                 </div>
             </div>
 
@@ -107,12 +107,12 @@
                 Expired {{ row.invitation.expires_at|date:"j M Y H:i" }}. Resend a new link if access is still needed.
                 {% endif %}
                 {% if row.invitation.email_delivery %}
-                <span class="fd-dash-hint">Email: {{ row.invitation.email_delivery.get_status_display }}{% if row.invitation.email_delivery.last_error %} &middot; {{ row.invitation.email_delivery.last_error }}{% endif %}</span>
+                <span class="fd-dash-hint">Invitation email: {{ row.invitation.email_delivery.get_status_display }}{% if row.invitation.email_delivery.last_error %} &middot; Delivery needs attention. Try resending the invitation.{% endif %}</span>
                 {% endif %}
             </div>
             {% elif not row.invitation %}
             <div class="fd-team-invite-state">
-                <span class="fd-dash-hint">No invitation record. This account was created outside the invitation flow.</span>
+                <span class="fd-dash-hint">No invitation record. This account was created outside the invitation process.</span>
             </div>
             {% endif %}
 
@@ -128,7 +128,7 @@
                             <option value="{{ value }}"{% if value == row.role %} selected{% endif %}>{{ label }}</option>
                             {% endfor %}
                         </select>
-                        <p class="fd-team-role-help">Each role option includes its access summary. Owner has full access; Manager cannot manage the team; Support handles enquiries only.</p>
+                        <p class="fd-team-role-help">Each role option includes its access summary. Owner has full access; Manager cannot manage the team; Support handles enquiries only; Fulfilment handles orders only.</p>
                     </div>
                     <button type="submit" class="fd-ghost-btn fd-dash-btn">Update role</button>
                 </form>
@@ -151,14 +151,31 @@
                     </button>
                 </form>
             </div>
+
+            {% if row.can_delete %}
+            <div class="fd-team-danger">
+                <form method="post"
+                      data-fd-delete
+                      data-delete-title="Delete admin account?"
+                      data-delete-confirm-label="Delete account"
+                      data-delete-message="Permanently delete {{ row.user.get_full_name|default:row.user.username }}{% if row.user.email %} ({{ row.user.email }}){% endif %}? Their access is removed immediately. This cannot be undone.">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete_account">
+                    <input type="hidden" name="user_id" value="{{ row.user.pk }}">
+                    <button type="submit" class="fd-ghost-btn fd-dash-btn is-danger">
+                        <i class="far fa-trash-alt" aria-hidden="true"></i>Delete account
+                    </button>
+                </form>
+            </div>
+            {% endif %}
         </article>
         {% endfor %}
     </div>
     {% else %}
     <div class="fd-dash-empty">
         <i class="fas fa-users" aria-hidden="true"></i>
-        <h3>No staff accounts yet</h3>
-        <p>Invite the first staff member using the form above.</p>
+        <h3>No team members yet</h3>
+        <p>Invite the first team member using the form above.</p>
     </div>
     {% endif %}
 </section>
